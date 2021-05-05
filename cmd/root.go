@@ -18,6 +18,7 @@ package cmd
 
 import (
 	"log"
+	"os"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -43,6 +44,7 @@ func Execute() {
 
 func init() {
 	//cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(initData)
 
 	home, err := homedir.Dir()
 	if err != nil {
@@ -53,6 +55,17 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&dataFile, "datafile", home+"/.local/share/godo/godos.json", "data file to store todos")
 
 	viper.BindPFlag("datafile", rootCmd.PersistentFlags().Lookup("datafile"))
+}
+
+func initData() {
+	home, err := homedir.Dir()
+	if err != nil {
+		log.Println("Unable to detect home directory. Please set data file using --datafile.")
+	}
+	os.Mkdir(home+"/.local/share/godo", 0755)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // TODO: Configuration to be added when JSON API support is added
