@@ -22,14 +22,14 @@ import (
 	"strconv"
 )
 
-type Item struct {
+type Todo struct {
 	Text     string
 	Priority bool
 	position int
-	Done     bool
+	Status     bool
 }
 
-func SaveItems(filename string, items []Item) error {
+func SaveTodos(filename string, items []Todo) error {
 	b, err := json.Marshal(items)
 	if err != nil {
 		return err
@@ -41,14 +41,14 @@ func SaveItems(filename string, items []Item) error {
 	return nil
 }
 
-func ReadItems(filename string) ([]Item, error) {
+func ReadTodos(filename string) ([]Todo, error) {
 	b, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return []Item{}, err
+		return []Todo{}, err
 	}
-	var items []Item
+	var items []Todo
 	if err := json.Unmarshal(b, &items); err != nil {
-		return []Item{}, err
+		return []Todo{}, err
 	}
 	for i := range items {
 		items[i].position = i + 1
@@ -56,31 +56,31 @@ func ReadItems(filename string) ([]Item, error) {
 	return items, nil
 }
 
-func (i *Item) Prioritise(pri bool) {
+func (i *Todo) Prioritise(pri bool) {
 	if pri {
 		i.Priority = true
 	}
 }
 
-func (i *Item) PretPriority() string {
+func (i *Todo) PriorityFlag() string {
 	if i.Priority {
 		return "*"
-	}
-	return " "
-}
-
-func (i *Item) PretDone() string {
-	if i.Done {
-		return "X"
 	}
 	return ""
 }
 
-func (i *Item) Label() string {
+func (i *Todo) StatusFlag() string {
+	if i.Status {
+		return "d"
+	}
+	return ""
+}
+
+func (i *Todo) Label() string {
 	return strconv.Itoa(i.position)
 }
 
-type Order []Item
+type Order []Todo
 
 func (s Order) Len() int {
 	return len(s)
@@ -89,11 +89,11 @@ func (s Order) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
 func (s Order) Less(i, j int) bool {
-	if s[i].Done == s[j].Done {
+	if s[i].Status == s[j].Status {
 		if s[i].Priority == s[j].Priority {
 			return s[i].position < s[j].position
 		}
 		return s[i].Priority && !s[j].Priority
 	}
-	return !s[i].Done
+	return !s[i].Status
 }

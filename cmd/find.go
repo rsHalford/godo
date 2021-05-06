@@ -40,7 +40,7 @@ provide string`,
 }
 
 func findRun(cmd *cobra.Command, args []string) {
-	items, err := todo.ReadItems(viper.GetString("datafile"))
+	items, err := todo.ReadTodos(viper.GetString("datafile"))
 	if err != nil {
 		log.Printf("%v", err)
 	}
@@ -50,14 +50,12 @@ func findRun(cmd *cobra.Command, args []string) {
 	for _, a := range args {
 		for _, i := range items {
 			if strings.Contains(i.Text, a) {
-				fmt.Fprintln(w, i.Label()+"\t"+i.PretDone()+"\t"+i.PretPriority()+"\t"+i.Text+"\t")
+				fmt.Fprintln(w, i.Label()+"\t"+i.StatusFlag()+"\t"+i.PriorityFlag()+"\t"+i.Text+"\t")
 			}
 		}
 	}
 	w.Flush()
 }
-
-//func iterItems([]string)
 
 func init() {
 	rootCmd.AddCommand(findCmd)
