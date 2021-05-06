@@ -37,22 +37,22 @@ var doneCmd = &cobra.Command{
 }
 
 func doneRun(cmd *cobra.Command, args []string) {
-	items, err := todo.ReadItems(viper.GetString("datafile"))
+	items, err := todo.ReadTodos(viper.GetString("datafile"))
 	i, err := strconv.Atoi(args[0])
 	if err != nil {
 		log.Fatalln(args[0], "is not a valid label\n", err)
 	}
 	if i > 0 && i <= len(items) {
-		if items[i-1].Done != true {
-			items[i-1].Done = true
+		if items[i-1].Status != true {
+			items[i-1].Status = true
 			fmt.Printf("%q %v\n", items[i-1].Text, "marked done")
 			sort.Sort(todo.Order(items))
-			todo.SaveItems(viper.GetString("datafile"), items)
+			todo.SaveTodos(viper.GetString("datafile"), items)
 		} else {
-			items[i-1].Done = false
+			items[i-1].Status = false
 			fmt.Printf("%q %v\n", items[i-1].Text, "marked active")
 			sort.Sort(todo.Order(items))
-			todo.SaveItems(viper.GetString("datafile"), items)
+			todo.SaveTodos(viper.GetString("datafile"), items)
 		}
 	} else {
 		log.Println(i, "doesn't match any items")

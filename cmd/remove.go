@@ -38,7 +38,7 @@ var removeCmd = &cobra.Command{
 }
 
 func removeRun(cmd *cobra.Command, args []string) {
-	items, err := todo.ReadItems(viper.GetString("datafile"))
+	items, err := todo.ReadTodos(viper.GetString("datafile"))
 	i, err := strconv.Atoi(args[0])
 	if err != nil {
 		log.Fatalln(args[0], "is not a valid label\n", err)
@@ -49,7 +49,7 @@ func removeRun(cmd *cobra.Command, args []string) {
 			fmt.Printf("%q %v\n", items[i-1].Text, "deleted")
 			items = items[:i-1+copy(items[i-1:], items[i:])]
 			sort.Sort(todo.Order(items))
-			todo.SaveItems(viper.GetString("datafile"), items)
+			todo.SaveTodos(viper.GetString("datafile"), items)
 		} else {
 			log.Println(i, "doesn't match any items")
 		}

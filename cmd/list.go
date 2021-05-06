@@ -44,7 +44,7 @@ var listCmd = &cobra.Command{
 }
 
 func listRun(cmd *cobra.Command, args []string) {
-	items, err := todo.ReadItems(viper.GetString("datafile"))
+	items, err := todo.ReadTodos(viper.GetString("datafile"))
 	if err != nil {
 		log.Printf("%v", err)
 	}
@@ -52,8 +52,8 @@ func listRun(cmd *cobra.Command, args []string) {
 	w := tabwriter.NewWriter(os.Stdout, 3, 0, 1, ' ', 0)
 	fmt.Fprintln(w, "#\tD\tP\tT\t")
 	for _, i := range items {
-		if allOpt || i.Done == doneOpt {
-			fmt.Fprintln(w, i.Label()+"\t"+i.PretDone()+"\t"+i.PretPriority()+"\t"+i.Text+"\t")
+		if allOpt || i.Status == doneOpt {
+			fmt.Fprintln(w, i.Label()+"\t"+i.StatusFlag()+"\t"+i.PriorityFlag()+"\t"+i.Text+"\t")
 		}
 	}
 	w.Flush()

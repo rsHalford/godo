@@ -18,7 +18,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
@@ -37,18 +36,17 @@ var addCmd = &cobra.Command{
 }
 
 func addRun(cmd *cobra.Command, args []string) {
-	items, err := todo.ReadItems(viper.GetString("datafile"))
+	items, err := todo.ReadTodos(viper.GetString("datafile"))
 	if err != nil {
-		log.Printf("%v", err)
+		fmt.Println("No file found: godos.json")
+		fmt.Println("Creating a new database...")
 	}
 	for _, x := range args {
-		item := todo.Item{Text: x}
+		item := todo.Todo{Text: x}
 		item.Prioritise(priority)
 		items = append(items, item)
 	}
-	if err = todo.SaveItems(viper.GetString("datafile"), items); err != nil {
-		fmt.Errorf("%v", err)
-	}
+	todo.SaveTodos(viper.GetString("datafile"), items)
 }
 
 func init() {
