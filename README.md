@@ -16,13 +16,13 @@ simple and accessible.
 
 Providing the ability to:
 
-- Add
-- Edit
-- Remove
-- List
-- Search
-- Prioritise
-- Mark complete
+- Add - `godo add [todo text]`
+- Edit - `godo edit [todo id]`
+- Remove - `godo remove [todo id]`
+- List - `godo list`
+- Search - `godo find [todo text]`
+- Prioritise - `godo prioritise [todo id]`
+- Mark complete - `godo done [todo id]`
 
 Go get things done and checked off the list.
 
