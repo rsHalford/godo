@@ -28,7 +28,7 @@ var versionCmd = &cobra.Command{
 	Aliases: []string{"v"},
 	Short:   "print godo's version",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("v1.0.0")
+		fmt.Println("v0.0.1")
 	},
 }
 
