@@ -53,7 +53,7 @@ func removeRun(cmd *cobra.Command, args []string) {
 			fmt.Printf("%q %v\n", items[i-1].Text, "deleted")
 			items = items[:i-1+copy(items[i-1:], items[i:])]
 			sort.Sort(todo.Order(items))
-			todo.SaveTodos(viper.GetString("datafile"), items)	
+			todo.SaveTodos(viper.GetString("datafile"), items)
 		}
 	} else {
 		fmt.Printf("\"%v\" doesn't match any todos\n", i)
