@@ -26,7 +26,7 @@ type Todo struct {
 	Text     string
 	Priority bool
 	position int
-	Status     bool
+	Status   bool
 }
 
 func SaveTodos(filename string, items []Todo) error {
