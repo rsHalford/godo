@@ -39,28 +39,30 @@ var removeCmd = &cobra.Command{
 
 func removeRun(cmd *cobra.Command, args []string) {
 	items, err := todo.ReadTodos(viper.GetString("datafile"))
+	if err != nil {
+		fmt.Println("No entries found")
+		return
+	}
 	i, err := strconv.Atoi(args[0])
 	if err != nil {
-		log.Fatalln(args[0], "is not a valid label\n", err)
+		fmt.Printf("\"%v\" is not a valid argument\n", args[0])
+		return
 	}
-	isConfirmed := confirmRemove()
-	if isConfirmed {
-		if i > 0 && i <= len(items) {
+	if i > 0 && i <= len(items) {
+		if isConfirmed := confirmRemove(); isConfirmed {
 			fmt.Printf("%q %v\n", items[i-1].Text, "deleted")
 			items = items[:i-1+copy(items[i-1:], items[i:])]
 			sort.Sort(todo.Order(items))
-			todo.SaveTodos(viper.GetString("datafile"), items)
-		} else {
-			log.Println(i, "doesn't match any items")
+			todo.SaveTodos(viper.GetString("datafile"), items)	
 		}
 	} else {
-		return
+		fmt.Printf("\"%v\" doesn't match any todos\n", i)
 	}
 }
 
 func confirmRemove() bool {
 	var response string
-	fmt.Printf("Confirm deletion? (y/N): ")
+	fmt.Printf("Confirm deletion? (y/n): ")
 	_, err := fmt.Scanln(&response)
 	if err != nil {
 		log.Fatal(err)
@@ -72,7 +74,7 @@ func confirmRemove() bool {
 	case "n", "no":
 		return false
 	default:
-		fmt.Println("Please type (y)es or (n)o and then press enter:")
+		fmt.Println("Please type (y)es or (n)o and press enter:")
 		return confirmRemove()
 	}
 }

@@ -18,7 +18,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"sort"
 	"strconv"
 
@@ -38,9 +37,14 @@ var doneCmd = &cobra.Command{
 
 func doneRun(cmd *cobra.Command, args []string) {
 	items, err := todo.ReadTodos(viper.GetString("datafile"))
+	if err != nil {
+		fmt.Println("No entries found")
+		return
+	}
 	i, err := strconv.Atoi(args[0])
 	if err != nil {
-		log.Fatalln(args[0], "is not a valid label\n", err)
+		fmt.Printf("\"%v\" is not a valid argument\n", args[0])
+		return
 	}
 	if i > 0 && i <= len(items) {
 		if items[i-1].Status != true {
@@ -55,7 +59,7 @@ func doneRun(cmd *cobra.Command, args []string) {
 			todo.SaveTodos(viper.GetString("datafile"), items)
 		}
 	} else {
-		log.Println(i, "doesn't match any items")
+		fmt.Printf("\"%v\" doesn't match any todos\n", i)
 	}
 }
 
