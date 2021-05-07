@@ -18,7 +18,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"sort"
 	"strings"
@@ -42,7 +41,8 @@ provide string`,
 func findRun(cmd *cobra.Command, args []string) {
 	items, err := todo.ReadTodos(viper.GetString("datafile"))
 	if err != nil {
-		log.Printf("%v", err)
+		fmt.Println("No entries found")
+		return
 	}
 	sort.Sort(todo.Order(items))
 	w := tabwriter.NewWriter(os.Stdout, 3, 0, 1, ' ', 0)

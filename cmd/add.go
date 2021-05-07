@@ -38,8 +38,7 @@ var addCmd = &cobra.Command{
 func addRun(cmd *cobra.Command, args []string) {
 	items, err := todo.ReadTodos(viper.GetString("datafile"))
 	if err != nil {
-		fmt.Println("No file found: godos.json")
-		fmt.Println("Creating a new database...")
+		fmt.Println("Setting up database...")
 	}
 	for _, x := range args {
 		item := todo.Todo{Text: x}

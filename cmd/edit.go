@@ -17,6 +17,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package cmd
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -41,16 +42,21 @@ var editCmd = &cobra.Command{
 
 func editRun(cmd *cobra.Command, args []string) {
 	items, err := todo.ReadTodos(viper.GetString("datafile"))
+	if err != nil {
+		fmt.Println("No entries found")
+		return
+	}
 	i, err := strconv.Atoi(args[0])
 	if err != nil {
-		log.Fatalln(args[0], "is not a valid label\n", err)
+		fmt.Printf("\"%v\" is not a valid argument\n", args[0])
+		return
 	}
 	if i > 0 && i <= len(items) {
 		items[i-1].Text = createTemp([]byte(items[i-1].Text))
 		sort.Sort(todo.Order(items))
 		todo.SaveTodos(viper.GetString("datafile"), items)
 	} else {
-		log.Println(i, "doesn't match any items")
+		fmt.Printf("\"%v\" doesn't match any todos\n", i)
 	}
 }
 
@@ -60,7 +66,6 @@ func createTemp(todoText []byte) string {
 		log.Fatal("Unable to create temporary file", err)
 	}
 	defer os.Remove(tmpFile.Name())
-	log.Println("Created temporary file: " + tmpFile.Name())
 	if _, err := tmpFile.Write(todoText); err != nil {
 		log.Fatal("Failed to write initial text to temporary file", err)
 	}
@@ -94,26 +99,6 @@ func editTemp(filename string) error {
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
 }
-
-//func editorInput() ([]byte, error) {
-//	file, err := ioutil.TempFile(os.TempDir(), "*")
-//	if err != nil {
-//		return []byte{}, err
-//	}
-//	filename := file.Name()
-//	defer os.Remove(filename)
-//	if err := file.Close(); err != nil {
-//		return []byte{}, err
-//	}
-//	if err = openEditor(filename); err != nil {
-//		return []byte{}, err
-//	}
-//	bytes, err := ioutil.ReadFile(filename)
-//	if err = openEditor(filename); err != nil {
-//		return []byte{}, err
-//	}
-//	return bytes, nil
-//}
 
 func init() {
 	rootCmd.AddCommand(editCmd)
