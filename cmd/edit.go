@@ -41,7 +41,7 @@ var editCmd = &cobra.Command{
 }
 
 func editRun(cmd *cobra.Command, args []string) {
-	items, err := todo.ReadTodos(viper.GetString("datafile"))
+	items, err := todo.GetTodos()
 	if err != nil {
 		fmt.Println("No entries found")
 		return
@@ -52,9 +52,14 @@ func editRun(cmd *cobra.Command, args []string) {
 		return
 	}
 	if i > 0 && i <= len(items) {
-		items[i-1].Text = createTemp([]byte(items[i-1].Text))
-		sort.Sort(todo.Order(items))
-		todo.SaveTodos(viper.GetString("datafile"), items)
+		items[i-1].Body = createTemp([]byte(items[i-1].Body))
+		if viper.GetString("api") != "" {
+			todo.UpdateRemoteTodo(viper.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
+			sort.Sort(todo.Order(items))
+		} else {
+			sort.Sort(todo.Order(items))
+			todo.SaveTodos(viper.GetString("datafile"), items)
+		}
 	} else {
 		fmt.Printf("\"%v\" doesn't match any todos\n", i)
 	}

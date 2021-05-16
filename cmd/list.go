@@ -24,7 +24,6 @@ import (
 
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var (
@@ -43,9 +42,9 @@ var listCmd = &cobra.Command{
 }
 
 func listRun(cmd *cobra.Command, args []string) {
-	items, err := todo.ReadTodos(viper.GetString("datafile"))
+	items, err := todo.GetTodos()
 	if err != nil {
-		fmt.Println("No entries found")
+		fmt.Print(err.Error())
 		return
 	}
 	sort.Sort(todo.Order(items))
@@ -53,7 +52,7 @@ func listRun(cmd *cobra.Command, args []string) {
 	fmt.Fprintln(w, "#\tD\tP\tT\t")
 	for _, i := range items {
 		if allOpt || i.Status == doneOpt {
-			fmt.Fprintln(w, i.Label()+"\t"+i.StatusFlag()+"\t"+i.PriorityFlag()+"\t"+i.Text+"\t")
+			fmt.Fprintln(w, i.Label()+"\t"+i.StatusFlag()+"\t"+i.PriorityFlag()+"\t"+i.Body+"\t")
 		}
 	}
 	w.Flush()

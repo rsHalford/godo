@@ -25,7 +25,6 @@ import (
 
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // findCmd represents the find command
@@ -39,9 +38,9 @@ provide string`,
 }
 
 func findRun(cmd *cobra.Command, args []string) {
-	items, err := todo.ReadTodos(viper.GetString("datafile"))
+	items, err := todo.GetTodos()
 	if err != nil {
-		fmt.Println("No entries found")
+		fmt.Print(err.Error())
 		return
 	}
 	sort.Sort(todo.Order(items))
@@ -49,8 +48,8 @@ func findRun(cmd *cobra.Command, args []string) {
 	fmt.Fprintln(w, "#\tD\tP\tT\t")
 	for _, a := range args {
 		for _, i := range items {
-			if strings.Contains(i.Text, a) {
-				fmt.Fprintln(w, i.Label()+"\t"+i.StatusFlag()+"\t"+i.PriorityFlag()+"\t"+i.Text+"\t")
+			if strings.Contains(i.Body, a) {
+				fmt.Fprintln(w, i.Label()+"\t"+i.StatusFlag()+"\t"+i.PriorityFlag()+"\t"+i.Body+"\t")
 			}
 		}
 	}

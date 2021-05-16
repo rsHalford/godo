@@ -18,15 +18,18 @@ package todo
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/spf13/viper"
 	"io/ioutil"
 	"strconv"
 )
 
 type Todo struct {
-	Text     string
-	Priority bool
+	ID       int    `json:"id"`
+	Body     string `json:"body"`
+	Priority bool   `json:"priority"`
 	position int
-	Status   bool
+	Status   bool `json:"status"`
 }
 
 func SaveTodos(filename string, items []Todo) error {
@@ -41,18 +44,35 @@ func SaveTodos(filename string, items []Todo) error {
 	return nil
 }
 
-func ReadTodos(filename string) ([]Todo, error) {
-	b, err := ioutil.ReadFile(filename)
+func GetTodos() ([]Todo, error) {
+	if viper.GetString("api") != "" {
+		items, err := GetRemoteTodos(viper.GetString("api"))
+		if err != nil {
+			fmt.Print(err.Error())
+		}
+		return items, nil
+	}
+	items, err := ReadTodos(viper.GetString("datafile"))
 	if err != nil {
-		return []Todo{}, err
+		fmt.Print(err.Error())
 	}
+	return items, nil
+}
+
+func ReadTodos(filename string) ([]Todo, error) {
+	bodyBytes, err := ioutil.ReadFile(filename)
+	if err != nil {
+		fmt.Print(err.Error())
+	}
+
 	var items []Todo
-	if err := json.Unmarshal(b, &items); err != nil {
-		return []Todo{}, err
-	}
+
+	json.Unmarshal(bodyBytes, &items)
+
 	for i := range items {
 		items[i].position = i + 1
 	}
+
 	return items, nil
 }
 

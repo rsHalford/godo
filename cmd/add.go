@@ -36,16 +36,21 @@ var addCmd = &cobra.Command{
 }
 
 func addRun(cmd *cobra.Command, args []string) {
-	items, err := todo.ReadTodos(viper.GetString("datafile"))
+	items, err := todo.GetTodos()
 	if err != nil {
 		fmt.Println("Setting up database...")
 	}
 	for _, x := range args {
-		item := todo.Todo{Text: x}
+		item := todo.Todo{Body: x}
 		item.Prioritise(priority)
+		if viper.GetString("api") != "" {
+			todo.CreateRemoteTodo(viper.GetString("api"), item)
+		}
 		items = append(items, item)
 	}
-	todo.SaveTodos(viper.GetString("datafile"), items)
+	if viper.GetString("api") == "" {
+		todo.SaveTodos(viper.GetString("datafile"), items)
+	}
 }
 
 func init() {

@@ -21,11 +21,10 @@ import (
 	"os"
 
 	homedir "github.com/mitchellh/go-homedir"
+	"github.com/rsHalford/godo/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
-
-var configFile, dataFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -41,44 +40,33 @@ func Execute() {
 	cobra.CheckErr(rootCmd.Execute())
 }
 
+var dataFile string
+
 func init() {
-	//cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(initConfig)
 	cobra.OnInitialize(initData)
 
 	home, err := homedir.Dir()
 	if err != nil {
-		log.Println("Unable to detect home directory. Please set data file using --datafile.")
+		log.Println("Unable to detect home directory.")
 	}
 
-	//rootCmd.PersistentFlags().StringVar(&configFile, "config", home+"/.config/godo/config.yaml", "configuration file")
 	rootCmd.PersistentFlags().StringVar(&dataFile, "datafile", home+"/.local/share/godo/godos.json", "data file to store todos")
 
 	viper.BindPFlag("datafile", rootCmd.PersistentFlags().Lookup("datafile"))
 }
 
 func initData() {
-	home, err := homedir.Dir()
-	if err != nil {
-		log.Println("Unable to detect home directory. Please set data file using --datafile.")
-	}
-	os.Mkdir(home+"/.local/share/godo", 0755)
-	if err != nil {
-		log.Fatal(err)
+	if dataFile != "" {
+		home, err := homedir.Dir()
+		if err != nil {
+			log.Println("Unable to detect home directory. Please set data file using --datafile.")
+		}
+		os.Mkdir(home+"/.local/share/godo", 0755)
 	}
 }
 
-// TODO: Configuration to be added when JSON API support is added
 // initConfig reads in config file and ENV variables if set.
-//func initConfig() {
-//	if configFile != "" {
-//		viper.SetConfigFile(configFile)
-//	} else {
-//		home, err := homedir.Dir()
-//		cobra.CheckErr(err)
-//		viper.AddConfigPath(home + "/.config/godo/")
-//		viper.SetConfigName("config")
-//	}
-//	viper.SetEnvPrefix("godo")
-//	viper.AutomaticEnv() // read in environment variables that match
-//	viper.ReadInConfig()
-//}
+func initConfig() {
+	config.InitConfig()
+}
