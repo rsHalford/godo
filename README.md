@@ -7,6 +7,8 @@ GoDo is a command line todo list application, written in Go.
 - [Getting Started](#getting-started)
   - [Requirements](#requirements)
   - [Install](#install)
+- [Database](#database)
+  - [Server API](#server-api)
 - [Licence](#licence)
 
 # About
@@ -40,6 +42,22 @@ To install GoDo, all you have to do is run `go get` to install the latest versio
 ```sh
 go get -u github.com/rsHalford/godo
 ```
+
+## Database
+
+By default, GoDo will create a JSON file to store your todo list.
+
+### Server API
+
+The config.yaml can be edited to set-up a connection to a [RESTful API](https://github.com/rsHalford/goapi)
+
+```
+go get -u github.com/rsHalford/goapi
+```
+
+Just make sure to edit the configuration file, to provide the username, password and base API URL.
+
+Once a connection is setup, this will now be the default store of data for your todo list.
 
 # Licence
 

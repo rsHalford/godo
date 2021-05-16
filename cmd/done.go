@@ -36,7 +36,7 @@ var doneCmd = &cobra.Command{
 }
 
 func doneRun(cmd *cobra.Command, args []string) {
-	items, err := todo.ReadTodos(viper.GetString("datafile"))
+	items, err := todo.GetTodos()
 	if err != nil {
 		fmt.Println("No entries found")
 		return
@@ -49,14 +49,24 @@ func doneRun(cmd *cobra.Command, args []string) {
 	if i > 0 && i <= len(items) {
 		if items[i-1].Status != true {
 			items[i-1].Status = true
-			fmt.Printf("%q %v\n", items[i-1].Text, "marked done")
-			sort.Sort(todo.Order(items))
-			todo.SaveTodos(viper.GetString("datafile"), items)
+			fmt.Printf("%q %v\n", items[i-1].Body, "marked done")
+			if viper.GetString("api") != "" {
+				todo.UpdateRemoteTodo(viper.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
+				sort.Sort(todo.Order(items))
+			} else {
+				sort.Sort(todo.Order(items))
+				todo.SaveTodos(viper.GetString("datafile"), items)
+			}
 		} else {
 			items[i-1].Status = false
-			fmt.Printf("%q %v\n", items[i-1].Text, "marked active")
-			sort.Sort(todo.Order(items))
-			todo.SaveTodos(viper.GetString("datafile"), items)
+			fmt.Printf("%q %v\n", items[i-1].Body, "marked active")
+			if viper.GetString("api") != "" {
+				todo.UpdateRemoteTodo(viper.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
+				sort.Sort(todo.Order(items))
+			} else {
+				sort.Sort(todo.Order(items))
+				todo.SaveTodos(viper.GetString("datafile"), items)
+			}
 		}
 	} else {
 		fmt.Printf("\"%v\" doesn't match any todos\n", i)

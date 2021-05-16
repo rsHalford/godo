@@ -14,10 +14,37 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-package main
+package config
 
-import "github.com/rsHalford/godo/cmd"
+import (
+	"github.com/spf13/viper"
+)
 
-func main() {
-	cmd.Execute()
+var (
+	defaults = map[string]interface{}{
+		"username": "",
+		"password": "",
+		"api":      "",
+	}
+	configName     = "config"
+	configType     = "yaml"
+	configPath     = "."
+	configPathFull = configPath + "/" + configName + "." + configType
+)
+
+type Config struct {
+	Username string
+	Password string
+	Api      string
+}
+
+func InitConfig() {
+	for k, v := range defaults {
+		viper.SetDefault(k, v)
+	}
+	viper.SetConfigName(configName)
+	viper.SetConfigType(configType)
+	viper.AddConfigPath(configPath)
+	viper.SafeWriteConfigAs(configPathFull)
+	viper.ReadInConfig()
 }

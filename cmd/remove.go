@@ -38,7 +38,7 @@ var removeCmd = &cobra.Command{
 }
 
 func removeRun(cmd *cobra.Command, args []string) {
-	items, err := todo.ReadTodos(viper.GetString("datafile"))
+	items, err := todo.GetTodos()
 	if err != nil {
 		fmt.Println("No entries found")
 		return
@@ -50,10 +50,15 @@ func removeRun(cmd *cobra.Command, args []string) {
 	}
 	if i > 0 && i <= len(items) {
 		if isConfirmed := confirmRemove(); isConfirmed {
-			fmt.Printf("%q %v\n", items[i-1].Text, "deleted")
-			items = items[:i-1+copy(items[i-1:], items[i:])]
-			sort.Sort(todo.Order(items))
-			todo.SaveTodos(viper.GetString("datafile"), items)
+			fmt.Printf("%q %v\n", items[i-1].Body, "deleted")
+			if viper.GetString("api") != "" {
+				todo.DeleteRemoteTodo(viper.GetString("api"), fmt.Sprint(items[i-1].ID))
+				sort.Sort(todo.Order(items))
+			} else {
+				items = items[:i-1+copy(items[i-1:], items[i:])]
+				sort.Sort(todo.Order(items))
+				todo.SaveTodos(viper.GetString("datafile"), items)
+			}
 		}
 	} else {
 		fmt.Printf("\"%v\" doesn't match any todos\n", i)
