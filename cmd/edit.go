@@ -87,13 +87,8 @@ func createTemp(todoText []byte) string {
 	return todo
 }
 
-//const defaultEditor = "nvim"
-
 func editTemp(filename string) error {
-	editor := os.Getenv("EDITOR")
-	//if editor == "" {
-	//	editor = defaultEditor
-	//}
+	editor := defaultEditor()
 	executable, err := exec.LookPath(editor)
 	if err != nil {
 		return err
@@ -103,6 +98,15 @@ func editTemp(filename string) error {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
+}
+
+func defaultEditor() string {
+	if viper.GetString("editor") == "" {
+		editor := os.Getenv("EDITOR")
+		return editor
+	}
+	editor := viper.GetString("editor")
+	return editor
 }
 
 func init() {
