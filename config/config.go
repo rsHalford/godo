@@ -25,6 +25,7 @@ var (
 		"username": "",
 		"password": "",
 		"api":      "",
+		"editor":	"",
 	}
 	configName     = "config"
 	configType     = "yaml"
@@ -36,6 +37,7 @@ type Config struct {
 	Username string
 	Password string
 	Api      string
+	Editor   string
 }
 
 func InitConfig() {
