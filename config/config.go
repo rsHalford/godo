@@ -25,7 +25,7 @@ var (
 		"username": "",
 		"password": "",
 		"api":      "",
-		"editor":	"",
+		"editor":   "",
 	}
 	configName     = "config"
 	configType     = "yaml"
