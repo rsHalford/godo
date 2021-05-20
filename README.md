@@ -1,64 +1,87 @@
-GoDo is a command line todo list application, written in Go.
+# GoDo
 
+## A command line todo list application
+
+---
 
 # Table of Contents
 
 - [About](#about)
 - [Getting Started](#getting-started)
   - [Requirements](#requirements)
-  - [Install](#install)
-- [Database](#database)
-  - [Server API](#server-api)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
 - [Licence](#licence)
+
+---
 
 # About
 
-GoDo aims to help you get organised with your tasks. Designed to be 
-simple and accessible.
+GoDo aims to help you get organised with your tasks. Designed to be simple and accessible.
 
-Providing the ability to:
+```sh
+Usage:
+  godo [command]
 
-- Add - `godo add [todo text]`
-- Edit - `godo edit [todo id]`
-- Remove - `godo remove [todo id]`
-- List - `godo list`
-- Search - `godo find [todo text]`
-- Prioritise - `godo prioritise [todo id]`
-- Mark complete - `godo done [todo id]`
+Available Commands:
+  add         add a new todo
+  done        toggle todo as done
+  edit        edit a todo
+  find        search for a given string
+  help        help about any command
+  list        list your todos
+  priority    label a todo as a priority
+  remove      remove a todo
+  version     print godo's version
 
-Go get things done and checked off the list.
+Flags:
+      --datafile string   data file to store todos
+  -h, --help              help for godo
 
+Use "godo [command] --help" for more information about a command.
+```
+
+### Go get things done and checked off the list.
+
+---
 
 # Getting Started
 
 ## Requirements
 
-- Go
+The best way to ensure GoDo will work on your machine, is to compile it yourself.
 
-## Install
+- Go (to compile applications)
 
-To install GoDo, all you have to do is run `go get` to install the latest version.
+To do this, all you need is to have Go - [the programming language](https://golang.org/doc/install) - installed on your computer.
+
+## Installation
+
+To install GoDo, all you have to do is run the `go get` command.
 
 ```sh
-go get -u github.com/rsHalford/godo
+$ go get -u github.com/rsHalford/godo
 ```
 
-## Database
+## Configuration
 
-By default, GoDo will create a JSON file to store your todo list.
+The `config.yaml` can be edited to set-up a connection to [GoAPI](https://github.com/rsHalford/goapi). As well as, select your preferred text editor.
 
-### Server API
-
-The config.yaml can be edited to set-up a connection to a [RESTful API](https://github.com/rsHalford/goapi)
-
+```yaml
+username: "admin"
+password: "secret"
+api: "https://example.com/api/v1/todo"
+editor: "vim"
 ```
-go get -u github.com/rsHalford/goapi
-```
 
-Just make sure to edit the configuration file, to provide the username, password and base API URL.
+If you prefer to use a local JSON file to store your todo list, leave the api address blank - `""`.
 
-Once a connection is setup, this will now be the default store of data for your todo list.
+By default, GoDo will use whatever text editor you have set as your system's default - `$EDITOR`.
+
+---
 
 # Licence
 
-GoDo is released under the GNU General Public License v3.0. See [LICENSE](https://github.com/rsHalford/godo/LICENSE)
+GoDo is released under the GNU General Public License v3.0.
+
+👉 See [LICENSE](https://github.com/rsHalford/godo/blob/main/LICENSE).
