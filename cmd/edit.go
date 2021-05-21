@@ -27,6 +27,7 @@ import (
 	"strings"
 
 	"github.com/rsHalford/godo/todo"
+	"github.com/rsHalford/godo/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -53,8 +54,8 @@ func editRun(cmd *cobra.Command, args []string) {
 	}
 	if i > 0 && i <= len(items) {
 		items[i-1].Body = createTemp([]byte(items[i-1].Body))
-		if viper.GetString("api") != "" {
-			todo.UpdateRemoteTodo(viper.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
+		if config.GetString("api") != "" {
+			todo.UpdateRemoteTodo(config.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
 			sort.Sort(todo.Order(items))
 		} else {
 			sort.Sort(todo.Order(items))
@@ -101,11 +102,11 @@ func editTemp(filename string) error {
 }
 
 func defaultEditor() string {
-	if viper.GetString("editor") == "" {
+	if config.GetString("editor") == "" {
 		editor := os.Getenv("EDITOR")
 		return editor
 	}
-	editor := viper.GetString("editor")
+	editor := config.GetString("editor")
 	return editor
 }
 

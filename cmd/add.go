@@ -20,6 +20,7 @@ import (
 	"fmt"
 
 	"github.com/rsHalford/godo/todo"
+	"github.com/rsHalford/godo/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -43,12 +44,12 @@ func addRun(cmd *cobra.Command, args []string) {
 	for _, x := range args {
 		item := todo.Todo{Body: x}
 		item.Prioritise(priority)
-		if viper.GetString("api") != "" {
-			todo.CreateRemoteTodo(viper.GetString("api"), item)
+		if config.GetString("api") != "" {
+			todo.CreateRemoteTodo(config.GetString("api"), item)
 		}
 		items = append(items, item)
 	}
-	if viper.GetString("api") == "" {
+	if config.GetString("api") == "" {
 		todo.SaveTodos(viper.GetString("datafile"), items)
 	}
 }

@@ -22,6 +22,7 @@ import (
 	"strconv"
 
 	"github.com/rsHalford/godo/todo"
+	"github.com/rsHalford/godo/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -50,8 +51,8 @@ func priorityRun(cmd *cobra.Command, args []string) {
 		if items[i-1].Priority != true {
 			items[i-1].Priority = true
 			fmt.Printf("%q %v\n", items[i-1].Body, "is now a priority")
-			if viper.GetString("api") != "" {
-				todo.UpdateRemoteTodo(viper.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
+			if config.GetString("api") != "" {
+				todo.UpdateRemoteTodo(config.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))
@@ -60,8 +61,8 @@ func priorityRun(cmd *cobra.Command, args []string) {
 		} else {
 			items[i-1].Priority = false
 			fmt.Printf("%q %v\n", items[i-1].Body, "is no longer a priority")
-			if viper.GetString("api") != "" {
-				todo.UpdateRemoteTodo(viper.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
+			if config.GetString("api") != "" {
+				todo.UpdateRemoteTodo(config.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))

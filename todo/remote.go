@@ -23,12 +23,12 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/spf13/viper"
+	"github.com/rsHalford/godo/config"
 )
 
 func CreateRemoteTodo(url string, item Todo) {
-	var username = viper.GetString("username")
-	var password = viper.GetString("password")
+	var username = config.GetString("username")
+	var password = config.GetString("password")
 	data, err := json.Marshal(item)
 	if err != nil {
 		fmt.Print(err.Error())
@@ -51,8 +51,8 @@ func CreateRemoteTodo(url string, item Todo) {
 }
 
 func GetRemoteTodos(url string) ([]Todo, error) {
-	var username = viper.GetString("username")
-	var password = viper.GetString("password")
+	var username = config.GetString("username")
+	var password = config.GetString("password")
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -85,8 +85,8 @@ func GetRemoteTodos(url string) ([]Todo, error) {
 }
 
 func UpdateRemoteTodo(url string, id string, todo Todo) {
-	var username = viper.GetString("username")
-	var password = viper.GetString("password")
+	var username = config.GetString("username")
+	var password = config.GetString("password")
 	data, err := json.Marshal(todo)
 	if err != nil {
 		fmt.Print(err.Error())
@@ -109,8 +109,8 @@ func UpdateRemoteTodo(url string, id string, todo Todo) {
 }
 
 func DeleteRemoteTodo(url string, id string) {
-	var username = viper.GetString("username")
-	var password = viper.GetString("password")
+	var username = config.GetString("username")
+	var password = config.GetString("password")
 	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodDelete, url+"/"+id, nil)
 	if err != nil {
