@@ -19,10 +19,10 @@ package todo
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/rsHalford/godo/config"
 	"github.com/spf13/viper"
 	"io/ioutil"
 	"strconv"
-	"github.com/rsHalford/godo/config"
 )
 
 type Todo struct {
