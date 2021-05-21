@@ -21,8 +21,8 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/rsHalford/godo/todo"
 	"github.com/rsHalford/godo/config"
+	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
