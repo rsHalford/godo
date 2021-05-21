@@ -24,6 +24,7 @@ import (
 	"strings"
 
 	"github.com/rsHalford/godo/todo"
+	"github.com/rsHalford/godo/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -51,8 +52,8 @@ func removeRun(cmd *cobra.Command, args []string) {
 	if i > 0 && i <= len(items) {
 		if isConfirmed := confirmRemove(); isConfirmed {
 			fmt.Printf("%q %v\n", items[i-1].Body, "deleted")
-			if viper.GetString("api") != "" {
-				todo.DeleteRemoteTodo(viper.GetString("api"), fmt.Sprint(items[i-1].ID))
+			if config.GetString("api") != "" {
+				todo.DeleteRemoteTodo(config.GetString("api"), fmt.Sprint(items[i-1].ID))
 				sort.Sort(todo.Order(items))
 			} else {
 				items = items[:i-1+copy(items[i-1:], items[i:])]

@@ -21,7 +21,6 @@ import (
 	"os"
 
 	homedir "github.com/mitchellh/go-homedir"
-	"github.com/rsHalford/godo/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -43,7 +42,6 @@ func Execute() {
 var dataFile string
 
 func init() {
-	cobra.OnInitialize(initConfig)
 	cobra.OnInitialize(initData)
 
 	home, err := homedir.Dir()
@@ -64,9 +62,4 @@ func initData() {
 		}
 		os.Mkdir(home+"/.local/share/godo", 0755)
 	}
-}
-
-// initConfig reads in config file and ENV variables if set.
-func initConfig() {
-	config.InitConfig()
 }

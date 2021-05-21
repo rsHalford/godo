@@ -17,36 +17,44 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package config
 
 import (
-	"github.com/spf13/viper"
-)
-
-var (
-	defaults = map[string]interface{}{
-		"username": "",
-		"password": "",
-		"api":      "",
-		"editor":   "",
-	}
-	configName     = "config"
-	configType     = "yaml"
-	configPath     = "."
-	configPathFull = configPath + "/" + configName + "." + configType
+	"fmt"
+	"github.com/ilyakaznacheev/cleanenv"
 )
 
 type Config struct {
-	Username string
-	Password string
-	Api      string
-	Editor   string
+	Username string `yaml:"username" env:"GODO_USERNAME"`
+	Password string `yaml:"password" env:"GODO_PASSWORD"`
+	API      string `yaml:"api" env:"GODO_API"`
+	Editor   string `yaml:"editor" env:"GODO_EDITOR"`
 }
 
-func InitConfig() {
-	for k, v := range defaults {
-		viper.SetDefault(k, v)
+var (
+	cfg Config
+	//cfgPath = "${XDG_CONFIG_HOME:-$HOME/.config}/godo/config.yaml"
+	cfgPath = "./config.yaml"
+)
+
+func GetString(key string) string {
+	if err := cleanenv.ReadConfig(cfgPath, &cfg); err != nil {
+		fmt.Println(err)
 	}
-	viper.SetConfigName(configName)
-	viper.SetConfigType(configType)
-	viper.AddConfigPath(configPath)
-	viper.SafeWriteConfigAs(configPathFull)
-	viper.ReadInConfig()
+
+	switch key {
+	case "api":
+		value := cfg.API
+		return value
+	case "username":
+		value := cfg.Username
+		return value
+	case "password":
+		value := cfg.Password
+		return value
+	case "editor":
+		value := cfg.Editor
+		return value
+	default:
+		fmt.Println("No configuration key provided")
+	}
+
+	return ""
 }

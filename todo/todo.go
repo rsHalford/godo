@@ -22,6 +22,7 @@ import (
 	"github.com/spf13/viper"
 	"io/ioutil"
 	"strconv"
+	"github.com/rsHalford/godo/config"
 )
 
 type Todo struct {
@@ -45,8 +46,8 @@ func SaveTodos(filename string, items []Todo) error {
 }
 
 func GetTodos() ([]Todo, error) {
-	if viper.GetString("api") != "" {
-		items, err := GetRemoteTodos(viper.GetString("api"))
+	if config.GetString("api") != "" {
+		items, err := GetRemoteTodos(config.GetString("api"))
 		if err != nil {
 			fmt.Print(err.Error())
 		}
