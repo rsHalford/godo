@@ -2,6 +2,8 @@
 
 ## A command line todo list application
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/rsHalford/godo.svg)](https://pkg.go.dev/github.com/rsHalford/godo)
+
 ---
 
 # Table of Contents
