@@ -39,7 +39,7 @@ var addCmd = &cobra.Command{
 func addRun(cmd *cobra.Command, args []string) {
 	items, err := todo.GetTodos()
 	if err != nil {
-		fmt.Println("Setting up database...")
+		fmt.Println(err.Error())
 	}
 	for _, x := range args {
 		item := todo.Todo{Body: x}

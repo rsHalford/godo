@@ -67,7 +67,7 @@ func initData() {
 	if dataFile != "" {
 		home, err := homedir.Dir()
 		if err != nil {
-			log.Println("Unable to detect home directory. Please set data file using --datafile.")
+			log.Println("Unable to detect home directory.")
 		}
 		os.Mkdir(home+"/.local/share/godo", 0755)
 	}
