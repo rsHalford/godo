@@ -20,7 +20,6 @@ import (
 	"log"
 	"os"
 
-	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -53,7 +52,7 @@ var dataFile string
 func init() {
 	cobra.OnInitialize(initData)
 
-	home, err := homedir.Dir()
+	home, err := os.UserHomeDir()
 	if err != nil {
 		log.Println("Unable to detect home directory.")
 	}
@@ -65,7 +64,7 @@ func init() {
 
 func initData() {
 	if dataFile != "" {
-		home, err := homedir.Dir()
+		home, err := os.UserHomeDir()
 		if err != nil {
 			log.Println("Unable to detect home directory.")
 		}
