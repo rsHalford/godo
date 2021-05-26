@@ -29,9 +29,8 @@ type Config struct {
 }
 
 var (
-	cfg Config
-	//cfgPath = "${XDG_CONFIG_HOME:-$HOME/.config}/godo/config.yaml"
-	cfgPath = "./config.yaml"
+	cfg     Config
+	cfgPath = "${XDG_CONFIG_HOME:-$HOME/.config}/godo/config.yaml"
 )
 
 func GetString(key string) string {

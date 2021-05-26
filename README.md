@@ -69,6 +69,8 @@ $ go get -u github.com/rsHalford/godo
 
 The `config.yaml` can be edited to set-up a connection to [GoAPI](https://github.com/rsHalford/goapi). As well as, select your preferred text editor.
 
+> This file will read from `${XDG_CONFIG_HOME:-$HOME/.config}/godo/config.yaml`.
+
 ```yaml
 username: "admin"
 password: "secret"

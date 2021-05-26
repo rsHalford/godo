@@ -29,8 +29,17 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "godo",
 	Short: "GoDo is a todo application.",
-	Long: `GoDo aims to help you get organised with your tasks. Designed to be 
-simple and accessible. Go get things done and checked off the list.`,
+	Long: `
+GoDo
+
+A command line todo list application
+
+GoDo aims to help you get organised with your tasks.
+Designed to be simple and accessible.
+
+Go get things done and checked off the list.
+
+====================================================`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
