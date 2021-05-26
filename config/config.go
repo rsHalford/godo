@@ -19,6 +19,7 @@ package config
 import (
 	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
+	"os"
 )
 
 type Config struct {
@@ -28,12 +29,14 @@ type Config struct {
 	Editor   string `yaml:"editor" env:"GODO_EDITOR"`
 }
 
-var (
-	cfg     Config
-	cfgPath = "${XDG_CONFIG_HOME:-$HOME/.config}/godo/config.yaml"
-)
+var cfg Config
 
 func GetString(key string) string {
+	cfgDir, err := os.UserConfigDir()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	cfgPath := cfgDir + "/godo/config.yaml"
 	if err := cleanenv.ReadConfig(cfgPath, &cfg); err != nil {
 		return ""
 	}
