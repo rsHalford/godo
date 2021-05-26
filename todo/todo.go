@@ -63,7 +63,6 @@ func GetTodos() ([]Todo, error) {
 func ReadTodos(filename string) ([]Todo, error) {
 	bodyBytes, err := ioutil.ReadFile(filename)
 	if err != nil {
-		fmt.Print(err.Error())
 	}
 
 	var items []Todo

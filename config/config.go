@@ -35,7 +35,7 @@ var (
 
 func GetString(key string) string {
 	if err := cleanenv.ReadConfig(cfgPath, &cfg); err != nil {
-		fmt.Println(err)
+		return ""
 	}
 
 	switch key {
