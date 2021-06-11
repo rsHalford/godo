@@ -91,7 +91,7 @@ func (i *Todo) PriorityFlag() string {
 
 func (i *Todo) StatusFlag() string {
 	if i.Status {
-		return "\033[32m"
+		return "\033[9m"
 	}
 	return ""
 }
