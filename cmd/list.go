@@ -49,10 +49,9 @@ func listRun(cmd *cobra.Command, args []string) {
 	}
 	sort.Sort(todo.Order(items))
 	w := tabwriter.NewWriter(os.Stdout, 3, 0, 1, ' ', 0)
-	fmt.Fprintln(w, "#\tD\tP\tT\t")
 	for _, i := range items {
 		if allOpt || i.Status == doneOpt {
-			fmt.Fprintln(w, i.Label()+"\t"+i.StatusFlag()+"\t"+i.PriorityFlag()+"\t"+i.Body+"\t")
+			fmt.Fprintln(w, "\033[90m"+i.Label()+"\t\t"+"\033[0m"+i.PriorityFlag()+i.StatusFlag()+i.Body+"\033[0m")
 		}
 	}
 	w.Flush()
