@@ -84,14 +84,14 @@ func (i *Todo) Prioritise(pri bool) {
 
 func (i *Todo) PriorityFlag() string {
 	if i.Priority {
-		return "*"
+		return "\033[33m"
 	}
 	return ""
 }
 
 func (i *Todo) StatusFlag() string {
 	if i.Status {
-		return "d"
+		return "\033[32m"
 	}
 	return ""
 }
