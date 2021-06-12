@@ -32,11 +32,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+var bodyOpt bool
+
 // editCmd represents the edit command
 var editCmd = &cobra.Command{
 	Use:     "edit",
 	Aliases: []string{"e"},
-	Short:   "edit a todo",
+	Short:   "edit a todo (default: edit title)",
 	Long:    `Edit a todo by passing the list number of the todo.`,
 	Run:     editRun,
 }
@@ -53,13 +55,24 @@ func editRun(cmd *cobra.Command, args []string) {
 		return
 	}
 	if i > 0 && i <= len(items) {
-		items[i-1].Body = createTemp([]byte(items[i-1].Body))
-		if config.GetString("api") != "" {
-			todo.UpdateRemoteTodo(config.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
-			sort.Sort(todo.Order(items))
+		if bodyOpt {
+			items[i-1].Body = createTemp([]byte(items[i-1].Body))
+			if config.GetString("api") != "" {
+				todo.UpdateRemoteTodo(config.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
+				sort.Sort(todo.Order(items))
+			} else {
+				sort.Sort(todo.Order(items))
+				todo.SaveTodos(viper.GetString("datafile"), items)
+			}
 		} else {
-			sort.Sort(todo.Order(items))
-			todo.SaveTodos(viper.GetString("datafile"), items)
+			items[i-1].Title = createTemp([]byte(items[i-1].Title))
+			if config.GetString("api") != "" {
+				todo.UpdateRemoteTodo(config.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
+				sort.Sort(todo.Order(items))
+			} else {
+				sort.Sort(todo.Order(items))
+				todo.SaveTodos(viper.GetString("datafile"), items)
+			}
 		}
 	} else {
 		fmt.Printf("\"%v\" doesn't match any todos\n", i)
@@ -122,4 +135,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// editCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	editCmd.Flags().BoolVarP(&bodyOpt, "body", "b", false, "edit item body")
 }

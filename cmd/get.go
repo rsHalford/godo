@@ -19,52 +19,53 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"sort"
-	"strings"
+	"strconv"
 	"text/tabwriter"
 
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
 )
 
-// findCmd represents the find command
-var findCmd = &cobra.Command{
-	Use:     "find",
-	Aliases: []string{"fd", "f"},
-	Short:   "search for a given string",
-	Long: `The find command helps you search for todos containing a certain 
-provide string`,
-	Run: findRun,
+// getCmd represents the get command
+var getCmd = &cobra.Command{
+	Use:     "get",
+	Aliases: []string{"g"},
+	Short:   "get a sepcific todo",
+	Long:    `Get lets you select a specific todo by passing it's ID as an argument.`,
+	Run:     getRun,
 }
 
-func findRun(cmd *cobra.Command, args []string) {
+func getRun(cmd *cobra.Command, args []string) {
 	items, err := todo.GetTodos()
 	if err != nil {
-		fmt.Print(err.Error())
+		fmt.Println("No entries found")
 		return
 	}
-	sort.Sort(todo.Order(items))
 	w := tabwriter.NewWriter(os.Stdout, 3, 0, 1, ' ', 0)
-	for _, a := range args {
-		for _, i := range items {
-			if strings.Contains(i.Body, a) || strings.Contains(i.Title, a) {
-				fmt.Fprintln(w, "\033[90m"+i.Label()+"\t\t"+"\033[0m"+i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m\n"+i.Body+"\n")
-			}
-		}
+	i, err := strconv.Atoi(args[0])
+	if err != nil {
+		fmt.Printf("\"%v\" is not a valid argument\n", args[0])
+		return
+	}
+	if i > 0 && i <= len(items) {
+		item := items[i-1]
+		fmt.Fprintln(w, "\033[90m"+item.Label()+"\t\t"+"\033[0m"+item.PriorityFlag()+item.StatusFlag()+item.Title+"\033[0m\n"+item.Body)
+	} else {
+		fmt.Printf("\"%v\" is not a valid argument\n", args[0])
 	}
 	w.Flush()
 }
 
 func init() {
-	rootCmd.AddCommand(findCmd)
+	rootCmd.AddCommand(getCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// findCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// getCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// findCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// getCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

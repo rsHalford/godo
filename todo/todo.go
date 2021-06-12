@@ -27,6 +27,7 @@ import (
 
 type Todo struct {
 	ID       int    `json:"id"`
+	Title    string `json:"title"`
 	Body     string `json:"body"`
 	Priority bool   `json:"priority"`
 	position int
