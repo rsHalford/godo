@@ -42,7 +42,7 @@ func addRun(cmd *cobra.Command, args []string) {
 		fmt.Println(err.Error())
 	}
 	for _, x := range args {
-		item := todo.Todo{Body: x}
+		item := todo.Todo{Title: x}
 		item.Prioritise(priority)
 		if config.GetString("api") != "" {
 			todo.CreateRemoteTodo(config.GetString("api"), item)
