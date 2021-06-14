@@ -50,7 +50,7 @@ func priorityRun(cmd *cobra.Command, args []string) {
 	if i > 0 && i <= len(items) {
 		if items[i-1].Priority != true {
 			items[i-1].Priority = true
-			fmt.Printf("%q %v\n", items[i-1].Body, "is now a priority")
+			fmt.Printf("%q %v\n", items[i-1].Title, "is now a priority")
 			if config.GetString("api") != "" {
 				todo.UpdateRemoteTodo(config.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
 				sort.Sort(todo.Order(items))
@@ -60,7 +60,7 @@ func priorityRun(cmd *cobra.Command, args []string) {
 			}
 		} else {
 			items[i-1].Priority = false
-			fmt.Printf("%q %v\n", items[i-1].Body, "is no longer a priority")
+			fmt.Printf("%q %v\n", items[i-1].Title, "is no longer a priority")
 			if config.GetString("api") != "" {
 				todo.UpdateRemoteTodo(config.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
 				sort.Sort(todo.Order(items))
