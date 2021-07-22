@@ -29,7 +29,6 @@ import (
 // getCmd represents the get command
 var getCmd = &cobra.Command{
 	Use:     "get",
-	Aliases: []string{"g"},
 	Short:   "get a sepcific todo",
 	Long:    `Get lets you select a specific todo by passing it's ID as an argument.`,
 	Run:     getRun,
