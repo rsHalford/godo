@@ -18,30 +18,49 @@ package cmd
 
 import (
 	"fmt"
+	"io/fs"
+	"log"
+	"net/http"
 
+	"github.com/rsHalford/godo/gui"
 	"github.com/spf13/cobra"
 )
 
-// versionCmd represents the version command
-var versionCmd = &cobra.Command{
-	Use:     "version",
-	Aliases: []string{"v"},
-	Short:   "print godo's version",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("v0.4.0")
-	},
+// guiCmd represents the gui command
+var guiCmd = &cobra.Command{
+	Use:   "gui",
+	Short: "view GoDo using your browser as a gui",
+	Long: `Gui lets you run GoDo as a GUI application in your browser, locally.`,
+	Run: guiRun,
+}
+
+func guiHandler() http.Handler {
+	fsys := fs.FS(gui.Gui)
+	contentStatic, _ := fs.Sub(fsys, "public")
+	return http.FileServer(http.FS(contentStatic))
+}
+
+func handleRequests() {
+	mux := http.NewServeMux()
+	mux.Handle("/", guiHandler())
+	log.Fatal(http.ListenAndServe(":5000", mux))
+}
+
+func guiRun(cmd *cobra.Command, args []string) {
+	fmt.Println("GoDo GUI is currently running on http://localhost:5000")
+	handleRequests();
 }
 
 func init() {
-	rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(guiCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// versionCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// guiCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// versionCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// guiCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
