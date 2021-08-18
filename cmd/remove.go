@@ -50,7 +50,7 @@ func removeRun(cmd *cobra.Command, args []string) {
 		return
 	}
 	if i > 0 && i <= len(items) {
-		if isConfirmed := confirmRemove(); isConfirmed {
+		if isConfirmed := confirmRemove(items[i-1].Title); isConfirmed {
 			fmt.Printf("%q %v\n", items[i-1].Title, "deleted")
 			if config.GetString("api") != "" {
 				todo.DeleteRemoteTodo(config.GetString("api"), fmt.Sprint(items[i-1].ID))
@@ -66,9 +66,9 @@ func removeRun(cmd *cobra.Command, args []string) {
 	}
 }
 
-func confirmRemove() bool {
+func confirmRemove(title string) bool {
 	var response string
-	fmt.Printf("Confirm deletion? (y/n): ")
+	fmt.Printf("\033[34m::\033[0m Removing todo...\n\n\033[33m-->\033[0m %q\n\n\033[32m::\033[0m Proceed with removal? (y/n): ", title)
 	_, err := fmt.Scanln(&response)
 	if err != nil {
 		log.Fatal(err)
@@ -81,7 +81,7 @@ func confirmRemove() bool {
 		return false
 	default:
 		fmt.Println("Please type (y)es or (n)o and press enter:")
-		return confirmRemove()
+		return confirmRemove(title)
 	}
 }
 
