@@ -30,8 +30,8 @@ import (
 var guiCmd = &cobra.Command{
 	Use:   "gui",
 	Short: "view GoDo using your browser as a gui",
-	Long: `Gui lets you run GoDo as a GUI application in your browser, locally.`,
-	Run: guiRun,
+	Long:  `Gui lets you run GoDo as a GUI application in your browser, locally.`,
+	Run:   guiRun,
 }
 
 func guiHandler() http.Handler {
@@ -47,8 +47,8 @@ func handleRequests() {
 }
 
 func guiRun(cmd *cobra.Command, args []string) {
-	fmt.Println("GoDo GUI is currently running on http://localhost:5000")
-	handleRequests();
+	fmt.Println("\033[34m::\033[0m GoDo GUI is currently running on \033[33m\033[4mhttp://localhost:5000\033[0m")
+	handleRequests()
 }
 
 func init() {

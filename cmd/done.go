@@ -50,7 +50,7 @@ func doneRun(cmd *cobra.Command, args []string) {
 	if i > 0 && i <= len(items) {
 		if items[i-1].Status != true {
 			items[i-1].Status = true
-			fmt.Printf("%q %v\n", items[i-1].Title, "marked done")
+			fmt.Printf("\033[34m::\033[0m Marked done...\n\n\033[33m-->\033[0m %q\n", items[i-1].Title)
 			if config.GetString("api") != "" {
 				todo.UpdateRemoteTodo(config.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
 				sort.Sort(todo.Order(items))
@@ -60,7 +60,7 @@ func doneRun(cmd *cobra.Command, args []string) {
 			}
 		} else {
 			items[i-1].Status = false
-			fmt.Printf("%q %v\n", items[i-1].Title, "marked active")
+			fmt.Printf("\033[34m::\033[0m Marked active...\n\n\033[33m-->\033[0m %q\n", items[i-1].Title)
 			if config.GetString("api") != "" {
 				todo.UpdateRemoteTodo(config.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
 				sort.Sort(todo.Order(items))
