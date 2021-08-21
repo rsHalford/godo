@@ -34,7 +34,7 @@ import (
 
 var (
 	titleOpt bool
-	bodyOpt bool
+	bodyOpt  bool
 )
 
 // editCmd represents the edit command
