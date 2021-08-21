@@ -44,7 +44,7 @@ func guiHandler() http.Handler {
 func handleRequests(port string) {
 	mux := http.NewServeMux()
 	mux.Handle("/", guiHandler())
-	log.Fatal(http.ListenAndServe(":" + port, mux))
+	log.Fatal(http.ListenAndServe(":"+port, mux))
 }
 
 func guiRun(cmd *cobra.Command, args []string) {
