@@ -22,6 +22,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/rsHalford/godo/config"
 	"github.com/rsHalford/godo/gui"
 	"github.com/spf13/cobra"
 )
@@ -40,15 +41,19 @@ func guiHandler() http.Handler {
 	return http.FileServer(http.FS(contentStatic))
 }
 
-func handleRequests() {
+func handleRequests(port string) {
 	mux := http.NewServeMux()
 	mux.Handle("/", guiHandler())
-	log.Fatal(http.ListenAndServe(":5000", mux))
+	log.Fatal(http.ListenAndServe(":" + port, mux))
 }
 
 func guiRun(cmd *cobra.Command, args []string) {
-	fmt.Println("\033[34m::\033[0m GoDo GUI is currently running on \033[33m\033[4mhttp://localhost:5000\033[0m")
-	handleRequests()
+	port := "5000"
+	if config.GetString("gui_port") != "" {
+		port = config.GetString("gui_port")
+	}
+	fmt.Printf("\033[34m::\033[0m GoDo GUI is currently running on \033[33m\033[4mhttp://localhost:%s\033[0m\n", port)
+	handleRequests(port)
 }
 
 func init() {

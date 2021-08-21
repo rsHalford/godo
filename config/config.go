@@ -23,10 +23,18 @@ import (
 )
 
 type Config struct {
-	Username string `yaml:"username" env:"GODO_USERNAME"`
-	Password string `yaml:"password" env:"GODO_PASSWORD"`
-	API      string `yaml:"api" env:"GODO_API"`
-	Editor   string `yaml:"editor" env:"GODO_EDITOR"`
+	GOAPI struct {
+		API      string `yaml:"api" env:"GODO_GOAPI_API"`
+		Password string `yaml:"password" env:"GODO_GOAPI_PASSWORD"`
+		Username string `yaml:"username" env:"GODO_GOAPI_USERNAME"`
+	} `yaml:"goapi" env:"GODO_GOAPI"`
+	Editing struct {
+		Default  string `yaml:"default" env:"GODO_EDITING_DEFAULT"`
+		Editor   string `yaml:"editor" env:"GODO_EDITING_EDITOR"`
+	} `yaml:"editing" env:"GODO_EDITING"`
+	GUI struct {
+		Port	string `yaml:"port" env:"GODO_GUI_PORT"`
+	} `yaml:"gui" env:"GODO_GUI"`
 }
 
 var cfg Config
@@ -42,17 +50,23 @@ func GetString(key string) string {
 	}
 
 	switch key {
-	case "api":
-		value := cfg.API
+	case "goapi_api":
+		value := cfg.GOAPI.API
 		return value
-	case "username":
-		value := cfg.Username
+	case "goapi_password":
+		value := cfg.GOAPI.Password
 		return value
-	case "password":
-		value := cfg.Password
+	case "goapi_username":
+		value := cfg.GOAPI.Username
 		return value
-	case "editor":
-		value := cfg.Editor
+	case "editing_default":
+		value := cfg.Editing.Default
+		return value
+	case "editing_editor":
+		value := cfg.Editing.Editor
+		return value
+	case "gui_port":
+		value := cfg.GUI.Port
 		return value
 	default:
 		fmt.Println("No configuration key provided")

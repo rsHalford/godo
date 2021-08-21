@@ -32,14 +32,17 @@ import (
 	"github.com/spf13/viper"
 )
 
-var bodyOpt bool
+var (
+	titleOpt bool
+	bodyOpt bool
+)
 
 // editCmd represents the edit command
 var editCmd = &cobra.Command{
 	Use:     "edit",
 	Aliases: []string{"e"},
 	Short:   "edit a todo (default: edit title)",
-	Long:    `Edit a todo by passing the list number of the todo.`,
+	Long:    `Edit a todo by passing the list number of the todo. Defaults to editing the todo title, if not set in godo.yaml`,
 	Run:     editRun,
 }
 
@@ -55,19 +58,29 @@ func editRun(cmd *cobra.Command, args []string) {
 		return
 	}
 	if i > 0 && i <= len(items) {
-		if bodyOpt {
-			items[i-1].Body = createTemp([]byte(items[i-1].Body))
-			if config.GetString("api") != "" {
-				todo.UpdateRemoteTodo(config.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
+		switch {
+		case titleOpt:
+			items[i-1].Title = createTemp([]byte(items[i-1].Title))
+			if config.GetString("goapi_api") != "" {
+				todo.UpdateRemoteTodo(config.GetString("goapi_api"), fmt.Sprint(items[i-1].ID), items[i-1])
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))
 				todo.SaveTodos(viper.GetString("datafile"), items)
 			}
-		} else {
+		case config.GetString("editing_default") == "body" || bodyOpt:
+			items[i-1].Body = createTemp([]byte(items[i-1].Body))
+			if config.GetString("goapi_api") != "" {
+				todo.UpdateRemoteTodo(config.GetString("goapi_api"), fmt.Sprint(items[i-1].ID), items[i-1])
+				sort.Sort(todo.Order(items))
+			} else {
+				sort.Sort(todo.Order(items))
+				todo.SaveTodos(viper.GetString("datafile"), items)
+			}
+		default:
 			items[i-1].Title = createTemp([]byte(items[i-1].Title))
-			if config.GetString("api") != "" {
-				todo.UpdateRemoteTodo(config.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
+			if config.GetString("goapi_api") != "" {
+				todo.UpdateRemoteTodo(config.GetString("goapi_api"), fmt.Sprint(items[i-1].ID), items[i-1])
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))
@@ -115,11 +128,11 @@ func editTemp(filename string) error {
 }
 
 func defaultEditor() string {
-	if config.GetString("editor") == "" {
+	if config.GetString("editing_editor") == "" {
 		editor := os.Getenv("EDITOR")
 		return editor
 	}
-	editor := config.GetString("editor")
+	editor := config.GetString("editing_editor")
 	return editor
 }
 
@@ -135,5 +148,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// editCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	editCmd.Flags().BoolVarP(&titleOpt, "title", "t", false, "edit item title")
 	editCmd.Flags().BoolVarP(&bodyOpt, "body", "b", false, "edit item body")
 }

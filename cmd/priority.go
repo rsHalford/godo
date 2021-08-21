@@ -51,8 +51,8 @@ func priorityRun(cmd *cobra.Command, args []string) {
 		if items[i-1].Priority != true {
 			items[i-1].Priority = true
 			fmt.Printf("\033[34m::\033[0m Setting priority...\n\n\033[33m-->\033[0m %q\n", items[i-1].Title)
-			if config.GetString("api") != "" {
-				todo.UpdateRemoteTodo(config.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
+			if config.GetString("goapi_api") != "" {
+				todo.UpdateRemoteTodo(config.GetString("goapi_api"), fmt.Sprint(items[i-1].ID), items[i-1])
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))
@@ -61,8 +61,8 @@ func priorityRun(cmd *cobra.Command, args []string) {
 		} else {
 			items[i-1].Priority = false
 			fmt.Printf("\033[34m::\033[0m Removing priority...\n\n\033[33m-->\033[0m %q\n", items[i-1].Title)
-			if config.GetString("api") != "" {
-				todo.UpdateRemoteTodo(config.GetString("api"), fmt.Sprint(items[i-1].ID), items[i-1])
+			if config.GetString("goapi_api") != "" {
+				todo.UpdateRemoteTodo(config.GetString("goapi_api"), fmt.Sprint(items[i-1].ID), items[i-1])
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))
