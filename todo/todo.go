@@ -47,8 +47,8 @@ func SaveTodos(filename string, items []Todo) error {
 }
 
 func GetTodos() ([]Todo, error) {
-	if config.GetString("api") != "" {
-		items, err := GetRemoteTodos(config.GetString("api"))
+	if config.GetString("goapi_api") != "" {
+		items, err := GetRemoteTodos(config.GetString("goapi_api"))
 		if err != nil {
 			fmt.Print(err.Error())
 		}

@@ -44,12 +44,12 @@ func addRun(cmd *cobra.Command, args []string) {
 	for _, x := range args {
 		item := todo.Todo{Title: x}
 		item.Prioritise(priority)
-		if config.GetString("api") != "" {
-			todo.CreateRemoteTodo(config.GetString("api"), item)
+		if config.GetString("goapi_api") != "" {
+			todo.CreateRemoteTodo(config.GetString("goapi_api"), item)
 		}
 		items = append(items, item)
 	}
-	if config.GetString("api") == "" {
+	if config.GetString("goapi_api") == "" {
 		todo.SaveTodos(viper.GetString("datafile"), items)
 	}
 }
