@@ -48,7 +48,11 @@ func getRun(cmd *cobra.Command, args []string) {
 	}
 	if i > 0 && i <= len(items) {
 		item := items[i-1]
-		fmt.Fprintln(w, "\033[90m"+item.Label()+"\t\t"+"\033[0m"+item.PriorityFlag()+item.StatusFlag()+item.Title+"\033[0m\n"+item.Body)
+		if bodyOpt == true {
+			fmt.Fprintln(w, item.Body)
+		} else {
+			fmt.Fprintln(w, "\033[90m"+item.Label()+"\t\t"+"\033[0m"+item.PriorityFlag()+item.StatusFlag()+item.Title+"\033[0m\n"+item.Body)
+		}
 	} else {
 		fmt.Printf("\"%v\" is not a valid argument\n", args[0])
 	}
@@ -67,4 +71,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// getCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	getCmd.Flags().BoolVarP(&bodyOpt, "body", "b", false, "get only item body")
 }
