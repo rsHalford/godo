@@ -53,7 +53,7 @@ func removeRun(cmd *cobra.Command, args []string) {
 		if isConfirmed := confirmRemove(items[i-1].Title); isConfirmed {
 			fmt.Printf("%q %v\n", items[i-1].Title, "deleted")
 			if config.GetString("goapi_api") != "" {
-				todo.DeleteRemoteTodo(config.GetString("goapi_api"), fmt.Sprint(items[i-1].ID))
+				todo.DeleteRemoteTodo(config.GetString("goapi_api"), config.GetString("goapi_username"), config.GetString("goapi_password"), fmt.Sprint(items[i-1].ID))
 				sort.Sort(todo.Order(items))
 			} else {
 				items = items[:i-1+copy(items[i-1:], items[i:])]
