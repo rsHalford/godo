@@ -32,8 +32,8 @@ var findCmd = &cobra.Command{
 	Use:     "find",
 	Aliases: []string{"fd", "f"},
 	Short:   "search for a given string",
-	Long: `The find command helps you search for todos containing a certain 
-provide string`,
+	Long: `The find command helps you search for todos containing the
+provided string`,
 	Run: findRun,
 }
 
@@ -48,7 +48,11 @@ func findRun(cmd *cobra.Command, args []string) {
 	for _, a := range args {
 		for _, i := range items {
 			if strings.Contains(i.Body, a) || strings.Contains(i.Title, a) {
-				fmt.Fprintln(w, "\033[90m"+i.Label()+"\t\t"+"\033[0m"+i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m\n"+i.Body+"\n")
+				if titleOpt == true {
+					fmt.Fprintln(w, "\033[90m"+i.Label()+"\t\t"+"\033[0m"+i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m")
+				} else {
+					fmt.Fprintln(w, "\033[90m"+i.Label()+"\t\t"+"\033[0m"+i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m\n"+i.Body+"\n")
+				}
 			}
 		}
 	}
@@ -67,4 +71,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// findCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	findCmd.Flags().BoolVarP(&titleOpt, "title", "t", false, "only show item titles")
 }
