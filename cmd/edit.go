@@ -62,7 +62,7 @@ func editRun(cmd *cobra.Command, args []string) {
 		case titleOpt:
 			items[i-1].Title = createTemp([]byte(items[i-1].Title))
 			if config.GetString("goapi_api") != "" {
-				todo.UpdateRemoteTodo(config.GetString("goapi_api"), fmt.Sprint(items[i-1].ID), items[i-1])
+				todo.UpdateRemoteTodo(config.GetString("goapi_api"), config.GetString("goapi_username"), config.GetString("goapi_password"), fmt.Sprint(items[i-1].ID), items[i-1])
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))
@@ -71,7 +71,7 @@ func editRun(cmd *cobra.Command, args []string) {
 		case config.GetString("editing_default") == "body" || bodyOpt:
 			items[i-1].Body = createTemp([]byte(items[i-1].Body))
 			if config.GetString("goapi_api") != "" {
-				todo.UpdateRemoteTodo(config.GetString("goapi_api"), fmt.Sprint(items[i-1].ID), items[i-1])
+				todo.UpdateRemoteTodo(config.GetString("goapi_api"), config.GetString("goapi_username"), config.GetString("goapi_password"), fmt.Sprint(items[i-1].ID), items[i-1])
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))
@@ -80,7 +80,7 @@ func editRun(cmd *cobra.Command, args []string) {
 		default:
 			items[i-1].Title = createTemp([]byte(items[i-1].Title))
 			if config.GetString("goapi_api") != "" {
-				todo.UpdateRemoteTodo(config.GetString("goapi_api"), fmt.Sprint(items[i-1].ID), items[i-1])
+				todo.UpdateRemoteTodo(config.GetString("goapi_api"), config.GetString("goapi_username"), config.GetString("goapi_password"), fmt.Sprint(items[i-1].ID), items[i-1])
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))

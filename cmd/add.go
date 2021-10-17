@@ -45,7 +45,7 @@ func addRun(cmd *cobra.Command, args []string) {
 		item := todo.Todo{Title: x}
 		item.Prioritise(priority)
 		if config.GetString("goapi_api") != "" {
-			todo.CreateRemoteTodo(config.GetString("goapi_api"), item)
+			todo.CreateRemoteTodo(config.GetString("goapi_api"), config.GetString("goapi_username"), config.GetString("goapi_password"), item)
 		}
 		items = append(items, item)
 	}

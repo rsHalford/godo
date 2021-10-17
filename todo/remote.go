@@ -22,13 +22,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/rsHalford/godo/config"
 )
 
-func CreateRemoteTodo(url string, item Todo) {
-	var username = config.GetString("goapi_username")
-	var password = config.GetString("goapi_password")
+func CreateRemoteTodo(url, username, password string, item Todo) {
 	data, err := json.Marshal(item)
 	if err != nil {
 		fmt.Print(err.Error())
@@ -50,9 +46,7 @@ func CreateRemoteTodo(url string, item Todo) {
 	resp.Body.Close()
 }
 
-func GetRemoteTodos(url string) ([]Todo, error) {
-	var username = config.GetString("goapi_username")
-	var password = config.GetString("goapi_password")
+func GetRemoteTodos(url, username, password string) ([]Todo, error) {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -84,9 +78,7 @@ func GetRemoteTodos(url string) ([]Todo, error) {
 	return items, nil
 }
 
-func UpdateRemoteTodo(url string, id string, todo Todo) {
-	var username = config.GetString("goapi_username")
-	var password = config.GetString("goapi_password")
+func UpdateRemoteTodo(url, username, password string, id string, todo Todo) {
 	data, err := json.Marshal(todo)
 	if err != nil {
 		fmt.Print(err.Error())
@@ -108,9 +100,7 @@ func UpdateRemoteTodo(url string, id string, todo Todo) {
 	resp.Body.Close()
 }
 
-func DeleteRemoteTodo(url string, id string) {
-	var username = config.GetString("goapi_username")
-	var password = config.GetString("goapi_password")
+func DeleteRemoteTodo(url, username, password string, id string) {
 	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodDelete, url+"/"+id, nil)
 	if err != nil {
