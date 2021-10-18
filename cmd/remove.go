@@ -26,7 +26,6 @@ import (
 	"github.com/rsHalford/godo/config"
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // removeCmd represents the remove command
@@ -58,7 +57,7 @@ func removeRun(cmd *cobra.Command, args []string) {
 			} else {
 				items = items[:i-1+copy(items[i-1:], items[i:])]
 				sort.Sort(todo.Order(items))
-				todo.SaveTodos(viper.GetString("datafile"), items)
+				todo.SaveTodos(todo.LocalTodos(), items)
 			}
 		}
 	} else {

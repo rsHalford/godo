@@ -29,7 +29,6 @@ import (
 	"github.com/rsHalford/godo/config"
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var (
@@ -66,7 +65,7 @@ func editRun(cmd *cobra.Command, args []string) {
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))
-				todo.SaveTodos(viper.GetString("datafile"), items)
+				todo.SaveTodos(todo.LocalTodos(), items)
 			}
 		case config.GetString("editing_default") == "body" || bodyOpt:
 			items[i-1].Body = createTemp([]byte(items[i-1].Body))
@@ -75,7 +74,7 @@ func editRun(cmd *cobra.Command, args []string) {
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))
-				todo.SaveTodos(viper.GetString("datafile"), items)
+				todo.SaveTodos(todo.LocalTodos(), items)
 			}
 		default:
 			items[i-1].Title = createTemp([]byte(items[i-1].Title))
@@ -84,7 +83,7 @@ func editRun(cmd *cobra.Command, args []string) {
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))
-				todo.SaveTodos(viper.GetString("datafile"), items)
+				todo.SaveTodos(todo.LocalTodos(), items)
 			}
 		}
 	} else {

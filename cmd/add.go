@@ -22,7 +22,6 @@ import (
 	"github.com/rsHalford/godo/config"
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var priority bool
@@ -50,7 +49,7 @@ func addRun(cmd *cobra.Command, args []string) {
 		items = append(items, item)
 	}
 	if config.GetString("goapi_api") == "" {
-		todo.SaveTodos(viper.GetString("datafile"), items)
+		todo.SaveTodos(todo.LocalTodos(), items)
 	}
 }
 

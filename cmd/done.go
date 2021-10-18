@@ -24,7 +24,6 @@ import (
 	"github.com/rsHalford/godo/config"
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // doneCmd represents the done command
@@ -56,7 +55,7 @@ func doneRun(cmd *cobra.Command, args []string) {
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))
-				todo.SaveTodos(viper.GetString("datafile"), items)
+				todo.SaveTodos(todo.LocalTodos(), items)
 			}
 		} else {
 			items[i-1].Status = false
@@ -66,7 +65,7 @@ func doneRun(cmd *cobra.Command, args []string) {
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))
-				todo.SaveTodos(viper.GetString("datafile"), items)
+				todo.SaveTodos(todo.LocalTodos(), items)
 			}
 		}
 	} else {

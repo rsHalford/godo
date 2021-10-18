@@ -20,8 +20,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/rsHalford/godo/config"
-	"github.com/spf13/viper"
 	"io/ioutil"
+	"log"
+	"os"
 	"strconv"
 )
 
@@ -53,12 +54,28 @@ func GetTodos() ([]Todo, error) {
 			fmt.Print(err.Error())
 		}
 		return items, nil
+	} else {
+		dataFile := LocalTodos()
+		items, err := ReadTodos(dataFile)
+		if err != nil {
+			fmt.Print(err.Error())
+		}
+		return items, nil
 	}
-	items, err := ReadTodos(viper.GetString("datafile"))
-	if err != nil {
-		fmt.Print(err.Error())
+}
+
+func LocalTodos() (filename string) {
+	if config.GetString("data_file") != "" {
+		dataFile := config.GetString("data_file")
+		return dataFile
+	} else {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			log.Println("Unable to detect home directory.")
+		}
+		dataFile := home + "/.local/share/godo/godos.json"
+		return dataFile
 	}
-	return items, nil
 }
 
 func ReadTodos(filename string) ([]Todo, error) {

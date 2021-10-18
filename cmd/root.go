@@ -20,8 +20,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/rsHalford/godo/config"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -47,23 +47,14 @@ func Execute() {
 	cobra.CheckErr(rootCmd.Execute())
 }
 
-var dataFile string
+var dataFile = config.GetString("data_file")
 
 func init() {
 	cobra.OnInitialize(initData)
-
-	home, err := os.UserHomeDir()
-	if err != nil {
-		log.Println("Unable to detect home directory.")
-	}
-
-	rootCmd.PersistentFlags().StringVar(&dataFile, "datafile", home+"/.local/share/godo/godos.json", "data file to store todos")
-
-	viper.BindPFlag("datafile", rootCmd.PersistentFlags().Lookup("datafile"))
 }
 
 func initData() {
-	if dataFile != "" {
+	if config.GetString("goapi_api") == "" && dataFile == "" {
 		home, err := os.UserHomeDir()
 		if err != nil {
 			log.Println("Unable to detect home directory.")
