@@ -23,6 +23,9 @@ import (
 )
 
 type Config struct {
+	GENERAL struct {
+		DATA_FILE string `yaml:"data_file" env:"GODO_GENERAL_DATA_FILE"`
+	} `yaml:"general" env:"GODO_GENERAL"`
 	GOAPI struct {
 		API      string `yaml:"api" env:"GODO_GOAPI_API"`
 		Password string `yaml:"password" env:"GODO_GOAPI_PASSWORD"`
@@ -50,6 +53,9 @@ func GetString(key string) string {
 	}
 
 	switch key {
+	case "data_file":
+		value := cfg.GENERAL.DATA_FILE
+		return value
 	case "goapi_api":
 		value := cfg.GOAPI.API
 		return value
