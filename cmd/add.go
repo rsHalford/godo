@@ -18,6 +18,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/rsHalford/godo/config"
 	"github.com/rsHalford/godo/todo"
@@ -49,7 +50,9 @@ func addRun(cmd *cobra.Command, args []string) {
 		items = append(items, item)
 	}
 	if config.GetString("goapi_api") == "" {
-		todo.SaveTodos(todo.LocalTodos(), items)
+		if err := todo.SaveTodos(todo.LocalTodos(), items); err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 

@@ -18,6 +18,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"sort"
 	"strconv"
 
@@ -47,7 +48,7 @@ func priorityRun(cmd *cobra.Command, args []string) {
 		return
 	}
 	if i > 0 && i <= len(items) {
-		if items[i-1].Priority != true {
+		if !items[i-1].Priority {
 			items[i-1].Priority = true
 			fmt.Printf("\033[34m::\033[0m Setting priority...\n\n\033[33m-->\033[0m %q\n", items[i-1].Title)
 			if config.GetString("goapi_api") != "" {
@@ -55,7 +56,9 @@ func priorityRun(cmd *cobra.Command, args []string) {
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))
-				todo.SaveTodos(todo.LocalTodos(), items)
+				if err := todo.SaveTodos(todo.LocalTodos(), items); err != nil {
+					log.Fatal(err)
+				}
 			}
 		} else {
 			items[i-1].Priority = false
@@ -65,7 +68,9 @@ func priorityRun(cmd *cobra.Command, args []string) {
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))
-				todo.SaveTodos(todo.LocalTodos(), items)
+				if err := todo.SaveTodos(todo.LocalTodos(), items); err != nil {
+					log.Fatal(err)
+				}
 			}
 		}
 	} else {

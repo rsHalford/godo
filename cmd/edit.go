@@ -65,7 +65,9 @@ func editRun(cmd *cobra.Command, args []string) {
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))
-				todo.SaveTodos(todo.LocalTodos(), items)
+				if err := todo.SaveTodos(todo.LocalTodos(), items); err != nil {
+					log.Fatal(err)
+				}
 			}
 		case config.GetString("editing_default") == "body" || bodyOpt:
 			items[i-1].Body = createTemp([]byte(items[i-1].Body))
@@ -74,7 +76,9 @@ func editRun(cmd *cobra.Command, args []string) {
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))
-				todo.SaveTodos(todo.LocalTodos(), items)
+				if err := todo.SaveTodos(todo.LocalTodos(), items); err != nil {
+					log.Fatal(err)
+				}
 			}
 		default:
 			items[i-1].Title = createTemp([]byte(items[i-1].Title))
@@ -83,7 +87,9 @@ func editRun(cmd *cobra.Command, args []string) {
 				sort.Sort(todo.Order(items))
 			} else {
 				sort.Sort(todo.Order(items))
-				todo.SaveTodos(todo.LocalTodos(), items)
+				if err := todo.SaveTodos(todo.LocalTodos(), items); err != nil {
+					log.Fatal(err)
+				}
 			}
 		}
 	} else {
@@ -100,7 +106,9 @@ func createTemp(todoText []byte) string {
 	if _, err := tmpFile.Write(todoText); err != nil {
 		log.Fatal("Failed to write initial text to temporary file", err)
 	}
-	editTemp(tmpFile.Name())
+	if err := editTemp(tmpFile.Name()); err != nil {
+		log.Fatal(err)
+	}
 	data, err := ioutil.ReadFile(tmpFile.Name())
 	todo := string(data)
 	todo = strings.TrimSuffix(todo, "\n")

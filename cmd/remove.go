@@ -57,7 +57,9 @@ func removeRun(cmd *cobra.Command, args []string) {
 			} else {
 				items = items[:i-1+copy(items[i-1:], items[i:])]
 				sort.Sort(todo.Order(items))
-				todo.SaveTodos(todo.LocalTodos(), items)
+				if err := todo.SaveTodos(todo.LocalTodos(), items); err != nil {
+					log.Fatal(err)
+				}
 			}
 		}
 	} else {

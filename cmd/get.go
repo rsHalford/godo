@@ -48,7 +48,7 @@ func getRun(cmd *cobra.Command, args []string) {
 	}
 	if i > 0 && i <= len(items) {
 		item := items[i-1]
-		if bodyOpt == true {
+		if bodyOpt {
 			fmt.Fprintln(w, item.Body)
 		} else {
 			fmt.Fprintln(w, "\033[90m"+item.Label()+"\t\t"+"\033[0m"+item.PriorityFlag()+item.StatusFlag()+item.Title+"\033[0m\n"+item.Body)

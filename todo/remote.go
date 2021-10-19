@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -69,7 +70,9 @@ func GetRemoteTodos(url, username, password string) ([]Todo, error) {
 
 	var items []Todo
 
-	json.Unmarshal(bodyBytes, &items)
+	if err := json.Unmarshal(bodyBytes, &items); err != nil {
+		log.Fatal(err)
+	}
 
 	for i := range items {
 		items[i].position = i + 1

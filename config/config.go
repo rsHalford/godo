@@ -18,6 +18,7 @@ package config
 
 import (
 	"fmt"
+	"log"
 	"github.com/ilyakaznacheev/cleanenv"
 	"os"
 )
@@ -42,14 +43,14 @@ type Config struct {
 
 var cfg Config
 
-func GetString(key string) string {
+func GetString(key string) (value string) {
 	cfgDir, err := os.UserConfigDir()
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Fatal(err)
 	}
 	cfgPath := cfgDir + "/godo/config.yaml"
 	if err := cleanenv.ReadConfig(cfgPath, &cfg); err != nil {
-		return ""
+		log.Fatal(err)
 	}
 
 	switch key {
@@ -78,5 +79,5 @@ func GetString(key string) string {
 		fmt.Println("No configuration key provided")
 	}
 
-	return ""
+	return
 }
