@@ -59,6 +59,8 @@ func initData() {
 		if err != nil {
 			log.Println("Unable to detect home directory.")
 		}
-		os.Mkdir(home+"/.local/share/godo", 0755)
+		if err := os.Mkdir(home+"/.local/share/godo", 0755); err != nil {
+			log.Fatal(err)
+		}
 	}
 }

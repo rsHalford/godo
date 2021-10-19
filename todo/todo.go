@@ -81,11 +81,14 @@ func LocalTodos() (filename string) {
 func ReadTodos(filename string) ([]Todo, error) {
 	bodyBytes, err := ioutil.ReadFile(filename)
 	if err != nil {
+		log.Fatal(err)
 	}
 
 	var items []Todo
 
-	json.Unmarshal(bodyBytes, &items)
+	if err := json.Unmarshal(bodyBytes, &items); err != nil {
+		log.Fatal(err)
+	}
 
 	for i := range items {
 		items[i].position = i + 1
@@ -100,18 +103,18 @@ func (i *Todo) Prioritise(pri bool) {
 	}
 }
 
-func (i *Todo) PriorityFlag() string {
+func (i *Todo) PriorityFlag() (color string) {
 	if i.Priority {
 		return "\033[33m"
 	}
-	return ""
+	return
 }
 
-func (i *Todo) StatusFlag() string {
+func (i *Todo) StatusFlag() (strike string) {
 	if i.Status {
 		return "\033[9m"
 	}
-	return ""
+	return
 }
 
 func (i *Todo) Label() string {

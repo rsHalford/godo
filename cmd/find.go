@@ -48,7 +48,7 @@ func findRun(cmd *cobra.Command, args []string) {
 	for _, a := range args {
 		for _, i := range items {
 			if strings.Contains(i.Body, a) || strings.Contains(i.Title, a) {
-				if titleOpt == true {
+				if titleOpt {
 					fmt.Fprintln(w, "\033[90m"+i.Label()+"\t\t"+"\033[0m"+i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m")
 				} else {
 					fmt.Fprintln(w, "\033[90m"+i.Label()+"\t\t"+"\033[0m"+i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m\n"+i.Body+"\n")
