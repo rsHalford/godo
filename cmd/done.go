@@ -18,76 +18,61 @@ package cmd
 
 import (
 	"fmt"
-	"log"
-	"sort"
 	"strconv"
 
-	"github.com/rsHalford/godo/config"
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
 )
 
-// doneCmd represents the done command
+// doneCmd represents the done command.
 var doneCmd = &cobra.Command{
 	Use:     "done",
 	Aliases: []string{"d", "do"},
 	Short:   "toggle todo as done",
 	Long:    `You can label a todo as done or active with the done command.`,
-	Run:     doneRun,
+	RunE:    doneRun,
 }
 
-func doneRun(cmd *cobra.Command, args []string) {
+func doneRun(cmd *cobra.Command, args []string) error {
+	var command string = "done"
+
 	items, err := todo.GetTodos()
 	if err != nil {
-		fmt.Println("No entries found")
-		return
+		return fmt.Errorf("%v: %w", command, err)
 	}
+
 	i, err := strconv.Atoi(args[0])
 	if err != nil {
-		fmt.Printf("\"%v\" is not a valid argument\n", args[0])
-		return
+		return fmt.Errorf("%v: \"%v\" %w", command, args[0], err)
 	}
+
 	if i > 0 && i <= len(items) {
 		if !items[i-1].Status {
 			items[i-1].Status = true
+
 			fmt.Printf("\033[34m::\033[0m Marked done...\n\n\033[33m-->\033[0m %q\n", items[i-1].Title)
-			if config.GetString("goapi_api") != "" {
-				todo.UpdateRemoteTodo(config.GetString("goapi_api"), config.GetString("goapi_username"), config.GetString("goapi_password"), fmt.Sprint(items[i-1].ID), items[i-1])
-				sort.Sort(todo.Order(items))
-			} else {
-				sort.Sort(todo.Order(items))
-				if err := todo.SaveTodos(todo.LocalTodos(), items); err != nil {
-					log.Fatal(err)
-				}
+
+			err = Update(i, command, items)
+			if err != nil {
+				return fmt.Errorf("%v: %w", command, err)
 			}
 		} else {
 			items[i-1].Status = false
+
 			fmt.Printf("\033[34m::\033[0m Marked active...\n\n\033[33m-->\033[0m %q\n", items[i-1].Title)
-			if config.GetString("goapi_api") != "" {
-				todo.UpdateRemoteTodo(config.GetString("goapi_api"), config.GetString("goapi_username"), config.GetString("goapi_password"), fmt.Sprint(items[i-1].ID), items[i-1])
-				sort.Sort(todo.Order(items))
-			} else {
-				sort.Sort(todo.Order(items))
-				if err := todo.SaveTodos(todo.LocalTodos(), items); err != nil {
-					log.Fatal(err)
-				}
+
+			err = Update(i, command, items)
+			if err != nil {
+				return fmt.Errorf("%v: %w", command, err)
 			}
 		}
 	} else {
-		fmt.Printf("\"%v\" doesn't match any todos\n", i)
+		return fmt.Errorf("%v: \"%v\" %w", i, command, err)
 	}
+
+	return nil
 }
 
 func init() {
 	rootCmd.AddCommand(doneCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// doneCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// doneCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

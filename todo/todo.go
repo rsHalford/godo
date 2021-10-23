@@ -19,11 +19,11 @@ package todo
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/rsHalford/godo/config"
-	"io/ioutil"
-	"log"
+	"io/fs"
 	"os"
 	"strconv"
+
+	"github.com/rsHalford/godo/config"
 )
 
 type Todo struct {
@@ -35,15 +35,19 @@ type Todo struct {
 	Status   bool `json:"status"`
 }
 
+const perm fs.FileMode = 0o600
+
 func SaveTodos(filename string, items []Todo) error {
-	b, err := json.Marshal(items)
+	data, err := json.Marshal(items)
 	if err != nil {
-		return err
+		return fmt.Errorf("encoding JSON: %w", err)
 	}
-	err = ioutil.WriteFile(filename, b, 0644)
+
+	err = os.WriteFile(filename, data, perm)
 	if err != nil {
-		return err
+		return fmt.Errorf("writing to %v: %w", filename, err)
 	}
+
 	return nil
 }
 
@@ -51,50 +55,74 @@ func GetTodos() ([]Todo, error) {
 	if config.GetString("goapi_api") != "" {
 		items, err := GetRemoteTodos(config.GetString("goapi_api"), config.GetString("goapi_username"), config.GetString("goapi_password"))
 		if err != nil {
-			fmt.Print(err.Error())
+			return nil, fmt.Errorf("fetching remote todos: %w", err)
 		}
-		return items, nil
-	} else {
-		dataFile := LocalTodos()
-		items, err := ReadTodos(dataFile)
-		if err != nil {
-			fmt.Print(err.Error())
-		}
+
 		return items, nil
 	}
+
+	dataFile, err := LocalTodos()
+	if err != nil {
+		return nil, fmt.Errorf("local filepath: %w", err)
+	}
+
+	if _, err = os.Stat(dataFile); os.IsNotExist(err) {
+		var f *os.File
+
+		f, err = os.Create(dataFile)
+		if err != nil {
+			return nil, fmt.Errorf("creating %v: %w", dataFile, err)
+		}
+
+		defer f.Close()
+
+		_, err = f.Write([]byte("[]"))
+		if err != nil {
+			return nil, fmt.Errorf("write to empty file: %w", err)
+		}
+	}
+
+	items, err := ReadTodos(dataFile)
+	if err != nil {
+		return nil, fmt.Errorf("reading from %v: %w", dataFile, err)
+	}
+
+	return items, nil
 }
 
-func LocalTodos() (filename string) {
-	if config.GetString("data_file") != "" {
-		dataFile := config.GetString("data_file")
-		return dataFile
+func LocalTodos() (filename string, err error) {
+	if config.GetString("dataFile") != "" {
+		dataFile := config.GetString("dataFile")
+
+		return dataFile, nil
 	} else {
 		home, err := os.UserHomeDir()
 		if err != nil {
-			log.Println("Unable to detect home directory.")
+			return "", fmt.Errorf("user home directory: %w", err)
 		}
+
 		dataFile := home + "/.local/share/godo/godos.json"
-		return dataFile
+
+		return dataFile, nil
 	}
 }
 
-func ReadTodos(filename string) ([]Todo, error) {
-	bodyBytes, err := ioutil.ReadFile(filename)
+func ReadTodos(filename string) (items []Todo, err error) {
+	bodyBytes, err := os.ReadFile(filename)
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("reading %v: %w", filename, err)
 	}
 
-	var items []Todo
-
-	if err := json.Unmarshal(bodyBytes, &items); err != nil {
-		log.Fatal(err)
+	err = json.Unmarshal(bodyBytes, &items)
+	if err != nil {
+		return nil, fmt.Errorf("parsing JSON: %w", err)
 	}
 
 	for i := range items {
 		items[i].position = i + 1
 	}
 
-	return items, nil
+	return
 }
 
 func (i *Todo) Prioritise(pri bool) {
@@ -107,6 +135,7 @@ func (i *Todo) PriorityFlag() (color string) {
 	if i.Priority {
 		return "\033[33m"
 	}
+
 	return
 }
 
@@ -114,10 +143,11 @@ func (i *Todo) StatusFlag() (strike string) {
 	if i.Status {
 		return "\033[9m"
 	}
+
 	return
 }
 
-func (i *Todo) Label() string {
+func (i *Todo) Label() (position string) {
 	return strconv.Itoa(i.position)
 }
 
@@ -126,15 +156,19 @@ type Order []Todo
 func (s Order) Len() int {
 	return len(s)
 }
+
 func (s Order) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
+
 func (s Order) Less(i, j int) bool {
 	if s[i].Status == s[j].Status {
 		if s[i].Priority == s[j].Priority {
 			return s[i].position < s[j].position
 		}
+
 		return s[i].Priority && !s[j].Priority
 	}
+
 	return !s[i].Status
 }

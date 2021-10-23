@@ -17,14 +17,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package cmd
 
 import (
-	"log"
+	"fmt"
+	"io/fs"
 	"os"
 
 	"github.com/rsHalford/godo/config"
 	"github.com/spf13/cobra"
 )
 
-// rootCmd represents the base command when called without any subcommands
+// rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:   "godo",
 	Short: "GoDo is a todo application.",
@@ -38,16 +39,20 @@ Designed to be simple and accessible.
 
 Go get things done and checked off the list.
 
-====================================================`,
+========================================================================`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	cobra.CheckErr(rootCmd.Execute())
+	if err := rootCmd.Execute(); err != nil {
+		os.Exit(1)
+	}
 }
 
-var dataFile = config.GetString("data_file")
+var dataFile = config.GetString("dataFile")
+
+const perm fs.FileMode = 0o755
 
 func init() {
 	cobra.OnInitialize(initData)
@@ -57,10 +62,16 @@ func initData() {
 	if config.GetString("goapi_api") == "" && dataFile == "" {
 		home, err := os.UserHomeDir()
 		if err != nil {
-			log.Println("Unable to detect home directory.")
+			fmt.Printf("user home directory: %v", err)
 		}
-		if err := os.Mkdir(home+"/.local/share/godo", 0755); err != nil {
-			log.Fatal(err)
+
+		godoDirectory := home + "/.local/share/godo"
+
+		if _, err := os.Stat(godoDirectory); os.IsNotExist(err) {
+			err := os.Mkdir(godoDirectory, perm)
+			if err != nil {
+				fmt.Printf("making new directory: %v", err)
+			}
 		}
 	}
 }

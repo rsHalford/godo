@@ -29,47 +29,50 @@ import (
 var (
 	doneOpt bool
 	allOpt  bool
-	// individualOpt int
 )
 
-// listCmd represents the list command
+const (
+	minwidth int  = 3
+	tabwidth int  = 0
+	padding  int  = 1
+	padchar  byte = ' '
+	flags    uint = 0
+)
+
+// listCmd represents the list command.
 var listCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls", "l"},
 	Short:   "list your todos",
 	Long:    `Listing all of your todos.`,
-	Run:     listRun,
+	RunE:    listRun,
 }
 
-func listRun(cmd *cobra.Command, args []string) {
+func listRun(cmd *cobra.Command, args []string) error {
+	var command string = "list"
+
 	items, err := todo.GetTodos()
 	if err != nil {
-		fmt.Print(err.Error())
-		return
+		return fmt.Errorf("%v: %w", command, err)
 	}
+
 	sort.Sort(todo.Order(items))
-	w := tabwriter.NewWriter(os.Stdout, 3, 0, 1, ' ', 0)
+
+	w := tabwriter.NewWriter(os.Stdout, minwidth, tabwidth, padding, padchar, flags)
+
 	for _, i := range items {
 		if allOpt || i.Status == doneOpt {
 			fmt.Fprintln(w, "\033[90m"+i.Label()+"\t\t"+"\033[0m"+i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m")
 		}
 	}
+
 	w.Flush()
+
+	return nil
 }
 
 func init() {
 	rootCmd.AddCommand(listCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// listCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	listCmd.Flags().BoolVarP(&doneOpt, "done", "d", false, "show completed todos")
 	listCmd.Flags().BoolVarP(&allOpt, "all", "a", false, "show all todos")
-	// listCmd.Flags().IntVar(&individualOpt, )
 }

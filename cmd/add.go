@@ -18,54 +18,64 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/rsHalford/godo/config"
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
 )
 
-var priority bool
-
-// addCmd represents the add command
+// addCmd represents the add command.
 var addCmd = &cobra.Command{
 	Use:     "add",
 	Aliases: []string{"a"},
 	Short:   "add a new todo",
 	Long:    `Add will create a new todo to the list.`,
-	Run:     addRun,
+	RunE:    addRun,
 }
 
-func addRun(cmd *cobra.Command, args []string) {
+var priority bool
+
+func addRun(cmd *cobra.Command, args []string) error {
+	var command string = "add"
+
 	items, err := todo.GetTodos()
 	if err != nil {
-		fmt.Println(err.Error())
+		return fmt.Errorf("%v: %w", command, err)
 	}
+
 	for _, x := range args {
 		item := todo.Todo{Title: x}
+
 		item.Prioritise(priority)
+
 		if config.GetString("goapi_api") != "" {
-			todo.CreateRemoteTodo(config.GetString("goapi_api"), config.GetString("goapi_username"), config.GetString("goapi_password"), item)
+			err = todo.CreateRemoteTodo(config.GetString("goapi_api"), config.GetString("goapi_username"), config.GetString("goapi_password"), item)
+			if err != nil {
+				return fmt.Errorf("%v: %w", command, err)
+			}
 		}
+
 		items = append(items, item)
 	}
+
 	if config.GetString("goapi_api") == "" {
-		if err := todo.SaveTodos(todo.LocalTodos(), items); err != nil {
-			log.Fatal(err)
+		var filename string
+
+		filename, err = todo.LocalTodos()
+		if err != nil {
+			return fmt.Errorf("%v: %w", command, err)
+		}
+
+		err := todo.SaveTodos(filename, items)
+		if err != nil {
+			return fmt.Errorf("%v: %w", command, err)
 		}
 	}
+
+	return nil
 }
 
 func init() {
 	rootCmd.AddCommand(addCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// addCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
 	addCmd.Flags().BoolVarP(&priority, "priority", "p", false, "assign priority to your todo")
 }

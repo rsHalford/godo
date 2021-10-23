@@ -21,57 +21,60 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
-func CreateRemoteTodo(url, username, password string, item Todo) {
+func CreateRemoteTodo(url, username, password string, item Todo) error {
 	data, err := json.Marshal(item)
 	if err != nil {
-		fmt.Print(err.Error())
+		return fmt.Errorf("encoding JSON: %w", err)
 	}
 
 	client := &http.Client{}
+
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
 	if err != nil {
-		fmt.Print(err.Error())
+		return fmt.Errorf("POST requesting data: %w", err)
 	}
 
 	req.SetBasicAuth(username, password)
 
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Print(err.Error())
+		return fmt.Errorf("data response: %w", err)
 	}
 
 	resp.Body.Close()
+
+	return nil
 }
 
 func GetRemoteTodos(url, username, password string) ([]Todo, error) {
 	client := &http.Client{}
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		fmt.Print(err.Error())
+		return nil, fmt.Errorf("GET requesting data: %w", err)
 	}
 
 	req.SetBasicAuth(username, password)
 
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Print(err.Error())
+		return nil, fmt.Errorf("data response: %w", err)
 	}
 
 	defer resp.Body.Close()
 
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Print(err.Error())
+		return nil, fmt.Errorf("reading response data: %w", err)
 	}
 
 	var items []Todo
 
 	if err := json.Unmarshal(bodyBytes, &items); err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("parsing JSON: %w", err)
 	}
 
 	for i := range items {
@@ -81,41 +84,47 @@ func GetRemoteTodos(url, username, password string) ([]Todo, error) {
 	return items, nil
 }
 
-func UpdateRemoteTodo(url, username, password string, id string, todo Todo) {
+func UpdateRemoteTodo(url, username, password, id string, todo Todo) error {
 	data, err := json.Marshal(todo)
 	if err != nil {
-		fmt.Print(err.Error())
+		return fmt.Errorf("encoding JSON: %w", err)
 	}
 
 	client := &http.Client{}
+
 	req, err := http.NewRequest(http.MethodPut, url+"/"+id, bytes.NewBuffer(data))
 	if err != nil {
-		fmt.Print(err.Error())
+		return fmt.Errorf("PUT requesting data: %w", err)
 	}
 
 	req.SetBasicAuth(username, password)
 
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Print(err.Error())
+		return fmt.Errorf("data response: %w", err)
 	}
 
 	resp.Body.Close()
+
+	return nil
 }
 
-func DeleteRemoteTodo(url, username, password string, id string) {
+func DeleteRemoteTodo(url, username, password, id string) error {
 	client := &http.Client{}
+
 	req, err := http.NewRequest(http.MethodDelete, url+"/"+id, nil)
 	if err != nil {
-		fmt.Print(err.Error())
+		return fmt.Errorf("DELETE requesting data: %w", err)
 	}
 
 	req.SetBasicAuth(username, password)
 
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Print(err.Error())
+		return fmt.Errorf("data response: %w", err)
 	}
 
 	resp.Body.Close()
+
+	return nil
 }
