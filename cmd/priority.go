@@ -18,76 +18,61 @@ package cmd
 
 import (
 	"fmt"
-	"log"
-	"sort"
 	"strconv"
 
-	"github.com/rsHalford/godo/config"
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
 )
 
-// priorityCmd represents the priority command
+// priorityCmd represents the priority command.
 var priorityCmd = &cobra.Command{
 	Use:     "priority",
 	Aliases: []string{"pri", "p"},
 	Short:   "label a todo as a priority",
 	Long:    `You can toggle a todo as being labelled a priority with the priority command.`,
-	Run:     priorityRun,
+	RunE:    priorityRun,
 }
 
-func priorityRun(cmd *cobra.Command, args []string) {
+func priorityRun(cmd *cobra.Command, args []string) error {
+	var command string = "priority"
+
 	items, err := todo.GetTodos()
 	if err != nil {
-		fmt.Println("No entries found")
-		return
+		return fmt.Errorf("%v: %w", command, err)
 	}
+
 	i, err := strconv.Atoi(args[0])
 	if err != nil {
-		fmt.Printf("\"%v\" is not a valid argument\n", args[0])
-		return
+		return fmt.Errorf("%v: \"%v\" %w", command, args[0], err)
 	}
+
 	if i > 0 && i <= len(items) {
 		if !items[i-1].Priority {
 			items[i-1].Priority = true
+
 			fmt.Printf("\033[34m::\033[0m Setting priority...\n\n\033[33m-->\033[0m %q\n", items[i-1].Title)
-			if config.GetString("goapi_api") != "" {
-				todo.UpdateRemoteTodo(config.GetString("goapi_api"), config.GetString("goapi_username"), config.GetString("goapi_password"), fmt.Sprint(items[i-1].ID), items[i-1])
-				sort.Sort(todo.Order(items))
-			} else {
-				sort.Sort(todo.Order(items))
-				if err := todo.SaveTodos(todo.LocalTodos(), items); err != nil {
-					log.Fatal(err)
-				}
+
+			err = Update(i, command, items)
+			if err != nil {
+				return fmt.Errorf("%v: %w", command, err)
 			}
 		} else {
 			items[i-1].Priority = false
+
 			fmt.Printf("\033[34m::\033[0m Removing priority...\n\n\033[33m-->\033[0m %q\n", items[i-1].Title)
-			if config.GetString("goapi_api") != "" {
-				todo.UpdateRemoteTodo(config.GetString("goapi_api"), config.GetString("goapi_username"), config.GetString("goapi_password"), fmt.Sprint(items[i-1].ID), items[i-1])
-				sort.Sort(todo.Order(items))
-			} else {
-				sort.Sort(todo.Order(items))
-				if err := todo.SaveTodos(todo.LocalTodos(), items); err != nil {
-					log.Fatal(err)
-				}
+
+			err = Update(i, command, items)
+			if err != nil {
+				return fmt.Errorf("%v: %w", command, err)
 			}
 		}
 	} else {
-		fmt.Printf("\"%v\" doesn't match any todos\n", i)
+		return fmt.Errorf("%v: \"%v\" %w", command, i, err)
 	}
+
+	return nil
 }
 
 func init() {
 	rootCmd.AddCommand(priorityCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// priorityCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// priorityCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

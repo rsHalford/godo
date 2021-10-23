@@ -19,10 +19,8 @@ package cmd
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
-	"sort"
 	"strconv"
 	"strings"
 
@@ -31,130 +29,125 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	titleOpt bool
-	bodyOpt  bool
-)
-
-// editCmd represents the edit command
+// editCmd represents the edit command.
 var editCmd = &cobra.Command{
 	Use:     "edit",
 	Aliases: []string{"e"},
 	Short:   "edit a todo (default: edit title)",
 	Long:    `Edit a todo by passing the list number of the todo. Defaults to editing the todo title, if not set in godo.yaml`,
-	Run:     editRun,
+	RunE:    editRun,
 }
 
-func editRun(cmd *cobra.Command, args []string) {
+var (
+	titleOpt bool
+	bodyOpt  bool
+)
+
+func editRun(cmd *cobra.Command, args []string) error {
+	var command string = "edit"
+
 	items, err := todo.GetTodos()
 	if err != nil {
-		fmt.Println("No entries found")
-		return
+		return fmt.Errorf("%v: %w", command, err)
 	}
+
 	i, err := strconv.Atoi(args[0])
 	if err != nil {
-		fmt.Printf("\"%v\" is not a valid argument\n", args[0])
-		return
+		return fmt.Errorf("%v: \"%v\" %w", command, args[0], err)
 	}
+
 	if i > 0 && i <= len(items) {
 		switch {
 		case titleOpt:
-			items[i-1].Title = createTemp([]byte(items[i-1].Title))
-			if config.GetString("goapi_api") != "" {
-				todo.UpdateRemoteTodo(config.GetString("goapi_api"), config.GetString("goapi_username"), config.GetString("goapi_password"), fmt.Sprint(items[i-1].ID), items[i-1])
-				sort.Sort(todo.Order(items))
-			} else {
-				sort.Sort(todo.Order(items))
-				if err := todo.SaveTodos(todo.LocalTodos(), items); err != nil {
-					log.Fatal(err)
-				}
+			items[i-1].Title, err = createTemp([]byte(items[i-1].Title))
+			if err != nil {
+				return fmt.Errorf("%v: %w", command, err)
+			}
+
+			err = Update(i, command, items)
+			if err != nil {
+				return fmt.Errorf("%v: %w", command, err)
 			}
 		case config.GetString("editing_default") == "body" || bodyOpt:
-			items[i-1].Body = createTemp([]byte(items[i-1].Body))
-			if config.GetString("goapi_api") != "" {
-				todo.UpdateRemoteTodo(config.GetString("goapi_api"), config.GetString("goapi_username"), config.GetString("goapi_password"), fmt.Sprint(items[i-1].ID), items[i-1])
-				sort.Sort(todo.Order(items))
-			} else {
-				sort.Sort(todo.Order(items))
-				if err := todo.SaveTodos(todo.LocalTodos(), items); err != nil {
-					log.Fatal(err)
-				}
+			items[i-1].Body, err = createTemp([]byte(items[i-1].Body))
+			if err != nil {
+				return fmt.Errorf("%v: %w", command, err)
+			}
+
+			err = Update(i, command, items)
+			if err != nil {
+				return fmt.Errorf("%v: %w", command, err)
 			}
 		default:
-			items[i-1].Title = createTemp([]byte(items[i-1].Title))
-			if config.GetString("goapi_api") != "" {
-				todo.UpdateRemoteTodo(config.GetString("goapi_api"), config.GetString("goapi_username"), config.GetString("goapi_password"), fmt.Sprint(items[i-1].ID), items[i-1])
-				sort.Sort(todo.Order(items))
-			} else {
-				sort.Sort(todo.Order(items))
-				if err := todo.SaveTodos(todo.LocalTodos(), items); err != nil {
-					log.Fatal(err)
-				}
+			items[i-1].Title, err = createTemp([]byte(items[i-1].Title))
+			if err != nil {
+				return fmt.Errorf("%v: %w", command, err)
+			}
+
+			err = Update(i, command, items)
+			if err != nil {
+				return fmt.Errorf("%v: %w", command, err)
 			}
 		}
 	} else {
-		fmt.Printf("\"%v\" doesn't match any todos\n", i)
+		return fmt.Errorf("%v: \"%v\" %w", command, i, err)
 	}
+
+	return nil
 }
 
-func createTemp(todoText []byte) string {
+func createTemp(text []byte) (file string, err error) {
 	tmpFile, err := ioutil.TempFile(os.TempDir(), "godo-")
 	if err != nil {
-		log.Fatal("Unable to create temporary file", err)
+		return "", fmt.Errorf("create temporary file: %w", err)
 	}
 	defer os.Remove(tmpFile.Name())
-	if _, err := tmpFile.Write(todoText); err != nil {
-		log.Fatal("Failed to write initial text to temporary file", err)
+	if _, err = tmpFile.Write(text); err != nil {
+		return "", fmt.Errorf("write temporary file: %w", err)
 	}
-	if err := editTemp(tmpFile.Name()); err != nil {
-		log.Fatal(err)
+	if err = editTemp(tmpFile.Name()); err != nil {
+		return "", fmt.Errorf("edit temporary file: %w", err)
 	}
 	data, err := ioutil.ReadFile(tmpFile.Name())
-	todo := string(data)
-	todo = strings.TrimSuffix(todo, "\n")
 	if err != nil {
-		log.Println("File reading error", err)
+		return "", fmt.Errorf("read temporary file: %w", err)
 	}
+	todo := string(data)
+	file = strings.TrimSuffix(todo, "\n")
 	if err := tmpFile.Close(); err != nil {
-		log.Fatal(err)
+		return "", fmt.Errorf("close temporary file: %w", err)
 	}
-	return todo
+
+	return
 }
 
 func editTemp(filename string) error {
 	editor := defaultEditor()
 	executable, err := exec.LookPath(editor)
 	if err != nil {
-		return err
+		return fmt.Errorf("execute default editor: %w", err)
 	}
 	cmd := exec.Command(executable, filename)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+
 	return cmd.Run()
 }
 
-func defaultEditor() string {
+func defaultEditor() (editor string) {
 	if config.GetString("editing_editor") == "" {
-		editor := os.Getenv("EDITOR")
-		return editor
+		editor = os.Getenv("EDITOR")
+
+		return
 	}
-	editor := config.GetString("editing_editor")
-	return editor
+	editor = config.GetString("editing_editor")
+
+	return
 }
 
 func init() {
 	rootCmd.AddCommand(editCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// editCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// editCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	editCmd.Flags().BoolVarP(&titleOpt, "title", "t", false, "edit item title")
 	editCmd.Flags().BoolVarP(&bodyOpt, "body", "b", false, "edit item body")
 }

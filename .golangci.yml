@@ -1,0 +1,188 @@
+linters-settings:
+  dogsled:
+    max-blank-identifiers: 2
+
+  errorlint:
+    errorf: true
+    asserts: true
+    comparison: true
+
+  #exhaustivestruct:
+  #  # Struct Patterns is list of expressions to match struct packages and names
+  #  # The struct packages have the form example.com/package.ExampleStruct
+  #  # The matching patterns can use matching syntax from https://pkg.go.dev/path#Match
+  #  # If this list is empty, all structs are tested.
+  #  struct-patterns:
+  #    - '*.Test'
+  #    - 'example.com/package.ExampleStruct'
+
+  #forbidigo:
+  #  # Forbid the following identifiers (identifiers are written using regexp):
+  #  forbid:
+  #    - ^print.*$
+  #    - 'fmt\.Print.*'
+  #  # Exclude godoc examples from forbidigo checks.  Default is true.
+  #  exclude_godoc_examples: false
+
+  #gci:
+  #  # put imports beginning with prefix after 3rd-party packages;
+  #  # only support one prefix
+  #  # if not set, use goimports.local-prefixes
+  #  local-prefixes: github.com/org/project
+
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+
+  gocyclo:
+    min-complexity: 15
+
+  godot:
+    scope: all
+
+  gofumpt:
+    lang-version: "1.17.1"
+    extra-rules: true
+
+  #goheader:
+  #  values:
+  #    const:
+  #      # define here const type values in format k:v, for example:
+  #      # COMPANY: MY COMPANY
+  #    regexp:
+  #      # define here regexp type values, for example
+  #      # AUTHOR: .*@mycompany\.com
+  #  template: # |-
+  #    # put here copyright header template for source code files, for example:
+  #    # Note: {{ YEAR }} is a builtin value that returns the year relative to the current machine time.
+  #    #
+  #    # {{ AUTHOR }} {{ COMPANY }} {{ YEAR }}
+  #    # SPDX-License-Identifier: Apache-2.0
+
+  #    # Licensed under the Apache License, Version 2.0 (the "License");
+  #    # you may not use this file except in compliance with the License.
+  #    # You may obtain a copy of the License at:
+
+  #    #   http://www.apache.org/licenses/LICENSE-2.0
+
+  #    # Unless required by applicable law or agreed to in writing, software
+  #    # distributed under the License is distributed on an "AS IS" BASIS,
+  #    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  #    # See the License for the specific language governing permissions and
+  #    # limitations under the License.
+  #  template-path:
+  #    # also as alternative of directive 'template' you may put the path to file with the template source
+
+  gosimple:
+    go: "1.17.1"
+    # https://staticcheck.io/docs/options#checks
+    checks: [ "all" ]
+
+  govet:
+    check-shadowing: true
+    settings:
+      printf:
+        funcs:
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Infof
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
+
+  depguard:
+    list-type: blacklist
+    packages:
+      - github.com/sirupsen/logrus
+    packages-with-error-message:
+      - github.com/sirupsen/logrus: "logging is allowed only by logutils.Log"
+
+  ifshort:
+    max-decl-lines: 1
+    max-decl-chars: 50
+
+  lll:
+    line-length: 140
+    tab-width: 1
+
+  #makezero:
+  #  # Allow only slices initialized with a length of zero. Default is false.
+  #  always: false
+
+  #misspell:
+  #  locale: UK
+  #  ignore-words:
+
+  staticcheck:
+    go: "1.17.1"
+    # https://staticcheck.io/docs/options#checks
+    checks: [ "all" ]
+
+  #thelper:
+  #  # The following configurations enable all checks. It can be omitted because all checks are enabled by default.
+  #  # You can enable only required checks deleting unnecessary checks.
+  #  test:
+  #    first: true
+  #    name: true
+  #    begin: true
+  #  benchmark:
+  #    first: true
+  #    name: true
+  #    begin: true
+  #  tb:
+  #    first: true
+  #    name: true
+  #    begin: true
+
+  unused:
+    # Select the Go version to target. The default is '1.13'.
+    go: "1.17.1"
+
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - deadcode
+    - depguard
+    - dogsled
+    - errcheck
+    - errname
+    - errorlint
+    - exhaustive
+    - exportloopref
+    - forcetypeassert
+    - funlen
+    - goconst
+    - gocritic
+    - gocyclo
+    - godot
+    - gofumpt
+    - gomnd
+    - gosec
+    - gosimple
+    - govet
+    - ifshort
+    - ineffassign
+    - lll
+    - misspell
+    - nakedret
+    - nilerr
+    - nlreturn
+    - staticcheck
+    - structcheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - varcheck
+    - wastedassign
+    - whitespace
+    #- dupl
+    #- exhaustivestruct
+    #- forbidigo
+    #- gci
+    #- gochecknoinits
+    #- goheader
+    #- makezero
+    #- noctx
+    #- paralleltest
+    #- thelper
+    #- tparallel

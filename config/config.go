@@ -19,13 +19,14 @@ package config
 import (
 	"fmt"
 	"log"
-	"github.com/ilyakaznacheev/cleanenv"
 	"os"
+
+	"github.com/ilyakaznacheev/cleanenv"
 )
 
 type Config struct {
 	GENERAL struct {
-		DATA_FILE string `yaml:"data_file" env:"GODO_GENERAL_DATA_FILE"`
+		DATA_FILE string `yaml:"dataFile" env:"GODO_GENERAL_DATA_FILE"`
 	} `yaml:"general" env:"GODO_GENERAL"`
 	GOAPI struct {
 		API      string `yaml:"api" env:"GODO_GOAPI_API"`
@@ -43,7 +44,7 @@ type Config struct {
 
 var cfg Config
 
-func GetString(key string) (value string) {
+func GetString(key string) string {
 	cfgDir, err := os.UserConfigDir()
 	if err != nil {
 		log.Fatal(err)
@@ -54,30 +55,44 @@ func GetString(key string) (value string) {
 	}
 
 	switch key {
-	case "data_file":
+	case "dataFile":
 		value := cfg.GENERAL.DATA_FILE
+
 		return value
+
 	case "goapi_api":
 		value := cfg.GOAPI.API
+
 		return value
+
 	case "goapi_password":
 		value := cfg.GOAPI.Password
+
 		return value
+
 	case "goapi_username":
 		value := cfg.GOAPI.Username
+
 		return value
+
 	case "editing_default":
 		value := cfg.Editing.Default
+
 		return value
+
 	case "editing_editor":
 		value := cfg.Editing.Editor
+
 		return value
+
 	case "gui_port":
 		value := cfg.GUI.Port
+
 		return value
+
 	default:
 		fmt.Println("No configuration key provided")
 	}
 
-	return
+	return ""
 }

@@ -27,24 +27,28 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// findCmd represents the find command
+// findCmd represents the find command.
 var findCmd = &cobra.Command{
 	Use:     "find",
 	Aliases: []string{"fd", "f"},
 	Short:   "search for a given string",
 	Long: `The find command helps you search for todos containing the
 provided string`,
-	Run: findRun,
+	RunE: findRun,
 }
 
-func findRun(cmd *cobra.Command, args []string) {
+func findRun(cmd *cobra.Command, args []string) error {
+	var command string = "find"
+
 	items, err := todo.GetTodos()
 	if err != nil {
-		fmt.Print(err.Error())
-		return
+		return fmt.Errorf("%v: %w", command, err)
 	}
+
 	sort.Sort(todo.Order(items))
-	w := tabwriter.NewWriter(os.Stdout, 3, 0, 1, ' ', 0)
+
+	w := tabwriter.NewWriter(os.Stdout, minwidth, tabwidth, padding, padchar, flags)
+
 	for _, a := range args {
 		for _, i := range items {
 			if strings.Contains(i.Body, a) || strings.Contains(i.Title, a) {
@@ -56,20 +60,13 @@ func findRun(cmd *cobra.Command, args []string) {
 			}
 		}
 	}
+
 	w.Flush()
+
+	return nil
 }
 
 func init() {
 	rootCmd.AddCommand(findCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// findCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// findCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	findCmd.Flags().BoolVarP(&titleOpt, "title", "t", false, "only show item titles")
 }
