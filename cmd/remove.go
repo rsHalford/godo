@@ -39,7 +39,7 @@ var removeCmd = &cobra.Command{
 func removeRun(cmd *cobra.Command, args []string) error {
 	var command string = "remove"
 
-	items, err := todo.GetTodos()
+	items, err := todo.Todos()
 	if err != nil {
 		return fmt.Errorf("%v: %w", command, err)
 	}
@@ -60,11 +60,11 @@ func removeRun(cmd *cobra.Command, args []string) error {
 
 			fmt.Printf("%q %v\n", items[i-1].Title, "deleted")
 
-			if config.GetString("goapi_api") != "" {
-				err = todo.DeleteRemoteTodo(
-					config.GetString("goapi_api"),
-					config.GetString("goapi_username"),
-					config.GetString("goapi_password"),
+			if config.Value("goapi_api") != "" {
+				err = todo.DeleteRemote(
+					config.Value("goapi_api"),
+					config.Value("goapi_username"),
+					config.Value("goapi_password"),
 					fmt.Sprint(items[i-1].ID),
 				)
 				if err != nil {
@@ -82,7 +82,7 @@ func removeRun(cmd *cobra.Command, args []string) error {
 					return fmt.Errorf("%v: %w", command, err)
 				}
 
-				err = todo.SaveTodos(filename, items)
+				err = todo.SaveLocal(filename, items)
 				if err != nil {
 					return fmt.Errorf("%v: %w", command, err)
 				}

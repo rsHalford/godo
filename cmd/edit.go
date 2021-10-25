@@ -46,7 +46,7 @@ var (
 func editRun(cmd *cobra.Command, args []string) error {
 	var command string = "edit"
 
-	items, err := todo.GetTodos()
+	items, err := todo.Todos()
 	if err != nil {
 		return fmt.Errorf("%v: %w", command, err)
 	}
@@ -68,7 +68,7 @@ func editRun(cmd *cobra.Command, args []string) error {
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
-		case config.GetString("editing_default") == "body" || bodyOpt:
+		case config.Value("editing_default") == "body" || bodyOpt:
 			items[i-1].Body, err = createTemp([]byte(items[i-1].Body))
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
@@ -136,12 +136,12 @@ func editTemp(filename string) error {
 }
 
 func defaultEditor() (editor string) {
-	if config.GetString("editing_editor") == "" {
+	if config.Value("editing_editor") == "" {
 		editor = os.Getenv("EDITOR")
 
 		return
 	}
-	editor = config.GetString("editing_editor")
+	editor = config.Value("editing_editor")
 
 	return
 }

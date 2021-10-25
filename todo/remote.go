@@ -24,7 +24,10 @@ import (
 	"net/http"
 )
 
-func CreateRemoteTodo(url, username, password string, item Todo) error {
+// CreateRemote will encode the todo item into JSON.
+// Then make a POST request to the API, using basic authentication.
+func CreateRemote(url, username, password string, item Todo) error {
+	// The todo item is encoded as JSON objects, relating to the Todo struct.
 	data, err := json.Marshal(item)
 	if err != nil {
 		return fmt.Errorf("encoding JSON: %w", err)
@@ -37,8 +40,10 @@ func CreateRemoteTodo(url, username, password string, item Todo) error {
 		return fmt.Errorf("POST requesting data: %w", err)
 	}
 
+	// Assign the basic authentication credentials to the request.
 	req.SetBasicAuth(username, password)
 
+	// Send the HTTP request, and assign the response to resp.
 	resp, err := client.Do(req)
 	if err != nil {
 		return fmt.Errorf("data response: %w", err)
@@ -49,7 +54,10 @@ func CreateRemoteTodo(url, username, password string, item Todo) error {
 	return nil
 }
 
-func GetRemoteTodos(url, username, password string) ([]Todo, error) {
+// ReadTodos sends a request to the API url with basic authentication.
+// And makes a GET request, which returns a response body. That is read by
+// parsing the items from the JSON, and assigning a position value to each item.
+func RemoteTodos(url, username, password string) ([]Todo, error) {
 	client := &http.Client{}
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -57,8 +65,10 @@ func GetRemoteTodos(url, username, password string) ([]Todo, error) {
 		return nil, fmt.Errorf("GET requesting data: %w", err)
 	}
 
+	// Assign the basic authentication credentials to the request.
 	req.SetBasicAuth(username, password)
 
+	// Send the HTTP request, and assign the response to resp.
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("data response: %w", err)
@@ -66,6 +76,7 @@ func GetRemoteTodos(url, username, password string) ([]Todo, error) {
 
 	defer resp.Body.Close()
 
+	// bodyBytes holds the contents of the file within a []byte.
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("reading response data: %w", err)
@@ -73,10 +84,14 @@ func GetRemoteTodos(url, username, password string) ([]Todo, error) {
 
 	var items []Todo
 
+	// The JSON-encoded data of bodyBytes is then parsed and stored
+	// within the matching values from the Todo struct.
 	if err := json.Unmarshal(bodyBytes, &items); err != nil {
 		return nil, fmt.Errorf("parsing JSON: %w", err)
 	}
 
+	// Each item, i is then assigned a position value
+	// that is greater than the previous by 1.
 	for i := range items {
 		items[i].position = i + 1
 	}
@@ -84,7 +99,11 @@ func GetRemoteTodos(url, username, password string) ([]Todo, error) {
 	return items, nil
 }
 
-func UpdateRemoteTodo(url, username, password, id string, todo Todo) error {
+// UpdateRemote will take in the todo and encode it into JSON. Before
+// sending a PUT request to the API's url, using the todo id,
+// to send the updated todo data.
+func UpdateRemote(url, username, password, id string, todo Todo) error {
+	// The todo item are encoded as JSON objects, relating to the Todo struct.
 	data, err := json.Marshal(todo)
 	if err != nil {
 		return fmt.Errorf("encoding JSON: %w", err)
@@ -97,8 +116,10 @@ func UpdateRemoteTodo(url, username, password, id string, todo Todo) error {
 		return fmt.Errorf("PUT requesting data: %w", err)
 	}
 
+	// Assign the basic authentication credentials to the request.
 	req.SetBasicAuth(username, password)
 
+	// Send the HTTP request, and assign the response to resp.
 	resp, err := client.Do(req)
 	if err != nil {
 		return fmt.Errorf("data response: %w", err)
@@ -109,7 +130,9 @@ func UpdateRemoteTodo(url, username, password, id string, todo Todo) error {
 	return nil
 }
 
-func DeleteRemoteTodo(url, username, password, id string) error {
+// DeleteRemote uses the todo id to send a DELETE request
+// to the specific API url, using basic authentication.
+func DeleteRemote(url, username, password, id string) error {
 	client := &http.Client{}
 
 	req, err := http.NewRequest(http.MethodDelete, url+"/"+id, nil)
@@ -117,8 +140,10 @@ func DeleteRemoteTodo(url, username, password, id string) error {
 		return fmt.Errorf("DELETE requesting data: %w", err)
 	}
 
+	// Assign the basic authentication credentials to the request.
 	req.SetBasicAuth(username, password)
 
+	// Send the HTTP request, and assign the response to resp.
 	resp, err := client.Do(req)
 	if err != nil {
 		return fmt.Errorf("data response: %w", err)

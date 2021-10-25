@@ -36,7 +36,7 @@ var doneCmd = &cobra.Command{
 func doneRun(cmd *cobra.Command, args []string) error {
 	var command string = "done"
 
-	items, err := todo.GetTodos()
+	items, err := todo.Todos()
 	if err != nil {
 		return fmt.Errorf("%v: %w", command, err)
 	}

@@ -38,7 +38,7 @@ var priority bool
 func addRun(cmd *cobra.Command, args []string) error {
 	var command string = "add"
 
-	items, err := todo.GetTodos()
+	items, err := todo.Todos()
 	if err != nil {
 		return fmt.Errorf("%v: %w", command, err)
 	}
@@ -48,8 +48,8 @@ func addRun(cmd *cobra.Command, args []string) error {
 
 		item.Prioritise(priority)
 
-		if config.GetString("goapi_api") != "" {
-			err = todo.CreateRemoteTodo(config.GetString("goapi_api"), config.GetString("goapi_username"), config.GetString("goapi_password"), item)
+		if config.Value("goapi_api") != "" {
+			err = todo.CreateRemote(config.Value("goapi_api"), config.Value("goapi_username"), config.Value("goapi_password"), item)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
@@ -58,7 +58,7 @@ func addRun(cmd *cobra.Command, args []string) error {
 		items = append(items, item)
 	}
 
-	if config.GetString("goapi_api") == "" {
+	if config.Value("goapi_api") == "" {
 		var filename string
 
 		filename, err = todo.LocalTodos()
@@ -66,7 +66,7 @@ func addRun(cmd *cobra.Command, args []string) error {
 			return fmt.Errorf("%v: %w", command, err)
 		}
 
-		err := todo.SaveTodos(filename, items)
+		err := todo.SaveLocal(filename, items)
 		if err != nil {
 			return fmt.Errorf("%v: %w", command, err)
 		}

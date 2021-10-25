@@ -18,12 +18,12 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
+// Config struct defines the config.yaml and related environment variables.
 type Config struct {
 	GENERAL struct {
 		DATA_FILE string `yaml:"dataFile" env:"GODO_GENERAL_DATA_FILE"`
@@ -44,14 +44,19 @@ type Config struct {
 
 var cfg Config
 
-func GetString(key string) string {
+// Value takes a key and returns the matching value from the config.yaml.
+func Value(key string) string {
 	cfgDir, err := os.UserConfigDir()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("determining user configuration location: %v", err)
 	}
+
+	// Assign the config.yaml filepath within the default root
+	// directory, to use for user-specific configuration data.
 	cfgPath := cfgDir + "/godo/config.yaml"
+
 	if err := cleanenv.ReadConfig(cfgPath, &cfg); err != nil {
-		log.Fatal(err)
+		fmt.Printf("parsing configuration: %v", err)
 	}
 
 	switch key {

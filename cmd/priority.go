@@ -36,7 +36,7 @@ var priorityCmd = &cobra.Command{
 func priorityRun(cmd *cobra.Command, args []string) error {
 	var command string = "priority"
 
-	items, err := todo.GetTodos()
+	items, err := todo.Todos()
 	if err != nil {
 		return fmt.Errorf("%v: %w", command, err)
 	}

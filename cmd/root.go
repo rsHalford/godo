@@ -50,23 +50,26 @@ func Execute() {
 	}
 }
 
-var dataFile = config.GetString("dataFile")
-
 const perm fs.FileMode = 0o755
 
 func init() {
 	cobra.OnInitialize(initData)
 }
 
+// initData checks the configuration file for a location to save todos.
+// Creating a godo directory in the user's home directory, if not set.
 func initData() {
-	if config.GetString("goapi_api") == "" && dataFile == "" {
+	// Check config.yaml for user defined API address or local filepath.
+	if config.Value("goapi_api") == "" && config.Value("dataFile") == "" {
 		home, err := os.UserHomeDir()
 		if err != nil {
 			fmt.Printf("user home directory: %v", err)
 		}
 
+		// Set default directory for local godos.json.
 		godoDirectory := home + "/.local/share/godo"
 
+		// Create godo directory if it doesn't already exist.
 		if _, err := os.Stat(godoDirectory); os.IsNotExist(err) {
 			err := os.Mkdir(godoDirectory, perm)
 			if err != nil {
