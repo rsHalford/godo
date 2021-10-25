@@ -25,11 +25,11 @@ import (
 )
 
 func Update(i int, command string, items []todo.Todo) error {
-	if config.GetString("goapi_api") != "" {
-		err := todo.UpdateRemoteTodo(
-			config.GetString("goapi_api"),
-			config.GetString("goapi_username"),
-			config.GetString("goapi_password"),
+	if config.Value("goapi_api") != "" {
+		err := todo.UpdateRemote(
+			config.Value("goapi_api"),
+			config.Value("goapi_username"),
+			config.Value("goapi_password"),
 			fmt.Sprint(items[i-1].ID), items[i-1],
 		)
 		if err != nil {
@@ -45,7 +45,7 @@ func Update(i int, command string, items []todo.Todo) error {
 			return fmt.Errorf("%v: %w", command, err)
 		}
 
-		err = todo.SaveTodos(filename, items)
+		err = todo.SaveLocal(filename, items)
 		if err != nil {
 			return fmt.Errorf("%v: %w", command, err)
 		}

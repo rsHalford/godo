@@ -51,7 +51,7 @@ var listCmd = &cobra.Command{
 func listRun(cmd *cobra.Command, args []string) error {
 	var command string = "list"
 
-	items, err := todo.GetTodos()
+	items, err := todo.Todos()
 	if err != nil {
 		return fmt.Errorf("%v: %w", command, err)
 	}

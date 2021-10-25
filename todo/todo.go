@@ -17,15 +17,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package todo
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/fs"
 	"os"
 	"strconv"
 
 	"github.com/rsHalford/godo/config"
 )
 
+// Todo struct defines the key:value pair types and JSON layout.
 type Todo struct {
 	ID       int    `json:"id"`
 	Title    string `json:"title"`
@@ -35,25 +34,15 @@ type Todo struct {
 	Status   bool `json:"status"`
 }
 
-const perm fs.FileMode = 0o600
-
-func SaveTodos(filename string, items []Todo) error {
-	data, err := json.Marshal(items)
-	if err != nil {
-		return fmt.Errorf("encoding JSON: %w", err)
-	}
-
-	err = os.WriteFile(filename, data, perm)
-	if err != nil {
-		return fmt.Errorf("writing to %v: %w", filename, err)
-	}
-
-	return nil
-}
-
-func GetTodos() ([]Todo, error) {
-	if config.GetString("goapi_api") != "" {
-		items, err := GetRemoteTodos(config.GetString("goapi_api"), config.GetString("goapi_username"), config.GetString("goapi_password"))
+// Todos determines whether to retrieve todo data from a GoDo API or locally.
+// If the data is from a remote source, it will return the todo items by using
+// the user defined configuration file. Otherwise, it will get the data from
+// the system.
+func Todos() ([]Todo, error) {
+	// If the configuration file has an API defined, it will attempt
+	// to parse the JSON response body and assign a position value to each item.
+	if config.Value("goapi_api") != "" {
+		items, err := RemoteTodos(config.Value("goapi_api"), config.Value("goapi_username"), config.Value("goapi_password"))
 		if err != nil {
 			return nil, fmt.Errorf("fetching remote todos: %w", err)
 		}
@@ -61,11 +50,14 @@ func GetTodos() ([]Todo, error) {
 		return items, nil
 	}
 
+	// The dataFile variable is assigned using the LocalTodos() function.
 	dataFile, err := LocalTodos()
 	if err != nil {
 		return nil, fmt.Errorf("local filepath: %w", err)
 	}
 
+	// If dataFile represents a filepath that does not exist on the system,
+	// one will be created.
 	if _, err = os.Stat(dataFile); os.IsNotExist(err) {
 		var f *os.File
 
@@ -76,13 +68,17 @@ func GetTodos() ([]Todo, error) {
 
 		defer f.Close()
 
+		// The file is created with empty square-brackets.
+		// To be read successfully as an empty JSON file.
 		_, err = f.Write([]byte("[]"))
 		if err != nil {
 			return nil, fmt.Errorf("write to empty file: %w", err)
 		}
 	}
 
-	items, err := ReadTodos(dataFile)
+	// The contents of the local file will have it's items parsed,
+	// and a position value for ordering.
+	items, err := ReadLocal(dataFile)
 	if err != nil {
 		return nil, fmt.Errorf("reading from %v: %w", dataFile, err)
 	}
@@ -90,47 +86,15 @@ func GetTodos() ([]Todo, error) {
 	return items, nil
 }
 
-func LocalTodos() (filename string, err error) {
-	if config.GetString("dataFile") != "" {
-		dataFile := config.GetString("dataFile")
-
-		return dataFile, nil
-	} else {
-		home, err := os.UserHomeDir()
-		if err != nil {
-			return "", fmt.Errorf("user home directory: %w", err)
-		}
-
-		dataFile := home + "/.local/share/godo/godos.json"
-
-		return dataFile, nil
-	}
-}
-
-func ReadTodos(filename string) (items []Todo, err error) {
-	bodyBytes, err := os.ReadFile(filename)
-	if err != nil {
-		return nil, fmt.Errorf("reading %v: %w", filename, err)
-	}
-
-	err = json.Unmarshal(bodyBytes, &items)
-	if err != nil {
-		return nil, fmt.Errorf("parsing JSON: %w", err)
-	}
-
-	for i := range items {
-		items[i].position = i + 1
-	}
-
-	return
-}
-
-func (i *Todo) Prioritise(pri bool) {
-	if pri {
+// Prioritise will set the priority value of the Todo item as true.
+func (i *Todo) Prioritise(priority bool) {
+	if priority {
 		i.Priority = true
 	}
 }
 
+// PriorityFlag will return a yellow foreground ANSI escape code,
+// if an item set as a priority.
 func (i *Todo) PriorityFlag() (color string) {
 	if i.Priority {
 		return "\033[33m"
@@ -139,6 +103,8 @@ func (i *Todo) PriorityFlag() (color string) {
 	return
 }
 
+// StatusFlag will return a strike-through ANSI escape code,
+// if an item set as a done.
 func (i *Todo) StatusFlag() (strike string) {
 	if i.Status {
 		return "\033[9m"
@@ -147,10 +113,15 @@ func (i *Todo) StatusFlag() (strike string) {
 	return
 }
 
+// Label will convert the position integer value of the item to a string.
+// To allow the command-line interface to print it's value.
 func (i *Todo) Label() (position string) {
 	return strconv.Itoa(i.position)
 }
 
+// Order helps sort to organise the todo items for printing.
+// Items are separated by their status, then priority,
+// and then finally in ascending position order.
 type Order []Todo
 
 func (s Order) Len() int {

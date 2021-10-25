@@ -50,8 +50,8 @@ func handleRequests(port string) {
 
 func guiRun(cmd *cobra.Command, args []string) {
 	port := "5000"
-	if config.GetString("gui_port") != "" {
-		port = config.GetString("gui_port")
+	if config.Value("gui_port") != "" {
+		port = config.Value("gui_port")
 	}
 	fmt.Printf("\033[34m::\033[0m GoDo GUI is currently running on \033[33m\033[4mhttp://localhost:%s\033[0m\n", port)
 	handleRequests(port)
