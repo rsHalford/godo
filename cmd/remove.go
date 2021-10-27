@@ -39,27 +39,27 @@ var removeCmd = &cobra.Command{
 func removeRun(cmd *cobra.Command, args []string) error {
 	var command string = "remove"
 
-	items, err := todo.Todos()
+	items, err := todo.Todos() // Get todo items from the configured source.
 	if err != nil {
 		return fmt.Errorf("%v: %w", command, err)
 	}
 
-	i, err := strconv.Atoi(args[0])
+	i, err := strconv.Atoi(args[0]) // Convert todo id argument to an integer.
 	if err != nil {
 		return fmt.Errorf("%v: \"%v\" %w", command, args[0], err)
 	}
 
-	if i > 0 && i <= len(items) {
+	if i > 0 && i <= len(items) { // Validate id argument.
 		var filename string
 		var isConfirmed bool
 
+		// Check for confirmation of the todo's removal.
 		if isConfirmed, err = confirmRemove(items[i-1].Title); isConfirmed {
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 
-			fmt.Printf("%q %v\n", items[i-1].Title, "deleted")
-
+			// Delete from an API if one is set in the configuration file.
 			if config.Value("goapi_api") != "" {
 				err = todo.DeleteRemote(
 					config.Value("goapi_api"),
@@ -70,23 +70,27 @@ func removeRun(cmd *cobra.Command, args []string) error {
 				if err != nil {
 					return fmt.Errorf("%v: %w", command, err)
 				}
-
-				sort.Sort(todo.Order(items))
 			} else {
+				// Remove the todo item from the items slice, by copying the
+				// higher-numbered elements down by one.
 				items = items[:i-1+copy(items[i-1:], items[i:])]
 
-				sort.Sort(todo.Order(items))
+				sort.Sort(todo.Order(items)) // Sort the items before saving.
 
+				// Pass the filename of the local todo store to the filename variable.
 				filename, err = todo.LocalTodos()
 				if err != nil {
 					return fmt.Errorf("%v: %w", command, err)
 				}
 
+				// Using SaveLocal to add the new todo(s) to the local JSON store.
 				err = todo.SaveLocal(filename, items)
 				if err != nil {
 					return fmt.Errorf("%v: %w", command, err)
 				}
 			}
+
+			fmt.Printf("\n%q %v\n", items[i-1].Title, "deleted")
 		}
 	} else {
 		return fmt.Errorf("%v: \"%v\" %w", command, i, err)
@@ -95,15 +99,18 @@ func removeRun(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// confirmRemove prompts the user to confirm that they want to remove the todo.
 func confirmRemove(title string) (bool, error) {
 	var response string
 
+	// Print which todo is being removed and prompt for confirmation from the user.
 	fmt.Printf("\033[34m::\033[0m Removing todo...\n\n\033[33m-->\033[0m %q\n\n\033[32m::\033[0m Proceed with removal? (y/n): ", title)
 
 	if _, err := fmt.Scanln(&response); err != nil {
 		return false, fmt.Errorf("reading response: %w", err)
 	}
 
+	// Convert the user input to lower case and return the appropriate boolean response.
 	switch strings.ToLower(response) {
 	case "y", "yes":
 		return true, nil
@@ -112,6 +119,7 @@ func confirmRemove(title string) (bool, error) {
 	default:
 		fmt.Println("Please type (y)es or (n)o and press enter:")
 
+		// Rerun the confirmRemove function if the user input is invalid.
 		return confirmRemove(title)
 	}
 }

@@ -35,17 +35,17 @@ func LocalTodos() (filename string, err error) {
 		dataFile := config.Value("dataFile")
 
 		return dataFile, nil
-	} else {
-		home, err := os.UserHomeDir()
-		if err != nil {
-			return "", fmt.Errorf("user home directory: %w", err)
-		}
-
-		// Use default value for dataFile if configuration key is not set.
-		dataFile := home + "/.local/share/godo/godos.json"
-
-		return dataFile, nil
 	}
+
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", fmt.Errorf("user home directory: %w", err)
+	}
+
+	// Use default value for dataFile if configuration key is not set.
+	dataFile := home + "/.local/share/godo/godos.json"
+
+	return dataFile, nil
 }
 
 // ReadLocal reads the contents of the file provided. Parsing the items

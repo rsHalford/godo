@@ -40,15 +40,19 @@ provided string`,
 func findRun(cmd *cobra.Command, args []string) error {
 	var command string = "find"
 
-	items, err := todo.Todos()
+	items, err := todo.Todos() // Get todo items from the configured source.
 	if err != nil {
 		return fmt.Errorf("%v: %w", command, err)
 	}
 
-	sort.Sort(todo.Order(items))
+	sort.Sort(todo.Order(items)) // Sort the items for terminal printing.
 
+	// Create a new writer with defined formatting.
 	w := tabwriter.NewWriter(os.Stdout, minwidth, tabwidth, padding, padchar, flags)
 
+	// For every argument string, go through every todo item and check both
+	// the title and body for the string. Then print the todo item title -
+	// exclusively if the --title flag is used - and also print the body.
 	for _, a := range args {
 		for _, i := range items {
 			if strings.Contains(i.Body, a) || strings.Contains(i.Title, a) {
@@ -68,5 +72,7 @@ func findRun(cmd *cobra.Command, args []string) error {
 
 func init() {
 	rootCmd.AddCommand(findCmd)
+
+	// The --title flag argument determines if only the item title will be printed.
 	findCmd.Flags().BoolVarP(&titleOpt, "title", "t", false, "only show item titles")
 }

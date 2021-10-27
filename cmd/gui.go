@@ -35,6 +35,7 @@ var guiCmd = &cobra.Command{
 	Run:   guiRun,
 }
 
+// guiHandler gets the GUI filesystem's public directory to be served.
 func guiHandler() http.Handler {
 	fsys := fs.FS(gui.Gui)
 	contentStatic, _ := fs.Sub(fsys, "public")
@@ -42,6 +43,7 @@ func guiHandler() http.Handler {
 	return http.FileServer(http.FS(contentStatic))
 }
 
+// handleRequests serves the GUI handler on the given port.
 func handleRequests(port string) {
 	mux := http.NewServeMux()
 	mux.Handle("/", guiHandler())
@@ -49,11 +51,14 @@ func handleRequests(port string) {
 }
 
 func guiRun(cmd *cobra.Command, args []string) {
+	// Port used is set to 5000, unless assigned in the configuration file.
 	port := "5000"
 	if config.Value("gui_port") != "" {
 		port = config.Value("gui_port")
 	}
+
 	fmt.Printf("\033[34m::\033[0m GoDo GUI is currently running on \033[33m\033[4mhttp://localhost:%s\033[0m\n", port)
+
 	handleRequests(port)
 }
 
