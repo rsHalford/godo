@@ -37,20 +37,24 @@ var getCmd = &cobra.Command{
 func getRun(cmd *cobra.Command, args []string) error {
 	var command string = "get"
 
-	items, err := todo.Todos()
+	items, err := todo.Todos() // Get todo items from the configured source.
 	if err != nil {
 		return fmt.Errorf("%v: %w", command, err)
 	}
 
+	// Create a new writer with defined formatting.
 	w := tabwriter.NewWriter(os.Stdout, minwidth, tabwidth, padding, padchar, flags)
 
-	i, err := strconv.Atoi(args[0])
+	i, err := strconv.Atoi(args[0]) // Convert todo id argument to an integer.
 	if err != nil {
 		return fmt.Errorf("%v: \"%v\" %w", command, args[0], err)
 	}
 
-	if i > 0 && i <= len(items) {
+	if i > 0 && i <= len(items) { // Validate id argument.
 		item := items[i-1]
+
+		// Print only the body of the item if the --body flag is given.
+		// Otherwise print the position id and title too.
 		if bodyOpt {
 			fmt.Fprintln(w, item.Body)
 		} else {
@@ -67,5 +71,7 @@ func getRun(cmd *cobra.Command, args []string) error {
 
 func init() {
 	rootCmd.AddCommand(getCmd)
+
+	// The --body flag argument determines if only the item body will be printed.
 	getCmd.Flags().BoolVarP(&bodyOpt, "body", "b", false, "get only item body")
 }

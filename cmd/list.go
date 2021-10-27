@@ -51,15 +51,17 @@ var listCmd = &cobra.Command{
 func listRun(cmd *cobra.Command, args []string) error {
 	var command string = "list"
 
-	items, err := todo.Todos()
+	items, err := todo.Todos() // Get todo items from the configured source.
 	if err != nil {
 		return fmt.Errorf("%v: %w", command, err)
 	}
 
-	sort.Sort(todo.Order(items))
+	sort.Sort(todo.Order(items)) // Sort the items for terminal printing.
 
+	// Create a new writer with defined formatting.
 	w := tabwriter.NewWriter(os.Stdout, minwidth, tabwidth, padding, padchar, flags)
 
+	// Print as a list each todo item that qualifies via the flag arguments given.
 	for _, i := range items {
 		if allOpt || i.Status == doneOpt {
 			fmt.Fprintln(w, "\033[90m"+i.Label()+"\t\t"+"\033[0m"+i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m")
@@ -73,6 +75,8 @@ func listRun(cmd *cobra.Command, args []string) error {
 
 func init() {
 	rootCmd.AddCommand(listCmd)
+
+	// The --done/--all flag arguments determine which items to list.
 	listCmd.Flags().BoolVarP(&doneOpt, "done", "d", false, "show completed todos")
 	listCmd.Flags().BoolVarP(&allOpt, "all", "a", false, "show all todos")
 }

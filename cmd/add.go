@@ -38,16 +38,21 @@ var priority bool
 func addRun(cmd *cobra.Command, args []string) error {
 	var command string = "add"
 
-	items, err := todo.Todos()
+	items, err := todo.Todos() // Get todo items from the configured source.
 	if err != nil {
 		return fmt.Errorf("%v: %w", command, err)
 	}
 
+	// Each argument given to the add command will be assigned to an individual item.
 	for _, x := range args {
 		item := todo.Todo{Title: x}
 
+		// Mark the item's priority as true, if the --priority flag is provided.
+		// Currently this flag affects all new todo items being declared.
 		item.Prioritise(priority)
 
+		// This will check whether the user has set an API address for
+		// the new todo to be added. And carry out the creation if true.
 		if config.Value("goapi_api") != "" {
 			err = todo.CreateRemote(config.Value("goapi_api"), config.Value("goapi_username"), config.Value("goapi_password"), item)
 			if err != nil {
@@ -55,17 +60,20 @@ func addRun(cmd *cobra.Command, args []string) error {
 			}
 		}
 
-		items = append(items, item)
+		items = append(items, item) // For saving to the local store.
 	}
 
+	// With the API url address left empty, it will save the new todo(s) locally.
 	if config.Value("goapi_api") == "" {
 		var filename string
 
+		// Pass the filename of the local todo store to the filename variable.
 		filename, err = todo.LocalTodos()
 		if err != nil {
 			return fmt.Errorf("%v: %w", command, err)
 		}
 
+		// Using SaveLocal to add the new todo(s) to the local JSON store.
 		err := todo.SaveLocal(filename, items)
 		if err != nil {
 			return fmt.Errorf("%v: %w", command, err)
@@ -77,5 +85,7 @@ func addRun(cmd *cobra.Command, args []string) error {
 
 func init() {
 	rootCmd.AddCommand(addCmd)
+
+	// The priority boolean flag is used to set the priority object of the new todo(s) as true.
 	addCmd.Flags().BoolVarP(&priority, "priority", "p", false, "assign priority to your todo")
 }

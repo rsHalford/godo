@@ -54,7 +54,7 @@ func CreateRemote(url, username, password string, item Todo) error {
 	return nil
 }
 
-// ReadTodos sends a request to the API url with basic authentication.
+// RemoteTodos sends a request to the API url with basic authentication.
 // And makes a GET request, which returns a response body. That is read by
 // parsing the items from the JSON, and assigning a position value to each item.
 func RemoteTodos(url, username, password string) ([]Todo, error) {

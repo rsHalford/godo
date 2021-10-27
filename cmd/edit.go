@@ -18,7 +18,6 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"strconv"
@@ -46,17 +45,19 @@ var (
 func editRun(cmd *cobra.Command, args []string) error {
 	var command string = "edit"
 
-	items, err := todo.Todos()
+	items, err := todo.Todos() // Get todo items from the configured source.
 	if err != nil {
 		return fmt.Errorf("%v: %w", command, err)
 	}
 
-	i, err := strconv.Atoi(args[0])
+	i, err := strconv.Atoi(args[0]) // Convert todo id argument to an integer.
 	if err != nil {
 		return fmt.Errorf("%v: \"%v\" %w", command, args[0], err)
 	}
 
-	if i > 0 && i <= len(items) {
+	if i > 0 && i <= len(items) { // Validate id argument.
+		// Perform the edit on either the title or body. Depending on
+		// which arguments or configuration settings have been set.
 		switch {
 		case titleOpt:
 			items[i-1].Title, err = createTemp([]byte(items[i-1].Title))
@@ -64,7 +65,7 @@ func editRun(cmd *cobra.Command, args []string) error {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 
-			err = Update(i, command, items)
+			err = updateTodo(i, command, items)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
@@ -74,7 +75,7 @@ func editRun(cmd *cobra.Command, args []string) error {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 
-			err = Update(i, command, items)
+			err = updateTodo(i, command, items)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
@@ -84,7 +85,7 @@ func editRun(cmd *cobra.Command, args []string) error {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 
-			err = Update(i, command, items)
+			err = updateTodo(i, command, items)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
@@ -96,37 +97,53 @@ func editRun(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func createTemp(text []byte) (file string, err error) {
-	tmpFile, err := ioutil.TempFile(os.TempDir(), "godo-")
+// createTemp creates a temporary file within the system's temporary directory.
+// Writes the current title or body to the file for editing. Then reads the
+// file, converting the edited data to be returned, before deleting it.
+func createTemp(text []byte) (string, error) {
+	f, err := os.CreateTemp(os.TempDir(), "godo-")
 	if err != nil {
 		return "", fmt.Errorf("create temporary file: %w", err)
 	}
-	defer os.Remove(tmpFile.Name())
-	if _, err = tmpFile.Write(text); err != nil {
+
+	defer f.Close()           // Close the file at the end of the function.
+	defer os.Remove(f.Name()) // Remove the file at the end of the function.
+
+	_, err = f.Write(text) // Add the current title/body to the temporary file.
+	if err != nil {
 		return "", fmt.Errorf("write temporary file: %w", err)
 	}
-	if err = editTemp(tmpFile.Name()); err != nil {
+
+	err = editTemp(f.Name()) // Open the file with an editor.
+	if err != nil {
 		return "", fmt.Errorf("edit temporary file: %w", err)
 	}
-	data, err := ioutil.ReadFile(tmpFile.Name())
+
+	data, err := os.ReadFile(f.Name()) // Read the edited file contents to data.
 	if err != nil {
 		return "", fmt.Errorf("read temporary file: %w", err)
 	}
-	todo := string(data)
-	file = strings.TrimSuffix(todo, "\n")
-	if err := tmpFile.Close(); err != nil {
-		return "", fmt.Errorf("close temporary file: %w", err)
-	}
 
-	return
+	todo := string(data) // Convert data []byte to string.
+
+	file := strings.TrimSuffix(todo, "\n") // Remove any end of file whitespace.
+
+	return file, nil
 }
 
+// editTemp opens a temporary file with an editor.
 func editTemp(filename string) error {
-	editor := defaultEditor()
+	editor, err := defaultEditor() // Identify an executable editor's path.
+	if err != nil {
+		return fmt.Errorf("editTemp: %w", err)
+	}
+
 	executable, err := exec.LookPath(editor)
 	if err != nil {
-		return fmt.Errorf("execute default editor: %w", err)
+		return fmt.Errorf("find editor executable path: %w", err)
 	}
+
+	// Run the identified editor's executable, with the provided file.
 	cmd := exec.Command(executable, filename)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
@@ -135,19 +152,28 @@ func editTemp(filename string) error {
 	return cmd.Run()
 }
 
-func defaultEditor() (editor string) {
+// defaultEditor determines which editor has been chosen within the configuration file.
+// If not specified, the system $EDITOR environment variable will be used.
+func defaultEditor() (string, error) {
 	if config.Value("editing_editor") == "" {
-		editor = os.Getenv("EDITOR")
+		editor := os.Getenv("EDITOR")
 
-		return
+		// If the system environment variable is also not set, inform the user.
+		if editor == "" {
+			return "", fmt.Errorf("environment variable $EDITOR not set")
+		}
+
+		return editor, nil
 	}
-	editor = config.Value("editing_editor")
+	editor := config.Value("editing_editor")
 
-	return
+	return editor, nil
 }
 
 func init() {
 	rootCmd.AddCommand(editCmd)
+
+	// The --title/--body flag arguments determine which part of the todo to edit.
 	editCmd.Flags().BoolVarP(&titleOpt, "title", "t", false, "edit item title")
 	editCmd.Flags().BoolVarP(&bodyOpt, "body", "b", false, "edit item body")
 }
