@@ -40,6 +40,7 @@ var editCmd = &cobra.Command{
 var (
 	titleOpt bool
 	bodyOpt  bool
+	extOpt   string
 )
 
 func editRun(cmd *cobra.Command, args []string) error {
@@ -101,7 +102,9 @@ func editRun(cmd *cobra.Command, args []string) error {
 // Writes the current title or body to the file for editing. Then reads the
 // file, converting the edited data to be returned, before deleting it.
 func createTemp(text []byte) (string, error) {
-	f, err := os.CreateTemp(os.TempDir(), "godo-")
+	ext := tempFiletype() // Check and return filetype extension if set.
+
+	f, err := os.CreateTemp(os.TempDir(), "godo-"+ext)
 	if err != nil {
 		return "", fmt.Errorf("create temporary file: %w", err)
 	}
@@ -170,10 +173,31 @@ func defaultEditor() (string, error) {
 	return editor, nil
 }
 
+// tempFiletype will check if there is a string variable flag set for the tempFiletype
+// before checking the config.yaml. Returning a formatted extension string. If neither
+// is set an empty string is returned.
+func tempFiletype() (extension string) {
+	switch {
+	case extOpt != "":
+		extension = "*." + extOpt
+
+		return
+
+	case config.Value("editing_filetype") != "":
+		extension = "*." + config.Value("editing_filetype")
+
+		return
+
+	default:
+		return ""
+	}
+}
+
 func init() {
 	rootCmd.AddCommand(editCmd)
 
 	// The --title/--body flag arguments determine which part of the todo to edit.
 	editCmd.Flags().BoolVarP(&titleOpt, "title", "t", false, "edit item title")
 	editCmd.Flags().BoolVarP(&bodyOpt, "body", "b", false, "edit item body")
+	editCmd.Flags().StringVarP(&extOpt, "extension", "e", "", "set temporary filetype extension")
 }

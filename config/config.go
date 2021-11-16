@@ -34,8 +34,9 @@ type Config struct {
 		Username string `yaml:"username" env:"GODO_GOAPI_USERNAME"`
 	} `yaml:"goapi" env:"GODO_GOAPI"`
 	Editing struct {
-		Default string `yaml:"default" env:"GODO_EDITING_DEFAULT"`
-		Editor  string `yaml:"editor" env:"GODO_EDITING_EDITOR"`
+		Default  string `yaml:"default" env:"GODO_EDITING_DEFAULT"`
+		Editor   string `yaml:"editor" env:"GODO_EDITING_EDITOR"`
+		Filetype string `yaml:"filetype" env:"GODO_EDITING_FILETYPE"`
 	} `yaml:"editing" env:"GODO_EDITING"`
 	GUI struct {
 		Port string `yaml:"port" env:"GODO_GUI_PORT"`
@@ -87,6 +88,11 @@ func Value(key string) string {
 
 	case "editing_editor":
 		value := cfg.Editing.Editor
+
+		return value
+
+	case "editing_filetype":
+		value := cfg.Editing.Filetype
 
 		return value
 
