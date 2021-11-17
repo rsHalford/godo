@@ -33,7 +33,10 @@ var addCmd = &cobra.Command{
 	RunE:    addRun,
 }
 
-var priority bool
+var (
+	priority bool
+	tagStr   string
+)
 
 func addRun(cmd *cobra.Command, args []string) error {
 	var command string = "add"
@@ -50,6 +53,9 @@ func addRun(cmd *cobra.Command, args []string) error {
 		// Mark the item's priority as true, if the --priority flag is provided.
 		// Currently this flag affects all new todo items being declared.
 		item.Prioritise(priority)
+
+		// Add the given tag to the item, if the --tag flag is provided.
+		item.Tagging(tagStr)
 
 		// This will check whether the user has set an API address for
 		// the new todo to be added. And carry out the creation if true.
@@ -86,6 +92,8 @@ func addRun(cmd *cobra.Command, args []string) error {
 func init() {
 	rootCmd.AddCommand(addCmd)
 
-	// The priority boolean flag is used to set the priority object of the new todo(s) as true.
+	// The --priority boolean flag is used to set the priority object of the new todo(s) as true.
 	addCmd.Flags().BoolVarP(&priority, "priority", "p", false, "assign priority to your todo")
+	// The --tag string flag is used to add a tag to the new todo(s).
+	addCmd.Flags().StringVarP(&tagStr, "tag", "T", "", "add tag to new todo")
 }
