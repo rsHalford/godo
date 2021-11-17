@@ -29,6 +29,7 @@ type Todo struct {
 	ID       int    `json:"id"`
 	Title    string `json:"title"`
 	Body     string `json:"body"`
+	Tag      string `json:"tag"`
 	Priority bool   `json:"priority"`
 	position int
 	Status   bool `json:"status"`
@@ -84,6 +85,19 @@ func Todos() ([]Todo, error) {
 	}
 
 	return items, nil
+}
+
+// Tag will add the tag string for the Todo item.
+func (i *Todo) Tagging(tag string) {
+	if tag != "" {
+		i.Tag = tag
+	}
+}
+
+// TagFlag will return a magenta foreground and italic ANSI escape codes,
+// if an item has a tag.
+func (i *Todo) TagFlag() (color string) {
+	return "\033[3m\033[35m"
 }
 
 // Prioritise will set the priority value of the Todo item as true.

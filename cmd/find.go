@@ -56,10 +56,25 @@ func findRun(cmd *cobra.Command, args []string) error {
 	for _, a := range args {
 		for _, i := range items {
 			if strings.Contains(i.Body, a) || strings.Contains(i.Title, a) {
-				if titleOpt {
-					fmt.Fprintln(w, "\033[90m"+i.Label()+"\t\t"+"\033[0m"+i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m")
-				} else {
-					fmt.Fprintln(w, "\033[90m"+i.Label()+"\t\t"+"\033[0m"+i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m\n"+i.Body+"\n")
+				switch {
+				case tagOpt && titleOpt:
+					fmt.Fprintln(
+						w, "\033[90m"+i.Label()+"\t\t\033[0m"+
+							i.TagFlag()+i.Tag+"\033[0m\t\t"+
+							i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m")
+				case titleOpt:
+					fmt.Fprintln(
+						w, "\033[90m"+i.Label()+"\t\t\033[0m"+
+							i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m")
+				case tagOpt:
+					fmt.Fprintln(
+						w, "\033[90m"+i.Label()+"\t\t\033[0m"+
+							i.TagFlag()+i.Tag+"\033[0m\t\t"+
+							i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m\n"+i.Body+"\n")
+				default:
+					fmt.Fprintln(
+						w, "\033[90m"+i.Label()+"\t\t\033[0m"+
+							i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m\n"+i.Body+"\n")
 				}
 			}
 		}
@@ -75,4 +90,6 @@ func init() {
 
 	// The --title flag argument determines if only the item title will be printed.
 	findCmd.Flags().BoolVarP(&titleOpt, "title", "t", false, "only show item titles")
+	// The --tag flag determines whether the tag for each todo should be shown.
+	findCmd.Flags().BoolVarP(&tagOpt, "tag", "T", false, "show the todo's tag")
 }

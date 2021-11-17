@@ -29,6 +29,7 @@ import (
 var (
 	doneOpt bool
 	allOpt  bool
+	tagOpt  bool
 )
 
 const (
@@ -64,7 +65,11 @@ func listRun(cmd *cobra.Command, args []string) error {
 	// Print as a list each todo item that qualifies via the flag arguments given.
 	for _, i := range items {
 		if allOpt || i.Status == doneOpt {
-			fmt.Fprintln(w, "\033[90m"+i.Label()+"\t\t"+"\033[0m"+i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m")
+			if tagOpt {
+				fmt.Fprintln(w, "\033[90m"+i.Label()+"\t\t\033[0m"+i.TagFlag()+i.Tag+"\033[0m\t\t"+i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m")
+			} else {
+				fmt.Fprintln(w, "\033[90m"+i.Label()+"\t\t\033[0m"+i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m")
+			}
 		}
 	}
 
@@ -79,4 +84,6 @@ func init() {
 	// The --done/--all flag arguments determine which items to list.
 	listCmd.Flags().BoolVarP(&doneOpt, "done", "d", false, "show completed todos")
 	listCmd.Flags().BoolVarP(&allOpt, "all", "a", false, "show all todos")
+	// The --tag flag determines whether the tag for each todo should be shown.
+	listCmd.Flags().BoolVarP(&tagOpt, "tag", "T", false, "show the todo's tag")
 }
