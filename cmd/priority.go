@@ -43,7 +43,7 @@ func priorityRun(cmd *cobra.Command, args []string) error {
 
 	i, err := strconv.Atoi(args[0]) // Convert todo id argument to an integer.
 	if err != nil {
-		return fmt.Errorf("%v: \"%v\" %w", command, args[0], err)
+		return fmt.Errorf("%v: %q %w", command, args[0], err)
 	}
 
 	if i > 0 && i <= len(items) { // Validate id argument.
@@ -69,7 +69,7 @@ func priorityRun(cmd *cobra.Command, args []string) error {
 			}
 		}
 	} else {
-		return fmt.Errorf("%v: \"%v\" %w", command, i, err)
+		return fmt.Errorf("%v: %q %w", command, i, err)
 	}
 
 	return nil
