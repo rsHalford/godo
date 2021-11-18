@@ -59,21 +59,21 @@ func findRun(cmd *cobra.Command, args []string) error {
 				switch {
 				case tagOpt && titleOpt:
 					fmt.Fprintln(
-						w, "\033[90m"+i.Label()+"\t\t\033[0m"+
-							i.TagFlag()+i.Tag+"\033[0m\t\t"+
+						w, "\033[90m"+i.Label()+"\t\033[0m"+
+							i.TagFlag()+i.Tag+"\033[0m\t"+
 							i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m")
 				case titleOpt:
 					fmt.Fprintln(
-						w, "\033[90m"+i.Label()+"\t\t\033[0m"+
+						w, "\033[90m"+i.Label()+"\t\033[0m"+
 							i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m")
 				case tagOpt:
 					fmt.Fprintln(
-						w, "\033[90m"+i.Label()+"\t\t\033[0m"+
-							i.TagFlag()+i.Tag+"\033[0m\t\t"+
+						w, "\033[90m"+i.Label()+"\t\033[0m"+
+							i.TagFlag()+i.Tag+"\033[0m\t"+
 							i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m\n"+i.Body+"\n")
 				default:
 					fmt.Fprintln(
-						w, "\033[90m"+i.Label()+"\t\t\033[0m"+
+						w, "\033[90m"+i.Label()+"\t\033[0m"+
 							i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m\n"+i.Body+"\n")
 				}
 			}

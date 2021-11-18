@@ -61,13 +61,13 @@ func getRun(cmd *cobra.Command, args []string) error {
 			fmt.Fprintln(w, item.Body)
 		case tagOpt:
 			fmt.Fprintln(
-				w, "\033[90m"+item.Label()+"\t\t\033[0m"+
-					item.TagFlag()+item.Tag+"\033[0m\t\t"+
+				w, "\033[90m"+item.Label()+"\t\033[0m"+
+					item.TagFlag()+item.Tag+"\033[0m\t"+
 					item.PriorityFlag()+item.StatusFlag()+
 					item.Title+"\033[0m\n"+item.Body)
 		default:
 			fmt.Fprintln(
-				w, "\033[90m"+item.Label()+"\t\t\033[0m"+
+				w, "\033[90m"+item.Label()+"\t\033[0m"+
 					item.PriorityFlag()+item.StatusFlag()+
 					item.Title+"\033[0m\n"+item.Body)
 		}
