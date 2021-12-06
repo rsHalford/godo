@@ -1,0 +1,34 @@
+style: github
+template: CHANGELOG.tpl.md
+info:
+  title: CHANGELOG
+  repository_url: https://github.com/rsHalford/godo
+options:
+  commits:
+    filters:
+      Type:
+        - feat
+        - fix
+        - refactor
+        - style
+        - test
+        - perf
+        - chore
+  commit_groups:
+    title_maps:
+      feat: Features
+      fix: Bug Fixes
+      refactor: Code Refactoring
+      style: Styling
+      test: Testing
+      perf: Performance Improvements
+      chore: Chores
+  header:
+    pattern: "^(\\w*)(?:\\(([\\w\\$\\.\\-\\*\\s]*)\\))?\\:\\s(.*)$"
+    pattern_maps:
+      - Type
+      - Scope
+      - Subject
+  notes:
+    keywords:
+      - BREAKING CHANGE
