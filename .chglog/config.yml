@@ -13,6 +13,7 @@ options:
         - style
         - test
         - perf
+        - ci
         - chore
   commit_groups:
     title_maps:
@@ -22,6 +23,7 @@ options:
       style: Styling
       test: Testing
       perf: Performance Improvements
+      ci: CI
       chore: Chores
   header:
     pattern: "^(\\w*)(?:\\(([\\w\\$\\.\\-\\*\\s]*)\\))?\\:\\s(.*)$"
