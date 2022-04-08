@@ -1,5 +1,25 @@
 # CHANGELOG
 
+<a name="v0.10.0"></a>
+## [v0.10.0](https://github.com/rsHalford/godo/compare/v0.9.2...v0.10.0)
+
+> 2022-04-08
+
+### Bug Fixes
+
+* removed uneeded config file group env tags
+
+### Chores
+
+* **docs:** 🎁 added CONTRIBUTING form
+* **docs:** 📜 added CI section for CONTRIBUTING
+* **docs:** 📜 setup CHANGELOG generator
+
+### Features
+
+* **config:** create config.yaml if it doesn't exist
+
+
 <a name="v0.9.2"></a>
 ## [v0.9.2](https://github.com/rsHalford/godo/compare/v0.9.1...v0.9.2)
 
