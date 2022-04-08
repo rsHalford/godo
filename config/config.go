@@ -18,6 +18,7 @@ package config
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 
 	"github.com/ilyakaznacheev/cleanenv"
@@ -45,16 +46,99 @@ type Config struct {
 
 var cfg Config
 
-// Value takes a key and returns the matching value from the config.yaml.
-func Value(key string) string {
+// createCfgFile takes the configuration file path to determine if it exists,
+// creating the file if missing.
+func createCfgFile(cfgFile string) error {
+	var f *os.File
+
+	// If cfgFile represents a filepath that does not exist on the system,
+	// one will be created.
+	if _, err := os.Stat(cfgFile); os.IsNotExist(err) {
+		f, err = os.Create(cfgFile)
+		if err != nil {
+			return fmt.Errorf("creating %v: %w", cfgFile, err)
+		}
+
+		defer f.Close()
+
+		// The file is created with boilerplate for configuration options.
+		configBoilerplate := fmt.Sprintf(`general:
+  # change the file path for saving local notes (defaults to "%s" if unset)
+  dataFile: ""
+
+# options to define how to access a hosted godo-api for remote notes
+godo-api:
+  api: ""
+  password: ""
+  username: ""
+
+# set preferences for editing notes
+editing:
+  # default to either editing the note title or body (defaults to "title" if unset)
+  default: "body"
+  # determine which editor to make edits in (defaults to the environment's $EDITOR if unset)
+  editor: "vim"
+  # append an extension to the temporary file's buffer for editing (e.g. "org", "md", "txt")
+  filetype: "md"
+
+# settings for the GUI client
+gui:
+  # choose the port to serve the application (defaults to port 5000 if unset)
+  port: ""`, cfgFile)
+
+		_, err = f.WriteString(configBoilerplate)
+		if err != nil {
+			return fmt.Errorf("write to empty file: %w", err)
+		}
+	}
+
+	return nil
+}
+
+// defineConfig assigns the file path for the configuration file, before checking
+// the existence of the file and creating it if it doesn't exist.
+func defineConfig() (cfgPath string, err error) {
 	cfgDir, err := os.UserConfigDir()
 	if err != nil {
 		fmt.Printf("determining user configuration location: %v", err)
 	}
 
 	// Assign the config.yaml filepath within the default root
-	// directory, to use for user-specific configuration data.
-	cfgPath := cfgDir + "/godo/config.yaml"
+	// directory godo/, to use in the user-specific configuration data.
+	godoCfgDir := cfgDir + "/godo"
+	cfgPath = godoCfgDir + "/config.yaml"
+
+	// Create the configuration directory if it doesn't already exist,
+	// including a configuration file with acceptable options defined.
+	if _, err = os.Stat(godoCfgDir); os.IsNotExist(err) {
+		var perm fs.FileMode = 0o755
+
+		err = os.Mkdir(godoCfgDir, perm)
+		if err != nil {
+			return "", fmt.Errorf("making new directory: %w", err)
+		}
+
+		err = createCfgFile(cfgPath)
+		if err != nil {
+			return "", fmt.Errorf("making new file: %w", err)
+		}
+	}
+
+	// Create a configuration file if the directory is empty.
+	err = createCfgFile(cfgPath)
+	if err != nil {
+		return "", fmt.Errorf("making new file: %w", err)
+	}
+
+	return cfgPath, nil
+}
+
+// Value takes a key and returns the matching value from the config.yaml.
+func Value(key string) string {
+	cfgPath, err := defineConfig()
+	if err != nil {
+		fmt.Printf("finding configuration file: %v", err)
+	}
 
 	if err := cleanenv.ReadConfig(cfgPath, &cfg); err != nil {
 		fmt.Printf("parsing configuration: %v", err)
