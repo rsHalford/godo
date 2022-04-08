@@ -27,20 +27,20 @@ import (
 type Config struct {
 	GENERAL struct {
 		DATA_FILE string `yaml:"dataFile" env:"GODO_GENERAL_DATA_FILE"`
-	} `yaml:"general" env:"GODO_GENERAL"`
+	} `yaml:"general"`
 	GOAPI struct {
 		API      string `yaml:"api" env:"GODO_GOAPI_API"`
 		Password string `yaml:"password" env:"GODO_GOAPI_PASSWORD"`
 		Username string `yaml:"username" env:"GODO_GOAPI_USERNAME"`
-	} `yaml:"goapi" env:"GODO_GOAPI"`
+	} `yaml:"goapi"`
 	Editing struct {
 		Default  string `yaml:"default" env:"GODO_EDITING_DEFAULT"`
 		Editor   string `yaml:"editor" env:"GODO_EDITING_EDITOR"`
 		Filetype string `yaml:"filetype" env:"GODO_EDITING_FILETYPE"`
-	} `yaml:"editing" env:"GODO_EDITING"`
+	} `yaml:"editing"`
 	GUI struct {
 		Port string `yaml:"port" env:"GODO_GUI_PORT"`
-	} `yaml:"gui" env:"GODO_GUI"`
+	} `yaml:"gui"`
 }
 
 var cfg Config
