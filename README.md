@@ -48,7 +48,7 @@ All you need is to have Go [installed](https://go.dev/dl/) to compile GoDo.
 
 ## Installation
 
-To install GoDo, all you have to do is run the `go get` command.
+To install GoDo, all you have to do is run the `go install` command.
 
 ```sh
 $ go install github.com/rsHalford/godo@latest
@@ -65,7 +65,7 @@ Currently you can also set-up a connection to [GoDo-API](https://github.com/rsHa
 ```yaml
 general:
   # change the file path for saving local notes (defaults to "~/.local/share/godo/godos.json" if unset)
-  dataFile: "~/.local/share/godo/godo/json"
+  dataFile: "~/.local/share/godo/godo.json"
 
 # options to define how to access a hosted godo-api for remote notes
 godo-api:
