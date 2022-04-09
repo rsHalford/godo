@@ -7,17 +7,6 @@
 
 ---
 
-# Table of Contents
-
-- [About](#about)
-- [Getting Started](#getting-started)
-  - [Requirements](#requirements)
-  - [Installation](#installation)
-  - [Configuration](#configuration)
-- [Licence](#licence)
-
----
-
 # About
 
 GoDo aims to help you get organised with your tasks. Designed to be simple and accessible.
@@ -28,23 +17,26 @@ Usage:
 
 Available Commands:
   add         add a new todo
+  completion  generate the autocompletion script for the specified shell
   done        toggle todo as done
-  edit        edit a todo
+  edit        edit a todo (default: edit title)
   find        search for a given string
-  help        help about any command
+  get         get a specific todo
+  gui         view GoDo using your browser as a gui
+  help        Help about any command
   list        list your todos
   priority    label a todo as a priority
   remove      remove a todo
+  tag         add a tag to your todo
   version     print godo's version
 
 Flags:
-      --datafile string   data file to store todos
-  -h, --help              help for godo
+  -h, --help   help for godo
 
 Use "godo [command] --help" for more information about a command.
 ```
 
-### Go get things done and checked off the list.
+Go get things done and checked off the list.
 
 ---
 
@@ -52,36 +44,59 @@ Use "godo [command] --help" for more information about a command.
 
 ## Requirements
 
-The best way to ensure GoDo will work on your machine, is to compile it yourself.
-
-- Go (to compile applications)
-
-To do this, all you need is to have Go - [the programming language](https://golang.org/doc/install) - installed on your computer.
+All you need is to have Go [installed](https://go.dev/dl/) to compile GoDo.
 
 ## Installation
 
 To install GoDo, all you have to do is run the `go get` command.
 
 ```sh
-$ go get -u github.com/rsHalford/godo
+$ go install github.com/rsHalford/godo@latest
 ```
 
 ## Configuration
 
-The `config.yaml` can be edited to set-up a connection to [GoAPI](https://github.com/rsHalford/goapi). As well as, select your preferred text editor.
+You can edit the `config.yaml` to set your preferred default settings, helping shorten your most used `godo` arguments. For example you might prefer to use Vim as your favourite terminal editor, with all your notes being done with markdown syntax.
 
-> This file will read from `${XDG_CONFIG_HOME:-$HOME/.config}/godo/config.yaml`.
+On Linux this file will be read from `${XDG_CONFIG_HOME:-$HOME/.config}/godo/config.yaml`.
+
+Currently you can also set-up a connection to [GoDo-API](https://github.com/rsHalford/goapi), or if you prefer to use a local JSON file to store your todo list, just leave the api address blank - `""`.
 
 ```yaml
-username: "admin"
-password: "secret"
-api: "https://example.com/api/v1/todo"
-editor: "vim"
+general:
+  # change the file path for saving local notes (defaults to "~/.local/share/godo/godos.json" if unset)
+  dataFile: "~/.local/share/godo/godo/json"
+
+# options to define how to access a hosted godo-api for remote notes
+godo-api:
+  api: "https://example.com/api/v1/todo"
+  password: "secret"
+  username: "admin"
+
+# set preferences for editing notes
+editing:
+  # default to either editing the note title or body (defaults to "title" if unset)
+  default: "body"
+  # determine which editor to make edits in (defaults to the environment's $EDITOR if unset)
+  editor: "vim"
+  # append an extension to the temporary file's buffer for editing (e.g. "org", "md", "txt")
+  filetype: "md"
+
+# settings for the GUI client
+gui:
+  # choose the port to serve the application (defaults to port 5000 if unset)
+  port: "5000"
 ```
 
-If you prefer to use a local JSON file to store your todo list, leave the api address blank - `""`.
+---
 
-By default, GoDo will use whatever text editor you have set as your system's default - `$EDITOR`.
+# Contributing
+
+To help contribute to GoDo, you could either send in your feature requests as an issue or take it upon yourself to send in a pull request after following the [CONTRIBUTING](https://github.com/rsHalford/godo/blob/main/CONTRIBUTING.md) guide.
+
+My short-term aims are actually to break off the more "advanced/unneeded/complex" features like the GUI and API access. Potentially making them available as separate plugins that can be added with the users discretion, rather than ship GoDo with everything already included.
+
+Thanks in advance for taking an interest!
 
 ---
 
@@ -89,4 +104,4 @@ By default, GoDo will use whatever text editor you have set as your system's def
 
 GoDo is released under the GNU General Public License v3.0.
 
-👉 See [LICENSE](https://github.com/rsHalford/godo/blob/main/LICENSE).
+See [LICENSE](https://github.com/rsHalford/godo/blob/main/LICENSE).
