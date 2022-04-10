@@ -22,7 +22,6 @@ Available Commands:
   edit        edit a todo (default: edit title)
   find        search for a given string
   get         get a specific todo
-  gui         view GoDo using your browser as a gui
   help        Help about any command
   list        list your todos
   priority    label a todo as a priority
@@ -81,11 +80,6 @@ editing:
   editor: "vim"
   # append an extension to the temporary file's buffer for editing (e.g. "org", "md", "txt")
   filetype: "md"
-
-# settings for the GUI client
-gui:
-  # choose the port to serve the application (defaults to port 5000 if unset)
-  port: "5000"
 ```
 
 ---
@@ -95,6 +89,8 @@ gui:
 To help contribute to GoDo, you could either send in your feature requests as an issue or take it upon yourself to send in a pull request after following the [CONTRIBUTING](https://github.com/rsHalford/godo/blob/main/CONTRIBUTING.md) guide.
 
 My short-term aims are actually to break off the more "advanced/unneeded/complex" features like the GUI and API access. Potentially making them available as separate plugins that can be added with the users discretion, rather than ship GoDo with everything already included.
+
+> Currently the *minimal* branch works on implementing these changes.
 
 Thanks in advance for taking an interest!
 
