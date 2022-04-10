@@ -66,7 +66,7 @@ func editRun(cmd *cobra.Command, args []string) error {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 
-			err = updateTodo(command, items)
+			err = updateTodo(i, command, items)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
@@ -76,7 +76,7 @@ func editRun(cmd *cobra.Command, args []string) error {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 
-			err = updateTodo(command, items)
+			err = updateTodo(i, command, items)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
@@ -86,7 +86,7 @@ func editRun(cmd *cobra.Command, args []string) error {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 
-			err = updateTodo(command, items)
+			err = updateTodo(i, command, items)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}

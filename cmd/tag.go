@@ -52,7 +52,7 @@ func tagRun(cmd *cobra.Command, args []string) error {
 
 		fmt.Printf("\033[34m::\033[0m Adding tag...\n\033[33m-->\033[0m %q: \033[3m\033[35m%v\033[0m\n", items[i-1].Title, items[i-1].Tag)
 
-		err = updateTodo(command, items)
+		err = updateTodo(i, command, items)
 		if err != nil {
 			return fmt.Errorf("%v: %w", command, err)
 		}

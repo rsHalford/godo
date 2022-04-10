@@ -18,6 +18,7 @@ package cmd
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
@@ -47,7 +48,9 @@ func addRun(cmd *cobra.Command, args []string) error {
 
 	// Each argument given to the add command will be assigned to an individual item.
 	for _, x := range args {
-		item := todo.Todo{Title: x}
+		var t time.Time = time.Now().UTC()
+
+		item := todo.Todo{Title: x, CreatedAt: t, UpdatedAt: t}
 
 		// Mark the item's priority as true, if the --priority flag is provided.
 		// Currently this flag affects all new todo items being declared.
