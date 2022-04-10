@@ -39,9 +39,6 @@ type Config struct {
 		Editor   string `yaml:"editor" env:"GODO_EDITING_EDITOR"`
 		Filetype string `yaml:"filetype" env:"GODO_EDITING_FILETYPE"`
 	} `yaml:"editing"`
-	GUI struct {
-		Port string `yaml:"port" env:"GODO_GUI_PORT"`
-	} `yaml:"gui"`
 }
 
 var cfg Config
@@ -79,12 +76,7 @@ editing:
   # determine which editor to make edits in (defaults to the environment's $EDITOR if unset)
   editor: "vim"
   # append an extension to the temporary file's buffer for editing (e.g. "org", "md", "txt")
-  filetype: "md"
-
-# settings for the GUI client
-gui:
-  # choose the port to serve the application (defaults to port 5000 if unset)
-  port: ""`, cfgFile)
+  filetype: "md"`, cfgFile)
 
 		_, err = f.WriteString(configBoilerplate)
 		if err != nil {
@@ -177,11 +169,6 @@ func Value(key string) string {
 
 	case "editing_filetype":
 		value := cfg.Editing.Filetype
-
-		return value
-
-	case "gui_port":
-		value := cfg.GUI.Port
 
 		return value
 
