@@ -29,11 +29,6 @@ type Config struct {
 	GENERAL struct {
 		DATA_FILE string `yaml:"dataFile" env:"GODO_GENERAL_DATA_FILE"`
 	} `yaml:"general"`
-	GOAPI struct {
-		API      string `yaml:"api" env:"GODO_GOAPI_API"`
-		Password string `yaml:"password" env:"GODO_GOAPI_PASSWORD"`
-		Username string `yaml:"username" env:"GODO_GOAPI_USERNAME"`
-	} `yaml:"goapi"`
 	Editing struct {
 		Default  string `yaml:"default" env:"GODO_EDITING_DEFAULT"`
 		Editor   string `yaml:"editor" env:"GODO_EDITING_EDITOR"`
@@ -62,12 +57,6 @@ func createCfgFile(cfgFile string) error {
 		configBoilerplate := fmt.Sprintf(`general:
   # change the file path for saving local notes (defaults to "%s" if unset)
   dataFile: ""
-
-# options to define how to access a hosted godo-api for remote notes
-godo-api:
-  api: ""
-  password: ""
-  username: ""
 
 # set preferences for editing notes
 editing:
@@ -139,21 +128,6 @@ func Value(key string) string {
 	switch key {
 	case "dataFile":
 		value := cfg.GENERAL.DATA_FILE
-
-		return value
-
-	case "goapi_api":
-		value := cfg.GOAPI.API
-
-		return value
-
-	case "goapi_password":
-		value := cfg.GOAPI.Password
-
-		return value
-
-	case "goapi_username":
-		value := cfg.GOAPI.Username
 
 		return value
 

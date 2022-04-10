@@ -20,37 +20,23 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/rsHalford/godo/config"
 	"github.com/rsHalford/godo/todo"
 )
 
-// updateTodo will either send the updated item and it's properties to an API
-// or save locally.
-func updateTodo(i int, command string, items []todo.Todo) error {
-	if config.Value("goapi_api") != "" {
-		err := todo.UpdateRemote(
-			config.Value("goapi_api"),
-			config.Value("goapi_username"),
-			config.Value("goapi_password"),
-			fmt.Sprint(items[i-1].ID), items[i-1],
-		)
-		if err != nil {
-			return fmt.Errorf("%v: %w", command, err)
-		}
-	} else {
-		sort.Sort(todo.Order(items)) // Sort the items before saving.
+// updateTodo will send the updated item and it's properties to save locally.
+func updateTodo(command string, items []todo.Todo) error {
+	sort.Sort(todo.Order(items)) // Sort the items before saving.
 
-		// Pass the filename of the local todo store to the filename variable.
-		filename, err := todo.LocalTodos()
-		if err != nil {
-			return fmt.Errorf("%v: %w", command, err)
-		}
+	// Pass the filename of the local todo store to the filename variable.
+	filename, err := todo.LocalTodos()
+	if err != nil {
+		return fmt.Errorf("%v: %w", command, err)
+	}
 
-		// Using SaveLocal to add the new todo(s) to the local JSON store.
-		err = todo.SaveLocal(filename, items)
-		if err != nil {
-			return fmt.Errorf("%v: %w", command, err)
-		}
+	// Using SaveLocal to add the new todo(s) to the local JSON store.
+	err = todo.SaveLocal(filename, items)
+	if err != nil {
+		return fmt.Errorf("%v: %w", command, err)
 	}
 
 	return nil
