@@ -54,7 +54,7 @@ func doneRun(cmd *cobra.Command, args []string) error {
 
 			fmt.Printf("\033[34m::\033[0m Marked done...\n\033[33m-->\033[0m %q\n", items[i-1].Title)
 
-			err = updateTodo(i, command, items)
+			err = updateTodo(command, items)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
@@ -63,7 +63,7 @@ func doneRun(cmd *cobra.Command, args []string) error {
 
 			fmt.Printf("\033[34m::\033[0m Marked active...\n\033[33m-->\033[0m %q\n", items[i-1].Title)
 
-			err = updateTodo(i, command, items)
+			err = updateTodo(command, items)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}

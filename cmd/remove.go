@@ -22,7 +22,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/rsHalford/godo/config"
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
 )
@@ -59,35 +58,22 @@ func removeRun(cmd *cobra.Command, args []string) error {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 
-			// Delete from an API if one is set in the configuration file.
-			if config.Value("goapi_api") != "" {
-				err = todo.DeleteRemote(
-					config.Value("goapi_api"),
-					config.Value("goapi_username"),
-					config.Value("goapi_password"),
-					fmt.Sprint(items[i-1].ID),
-				)
-				if err != nil {
-					return fmt.Errorf("%v: %w", command, err)
-				}
-			} else {
-				// Remove the todo item from the items slice, by copying the
-				// higher-numbered elements down by one.
-				items = items[:i-1+copy(items[i-1:], items[i:])]
+			// Remove the todo item from the items slice, by copying the
+			// higher-numbered elements down by one.
+			items = items[:i-1+copy(items[i-1:], items[i:])]
 
-				sort.Sort(todo.Order(items)) // Sort the items before saving.
+			sort.Sort(todo.Order(items)) // Sort the items before saving.
 
-				// Pass the filename of the local todo store to the filename variable.
-				filename, err = todo.LocalTodos()
-				if err != nil {
-					return fmt.Errorf("%v: %w", command, err)
-				}
+			// Pass the filename of the local todo store to the filename variable.
+			filename, err = todo.LocalTodos()
+			if err != nil {
+				return fmt.Errorf("%v: %w", command, err)
+			}
 
-				// Using SaveLocal to add the new todo(s) to the local JSON store.
-				err = todo.SaveLocal(filename, items)
-				if err != nil {
-					return fmt.Errorf("%v: %w", command, err)
-				}
+			// Using SaveLocal to add the new todo(s) to the local JSON store.
+			err = todo.SaveLocal(filename, items)
+			if err != nil {
+				return fmt.Errorf("%v: %w", command, err)
 			}
 
 			fmt.Printf("\n%q %v\n", items[i-1].Title, "deleted")

@@ -20,8 +20,6 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-
-	"github.com/rsHalford/godo/config"
 )
 
 // Todo struct defines the key:value pair types and JSON layout.
@@ -35,22 +33,9 @@ type Todo struct {
 	Status   bool `json:"status"`
 }
 
-// Todos determines whether to retrieve todo data from a GoDo API or locally.
-// If the data is from a remote source, it will return the todo items by using
-// the user defined configuration file. Otherwise, it will get the data from
-// the system.
+// Todos determines where to retrieve todo data from locally by using the user
+// defined configuration file.
 func Todos() ([]Todo, error) {
-	// If the configuration file has an API defined, it will attempt
-	// to parse the JSON response body and assign a position value to each item.
-	if config.Value("goapi_api") != "" {
-		items, err := RemoteTodos(config.Value("goapi_api"), config.Value("goapi_username"), config.Value("goapi_password"))
-		if err != nil {
-			return nil, fmt.Errorf("fetching remote todos: %w", err)
-		}
-
-		return items, nil
-	}
-
 	// The dataFile variable is assigned using the LocalTodos() function.
 	dataFile, err := LocalTodos()
 	if err != nil {

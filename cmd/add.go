@@ -19,7 +19,6 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/rsHalford/godo/config"
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
 )
@@ -57,33 +56,22 @@ func addRun(cmd *cobra.Command, args []string) error {
 		// Add the given tag to the item, if the --tag flag is provided.
 		item.Tagging(tagStr)
 
-		// This will check whether the user has set an API address for
-		// the new todo to be added. And carry out the creation if true.
-		if config.Value("goapi_api") != "" {
-			err = todo.CreateRemote(config.Value("goapi_api"), config.Value("goapi_username"), config.Value("goapi_password"), item)
-			if err != nil {
-				return fmt.Errorf("%v: %w", command, err)
-			}
-		}
-
-		items = append(items, item) // For saving to the local store.
+		items = append(items, item) // Add the new complete item to items.
 	}
 
-	// With the API url address left empty, it will save the new todo(s) locally.
-	if config.Value("goapi_api") == "" {
-		var filename string
+	// Save the new todo(s) locally.
+	var filename string
 
-		// Pass the filename of the local todo store to the filename variable.
-		filename, err = todo.LocalTodos()
-		if err != nil {
-			return fmt.Errorf("%v: %w", command, err)
-		}
+	// Pass the filename of the local todo store to the filename variable.
+	filename, err = todo.LocalTodos()
+	if err != nil {
+		return fmt.Errorf("%v: %w", command, err)
+	}
 
-		// Using SaveLocal to add the new todo(s) to the local JSON store.
-		err := todo.SaveLocal(filename, items)
-		if err != nil {
-			return fmt.Errorf("%v: %w", command, err)
-		}
+	// Using SaveLocal to add the new todo(s) to the local JSON store.
+	err = todo.SaveLocal(filename, items)
+	if err != nil {
+		return fmt.Errorf("%v: %w", command, err)
 	}
 
 	return nil

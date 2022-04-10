@@ -26,6 +26,7 @@ import (
 )
 
 // rootCmd represents the base command when called without any subcommands.
+// TODO: remove header to an info/man page instead, or just when help is called.
 var rootCmd = &cobra.Command{
 	Use:   "godo",
 	Short: "GoDo is a todo application.",
@@ -59,8 +60,8 @@ func init() {
 // initData checks the configuration file for a location to save todos.
 // Creating a godo directory in the user's home directory, if not set.
 func initData() {
-	// Check config.yaml for user defined API address or local filepath.
-	if config.Value("goapi_api") == "" && config.Value("dataFile") == "" {
+	// Check config.yaml for user defined local filepath.
+	if config.Value("dataFile") == "" {
 		home, err := os.UserHomeDir()
 		if err != nil {
 			fmt.Printf("user home directory: %v", err)
