@@ -51,9 +51,10 @@ func removeRun(cmd *cobra.Command, args []string) error {
 	if i > 0 && i <= len(items) { // Validate id argument.
 		var filename string
 		var isConfirmed bool
+		var title string = items[i-1].Title
 
 		// Check for confirmation of the todo's removal.
-		if isConfirmed, err = confirmRemove(items[i-1].Title); isConfirmed {
+		if isConfirmed, err = confirmRemove(title); isConfirmed {
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
@@ -76,7 +77,7 @@ func removeRun(cmd *cobra.Command, args []string) error {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 
-			fmt.Printf("\n%q %v\n", items[i-1].Title, "deleted")
+			fmt.Printf("\n%q %v\n", title, "deleted")
 		}
 	} else {
 		return fmt.Errorf("%v: %q %w", command, i, err)
