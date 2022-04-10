@@ -20,17 +20,19 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 )
 
 // Todo struct defines the key:value pair types and JSON layout.
 type Todo struct {
-	ID       int    `json:"id"`
-	Title    string `json:"title"`
-	Body     string `json:"body"`
-	Tag      string `json:"tag"`
-	Priority bool   `json:"priority"`
-	position int
-	Status   bool `json:"status"`
+	Title     string    `json:"title"`
+	Body      string    `json:"body"`
+	Tag       string    `json:"tag"`
+	Priority  bool      `json:"priority"`
+	Status    bool      `json:"status"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	position  int
 }
 
 // Todos determines where to retrieve todo data from locally by using the user

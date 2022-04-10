@@ -19,12 +19,15 @@ package cmd
 import (
 	"fmt"
 	"sort"
+	"time"
 
 	"github.com/rsHalford/godo/todo"
 )
 
 // updateTodo will send the updated item and it's properties to save locally.
-func updateTodo(command string, items []todo.Todo) error {
+func updateTodo(i int, command string, items []todo.Todo) error {
+	items[i-1].UpdatedAt = time.Now().UTC()
+
 	sort.Sort(todo.Order(items)) // Sort the items before saving.
 
 	// Pass the filename of the local todo store to the filename variable.
