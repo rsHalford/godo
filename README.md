@@ -59,18 +59,10 @@ You can edit the `config.yaml` to set your preferred default settings, helping s
 
 On Linux this file will be read from `${XDG_CONFIG_HOME:-$HOME/.config}/godo/config.yaml`.
 
-Currently you can also set-up a connection to [GoDo-API](https://github.com/rsHalford/goapi), or if you prefer to use a local JSON file to store your todo list, just leave the api address blank - `""`.
-
 ```yaml
 general:
   # change the file path for saving local notes (defaults to "~/.local/share/godo/godos.json" if unset)
-  dataFile: "~/.local/share/godo/godo.json"
-
-# options to define how to access a hosted godo-api for remote notes
-godo-api:
-  api: "https://example.com/api/v1/todo"
-  password: "secret"
-  username: "admin"
+  dataFile: "~/.local/share/godo/godos.json"
 
 # set preferences for editing notes
 editing:
