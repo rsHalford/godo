@@ -1,5 +1,29 @@
 # CHANGELOG
 
+<a name="v0.12.0"></a>
+## [v0.12.0](https://github.com/rsHalford/godo/compare/v0.10.0...v0.12.0)
+
+> 2022-04-18
+
+### Bug Fixes
+
+* **remove:** assigns var title before removal
+* **version:** update for v0.12.0
+
+### Chores
+
+* **docs:** remove mention of remote godo-api
+* **docs:** remove mention of GUI
+* **docs:** correct typos for commands and config
+* **docs:** updated README with latest commands and contribution details
+
+### Features
+
+* createdAt and updatedAt tags are assigned to todo items
+* **gui:** removed GUI implementation
+* **remote:** remove remote api request implementation
+
+
 <a name="v0.10.0"></a>
 ## [v0.10.0](https://github.com/rsHalford/godo/compare/v0.9.2...v0.10.0)
 
@@ -11,6 +35,7 @@
 
 ### Chores
 
+* **docs:** updated changelog for v0.10.0
 * **docs:** 🎁 added CONTRIBUTING form
 * **docs:** 📜 added CI section for CONTRIBUTING
 * **docs:** 📜 setup CHANGELOG generator
