@@ -1,5 +1,19 @@
 # CHANGELOG
 
+<a name="v0.12.1"></a>
+## [v0.12.1](https://github.com/rsHalford/godo/compare/v0.12.0...v0.12.1)
+
+> 2022-04-18
+
+### Bug Fixes
+
+* **config:** corrected comment describing default dataFile path
+
+### Styling
+
+* reduced output of help description header
+
+
 <a name="v0.12.0"></a>
 ## [v0.12.0](https://github.com/rsHalford/godo/compare/v0.10.0...v0.12.0)
 
