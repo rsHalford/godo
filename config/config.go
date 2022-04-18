@@ -43,6 +43,14 @@ var cfg Config
 func createCfgFile(cfgFile string) error {
 	var f *os.File
 
+	home, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Printf("user home directory: %v", err)
+	}
+
+	// Set default directory for local godos.json.
+	dataDir := home + "/.local/share/godo"
+
 	// If cfgFile represents a filepath that does not exist on the system,
 	// one will be created.
 	if _, err := os.Stat(cfgFile); os.IsNotExist(err) {
@@ -65,7 +73,7 @@ editing:
   # determine which editor to make edits in (defaults to the environment's $EDITOR if unset)
   editor: "vim"
   # append an extension to the temporary file's buffer for editing (e.g. "org", "md", "txt")
-  filetype: "md"`, cfgFile)
+  filetype: "md"`, dataDir)
 
 		_, err = f.WriteString(configBoilerplate)
 		if err != nil {
