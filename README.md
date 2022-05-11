@@ -53,6 +53,23 @@ To install GoDo, all you have to do is run the `go install` command.
 $ go install github.com/rsHalford/godo@latest
 ```
 
+### Flake
+
+If you're into Nix, GoDo has been setup so that you can just add the repo's URL to your flake.nix inputs. Then the overlay can be called by `environment.systemPackages` or per user with `home.packages`.
+
+```nix
+inputs = {
+  nixpkgs.url = "nixpkgs/nixos-unstable";
+
+  godo-flake = {
+    url = "github:rsHalford/godo";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+};
+```
+
+Instructions on how to add GoDo as a flake can vary wildly depending on the system configuration. You can view [my dotfiles](https://github.com/rsHalford/dotfiles) to see a working example, and message me or create an issue on either repository if you need additional help getting setup.
+
 ## Configuration
 
 You can edit the `config.yaml` to set your preferred default settings, helping shorten your most used `godo` arguments. For example you might prefer to use Vim as your favourite terminal editor, with all your notes being done with markdown syntax.
