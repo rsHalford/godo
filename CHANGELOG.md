@@ -1,5 +1,25 @@
 # CHANGELOG
 
+<a name="0.12.2"></a>
+## [0.12.2](https://github.com/rsHalford/godo/compare/v0.12.1...0.12.2)
+
+> 2022-05-13
+
+### Chores
+
+* **docs:** included installation as a nix flake
+* **flake:** packaged for installation via nix flake input
+* **version:** update for v0.12.2
+
+### Performance Improvements
+
+* **json:** parse godos.json with decoder
+
+### Styling
+
+* further reduced output of help description header
+
+
 <a name="v0.12.1"></a>
 ## [v0.12.1](https://github.com/rsHalford/godo/compare/v0.12.0...v0.12.1)
 
@@ -249,3 +269,4 @@
 ## v0.0.1
 
 > 2021-05-06
+
