@@ -51,15 +51,17 @@ func LocalTodos() (filename string, err error) {
 // ReadLocal reads the contents of the file provided. Parsing the items
 // from the JSON, and assigning a position value to each item.
 func ReadLocal(filename string) (items []Todo, err error) {
-	// bodyBytes holds the contents of the file within a []byte.
-	bodyBytes, err := os.ReadFile(filename)
+	// Open the godos.json file with the given path for decoding.
+	f, err := os.Open(filename)
 	if err != nil {
 		return nil, fmt.Errorf("reading %v: %w", filename, err)
 	}
 
-	// The JSON-encoded data of bodyBytes is then parsed and stored
-	// within the matching values from the Todo struct.
-	err = json.Unmarshal(bodyBytes, &items)
+	defer f.Close()
+
+	// The JSON-encoded data of the file is then parsed and stored
+	// within the matching values of items' Todo struct.
+	err = json.NewDecoder(f).Decode(&items)
 	if err != nil {
 		return nil, fmt.Errorf("parsing JSON: %w", err)
 	}
