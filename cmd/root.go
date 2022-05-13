@@ -30,9 +30,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "godo",
 	Short: "GoDo is a todo application.",
-	Long: `GoDo: A command line todo list application
-
-========================================================================`,
+	Long:  "GoDo: A command line todo list application",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
