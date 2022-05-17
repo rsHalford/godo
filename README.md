@@ -11,7 +11,7 @@
 
 GoDo aims to help you get organised with your tasks. Designed to be simple and accessible.
 
-```sh
+```
 Usage:
   godo [command]
 
@@ -82,13 +82,19 @@ general:
   dataFile: "~/.local/share/godo/godos.json"
 
 # set preferences for editing notes
-editing:
+edit:
   # default to either editing the note title or body (defaults to "title" if unset)
   default: "body"
   # determine which editor to make edits in (defaults to the environment's $EDITOR if unset)
   editor: "vim"
   # append an extension to the temporary file's buffer for editing (e.g. "org", "md", "txt")
   filetype: "md"
+
+find:
+  # choose between "smart", "sensitive" or "insensitive" search patterns (defaults to "smart" if unset)
+  # "smart" - if the search argument is all lower-case, all results are shown. Only becoming case-sensitive
+  # if upper-case characters are provided.
+  caseSensitivity: "smart"
 ```
 
 ---
@@ -97,9 +103,7 @@ editing:
 
 To help contribute to GoDo, you could either send in your feature requests as an issue or take it upon yourself to send in a pull request after following the [CONTRIBUTING](https://github.com/rsHalford/godo/blob/main/CONTRIBUTING.md) guide.
 
-My short-term aims are actually to break off the more "advanced/unneeded/complex" features like the GUI and API access. Potentially making them available as separate plugins that can be added with the users discretion, rather than ship GoDo with everything already included.
-
-> Currently the *minimal* branch works on implementing these changes.
+My long-term aims are actually to re-implement the more "advanced/unneeded/complex" features like the GUI, API access and mobile way to interact with GoDo. Potentially making them available as separate plugins that can be added with the users discretion, rather than ship GoDo with everything already included.
 
 Thanks in advance for taking an interest!
 
