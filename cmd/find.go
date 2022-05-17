@@ -68,7 +68,6 @@ func findRun(cmd *cobra.Command, args []string) error {
 		caseOpt = config.Value("caseSensitivity")
 	default:
 		caseOpt = "smart"
-		break
 	}
 
 	// For every argument string, go through every todo item and check both
