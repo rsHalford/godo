@@ -22,7 +22,9 @@ import (
 	"sort"
 	"strings"
 	"text/tabwriter"
+	"unicode"
 
+	"github.com/rsHalford/godo/config"
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
 )
@@ -37,6 +39,8 @@ provided string`,
 	RunE: findRun,
 }
 
+var caseOpt string
+
 func findRun(cmd *cobra.Command, args []string) error {
 	var command string = "find"
 
@@ -50,39 +54,117 @@ func findRun(cmd *cobra.Command, args []string) error {
 	// Create a new writer with defined formatting.
 	w := tabwriter.NewWriter(os.Stdout, minwidth, tabwidth, padding, padchar, flags)
 
+	// Assign the bool value if an argument for the --case/-c flag is provided.
+	flagSet := cmd.Flags().Lookup("case").Changed
+
+	// If the user provides an argument for --case/-c, that will be used. Otherwise,
+	// the config.yaml option for caseSensitivity will determine the string value
+	// for caseOpt. Finally, if the config.yaml value is unset, default to the
+	// "smart" pattern.
+	switch {
+	case flagSet:
+		break
+	case config.Value("caseSensitivity") != "":
+		caseOpt = config.Value("caseSensitivity")
+	default:
+		caseOpt = "smart"
+		break
+	}
+
 	// For every argument string, go through every todo item and check both
-	// the title and body for the string. Then print the todo item title -
-	// exclusively if the --title flag is used - and also print the body.
+	// the title and body for the string, depending on case-sensitivity settings.
+	// Then print the todo item title - exclusively if the --title/-t flag is used
+	// - and also print the body.
 	for _, a := range args {
-		for _, i := range items {
-			if strings.Contains(i.Body, a) || strings.Contains(i.Title, a) {
-				switch {
-				case tagOpt && titleOpt:
-					fmt.Fprintln(
-						w, "\033[90m"+i.Label()+"\t\033[0m"+
-							i.TagFlag()+i.Tag+"\033[0m\t"+
-							i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m")
-				case titleOpt:
-					fmt.Fprintln(
-						w, "\033[90m"+i.Label()+"\t\033[0m"+
-							i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m")
-				case tagOpt:
-					fmt.Fprintln(
-						w, "\033[90m"+i.Label()+"\t\033[0m"+
-							i.TagFlag()+i.Tag+"\033[0m\t"+
-							i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m\n"+i.Body+"\n")
-				default:
-					fmt.Fprintln(
-						w, "\033[90m"+i.Label()+"\t\033[0m"+
-							i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m\n"+i.Body+"\n")
+		switch {
+		// For sensitive search results, for each item return all case-sensitive
+		// matches, according to the --title and --tag flag arguments.
+		case caseOpt == "sensitive":
+			for _, i := range items {
+				printFindMatches(w, i, i.Body, i.Title, a)
+			}
+
+		// For insensitive search results, change both argument and results
+		// to lower-case. Then for each item return all matches in their original
+		// format, according to the --title and --tag flag arguments.
+		case caseOpt == "insensitive":
+			for _, i := range items {
+				a = strings.ToLower(a)
+				body := strings.ToLower(i.Body)
+				title := strings.ToLower(i.Title)
+				printFindMatches(w, i, body, title, a)
+			}
+
+		// Implement a smart search, where case sensitivity is only implemented
+		// if the command argument contains an upper-case character. And only
+		// change results to lower-case if the argument only contains lower-case
+		// characters. Then for each item return all matches in their original
+		// format, according to the --title and --tag flag arguments.
+		default:
+			var hasUpper bool
+
+			// Check each rune of the argument for upper-case characters.
+			for _, r := range a {
+				if unicode.IsUpper(r) {
+					hasUpper = true
+					break
 				}
+			}
+
+			for _, i := range items {
+				body := i.Body
+				title := i.Title
+
+				// Perform a case-insensitive search if hasUpper is true.
+				if !hasUpper {
+					body = strings.ToLower(body)
+					title = strings.ToLower(title)
+				}
+
+				printFindMatches(w, i, body, title, a)
 			}
 		}
 	}
 
+	// TODO: assign error message to tabwriter.Writer.Flush()
 	w.Flush()
 
 	return nil
+}
+
+// printFindMatches searches the given todo item's, body and title for a matching string
+// against the command's argument, a. And sends all matches to stdout, using the Writer
+// to format the the results.
+func printFindMatches(w *tabwriter.Writer, i todo.Todo, body, title, a string) {
+	if strings.Contains(body, a) || strings.Contains(title, a) {
+		switch {
+		// Only print the title and tag for the matching item.
+		case tagOpt && titleOpt:
+			fmt.Fprintln(
+				w, "\033[90m"+i.Label()+"\t\033[0m"+
+					i.TagFlag()+i.Tag+"\033[0m\t"+
+					i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m")
+
+		// Only print the title of the matching item.
+		case titleOpt:
+			fmt.Fprintln(
+				w, "\033[90m"+i.Label()+"\t\033[0m"+
+					i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m")
+
+		// Print the title, tag and body content for the matching item.
+		case tagOpt:
+			fmt.Fprintln(
+				w, "\033[90m"+i.Label()+"\t\033[0m"+
+					i.TagFlag()+i.Tag+"\033[0m\t"+
+					i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m\n"+i.Body+"\n")
+
+		// Default to printing just the title and body of the mathcing todo item.
+		default:
+			fmt.Fprintln(
+				w, "\033[90m"+i.Label()+"\t\033[0m"+
+					i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m\n"+i.Body+"\n")
+		}
+	}
 }
 
 func init() {
@@ -92,4 +174,6 @@ func init() {
 	findCmd.Flags().BoolVarP(&titleOpt, "title", "t", false, "only show item titles")
 	// The --tag flag determines whether the tag for each todo should be shown.
 	findCmd.Flags().BoolVarP(&tagOpt, "tag", "T", false, "show the todo's tag")
+	// The --case flage determines what type of argument case matching occurs.
+	findCmd.Flags().StringVarP(&caseOpt, "case", "c", "smart", "choose case sensitivity pattern for search")
 }

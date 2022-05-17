@@ -34,6 +34,9 @@ type Config struct {
 		EDITOR   string `yaml:"editor" env:"GODO_EDIT_EDITOR"`
 		FILETYPE string `yaml:"filetype" env:"GODO_EDIT_FILETYPE"`
 	} `yaml:"edit"`
+	FIND struct {
+		CASE_SENSITIVITY string `yaml:"caseSensitivity" env:"GODO_FIND_CASE_SENSITIVITY"`
+	} `yaml:"find"`
 }
 
 var cfg Config
@@ -73,7 +76,13 @@ edit:
   # determine which editor to make edits in (defaults to the environment's $EDITOR if unset)
   editor: "vim"
   # append an extension to the temporary file's buffer for editing (e.g. "org", "md", "txt")
-  filetype: "md"`, dataDir)
+  filetype: "md"
+
+find:
+  # choose between "smart", "sensitive" or "insensitive" search patterns (defaults to "smart" if unset)
+  # "smart" - if the search argument is all lower-case, all results are shown. Only becoming case-sensitive
+  # if upper-case characters are provided.
+  caseSensitivity: "smart"`, dataDir)
 
 		_, err = f.WriteString(configBoilerplate)
 		if err != nil {
@@ -151,6 +160,11 @@ func Value(key string) string {
 
 	case "editing_filetype":
 		value := cfg.EDIT.FILETYPE
+
+		return value
+
+	case "caseSensitivity":
+		value := cfg.FIND.CASE_SENSITIVITY
 
 		return value
 
