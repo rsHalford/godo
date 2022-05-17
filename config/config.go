@@ -29,11 +29,11 @@ type Config struct {
 	GENERAL struct {
 		DATA_FILE string `yaml:"dataFile" env:"GODO_GENERAL_DATA_FILE"`
 	} `yaml:"general"`
-	Editing struct {
-		Default  string `yaml:"default" env:"GODO_EDITING_DEFAULT"`
-		Editor   string `yaml:"editor" env:"GODO_EDITING_EDITOR"`
-		Filetype string `yaml:"filetype" env:"GODO_EDITING_FILETYPE"`
-	} `yaml:"editing"`
+	EDIT struct {
+		DEFAULT  string `yaml:"default" env:"GODO_EDIT_DEFAULT"`
+		EDITOR   string `yaml:"editor" env:"GODO_EDIT_EDITOR"`
+		FILETYPE string `yaml:"filetype" env:"GODO_EDIT_FILETYPE"`
+	} `yaml:"edit"`
 }
 
 var cfg Config
@@ -67,7 +67,7 @@ func createCfgFile(cfgFile string) error {
   dataFile: ""
 
 # set preferences for editing notes
-editing:
+edit:
   # default to either editing the note title or body (defaults to "title" if unset)
   default: "body"
   # determine which editor to make edits in (defaults to the environment's $EDITOR if unset)
@@ -140,17 +140,17 @@ func Value(key string) string {
 		return value
 
 	case "editing_default":
-		value := cfg.Editing.Default
+		value := cfg.EDIT.DEFAULT
 
 		return value
 
 	case "editing_editor":
-		value := cfg.Editing.Editor
+		value := cfg.EDIT.EDITOR
 
 		return value
 
 	case "editing_filetype":
-		value := cfg.Editing.Filetype
+		value := cfg.EDIT.FILETYPE
 
 		return value
 
