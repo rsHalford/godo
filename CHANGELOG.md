@@ -1,7 +1,25 @@
 # CHANGELOG
 
-<a name="0.12.2"></a>
-## [0.12.2](https://github.com/rsHalford/godo/compare/v0.12.1...0.12.2)
+<a name="0.13.0"></a>
+## [0.13.0](https://github.com/rsHalford/godo/compare/v0.12.2...0.13.0)
+
+> 2022-05-17
+
+### Chores
+
+* **version:** update for v0.13.0
+
+### Features
+
+* **find:** case-sensitivity flag argument to filter search results
+
+### Styling
+
+* **config:** matched formatting of Config variables
+
+
+<a name="v0.12.2"></a>
+## [v0.12.2](https://github.com/rsHalford/godo/compare/v0.12.1...v0.12.2)
 
 > 2022-05-13
 
