@@ -107,6 +107,30 @@ My long-term aims are actually to re-implement the more "advanced/unneeded/compl
 
 Thanks in advance for taking an interest!
 
+## Development Environment
+
+GoDo development is setup to utilise the following tools;
+
+- [git-chglog](https://github.com/git-chglog/git-chglog)
+  - For updating the CHANGELOG.md
+- [golangci-lint](https://golangci-lint.run/)
+  - Go linters aggregator
+- [gopls](https://github.com/golang/tools/blob/master/gopls/README.md)
+  - Go language server
+- [pre-commit](https://pre-commit.com/)
+  - Setup and run pre-commit hooks
+
+### [direnv](https://direnv.net/)
+
+Combined with nix flakes and [nix-direnv](https://github.com/nix-community/nix-direnv), it is possible to create a `.envrc` file to make a portable isolated environment for development.
+
+Meaning the above tools can be installed and setup just for this project by just using the below file contents.
+
+```sh
+use flake
+layout go
+```
+
 ---
 
 # Licence
