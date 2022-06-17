@@ -17,6 +17,14 @@
           pkgs = nixpkgsFor.${system};
         in
         {
+          devShell = pkgs.mkShell {
+            buildInputs = with pkgs; [
+              git-chglog
+              golangci-lint
+              gopls
+              pre-commit
+            ];
+          };
           godo = pkgs.buildGoModule {
             pname = "godo";
             inherit version;
