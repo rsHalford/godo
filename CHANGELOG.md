@@ -1,7 +1,25 @@
 # CHANGELOG
 
-<a name="0.13.0"></a>
-## [0.13.0](https://github.com/rsHalford/godo/compare/v0.12.2...0.13.0)
+<a name="0.13.1"></a>
+## [0.13.1](https://github.com/rsHalford/godo/compare/v0.13.0...0.13.1)
+
+> 2022-06-18
+
+### Chores
+
+* direnv development environment setup and documentation
+* **deps:** updated and cleaned dependencies
+* **docs:** updated README to include find configuration and project goals
+* **gitignore:** added vendor files to .gitignore
+
+### Code Refactoring
+
+* **colour:** added go-colour-util dependency
+* **find:** remove redundant break
+
+
+<a name="v0.13.0"></a>
+## [v0.13.0](https://github.com/rsHalford/godo/compare/v0.12.2...v0.13.0)
 
 > 2022-05-17
 
