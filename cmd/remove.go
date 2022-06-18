@@ -22,6 +22,7 @@ import (
 	"strconv"
 	"strings"
 
+	c "github.com/rsHalford/go-colour-util"
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
 )
@@ -91,7 +92,7 @@ func confirmRemove(title string) (bool, error) {
 	var response string
 
 	// Print which todo is being removed and prompt for confirmation from the user.
-	fmt.Printf("\033[34m::\033[0m Removing todo...\n\033[33m-->\033[0m %q\n\033[32m::\033[0m Proceed with removal? (y/n): ", title)
+	fmt.Printf("%s Removing todo...\n%s %q\n%s Proceed with removal? (y/n): ", c.BluFG("::"), c.YelFG("-->"), title, c.GreFG("::"))
 
 	if _, err := fmt.Scanln(&response); err != nil {
 		return false, fmt.Errorf("reading response: %w", err)

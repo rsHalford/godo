@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"strconv"
 
+	c "github.com/rsHalford/go-colour-util"
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
 )
@@ -52,7 +53,7 @@ func doneRun(cmd *cobra.Command, args []string) error {
 		if !items[i-1].Status {
 			items[i-1].Status = true
 
-			fmt.Printf("\033[34m::\033[0m Marked done...\n\033[33m-->\033[0m %q\n", items[i-1].Title)
+			fmt.Printf("%s Marked done...\n%s %q\n", c.BluFG("::"), c.YelFG("-->"), items[i-1].Title)
 
 			err = updateTodo(i, command, items)
 			if err != nil {
@@ -61,7 +62,7 @@ func doneRun(cmd *cobra.Command, args []string) error {
 		} else {
 			items[i-1].Status = false
 
-			fmt.Printf("\033[34m::\033[0m Marked active...\n\033[33m-->\033[0m %q\n", items[i-1].Title)
+			fmt.Printf("%s Marked active...\n%s %q\n", c.BluFG("::"), c.YelFG("-->"), items[i-1].Title)
 
 			err = updateTodo(i, command, items)
 			if err != nil {

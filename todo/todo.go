@@ -21,6 +21,8 @@ import (
 	"os"
 	"strconv"
 	"time"
+
+	c "github.com/rsHalford/go-colour-util"
 )
 
 // Todo struct defines the key:value pair types and JSON layout.
@@ -81,12 +83,6 @@ func (i *Todo) Tagging(tag string) {
 	}
 }
 
-// TagFlag will return a magenta foreground and italic ANSI escape codes,
-// if an item has a tag.
-func (i *Todo) TagFlag() (color string) {
-	return "\033[3m\033[35m"
-}
-
 // Prioritise will set the priority value of the Todo item as true.
 func (i *Todo) Prioritise(priority bool) {
 	if priority {
@@ -96,22 +92,22 @@ func (i *Todo) Prioritise(priority bool) {
 
 // PriorityFlag will return a yellow foreground ANSI escape code,
 // if an item set as a priority.
-func (i *Todo) PriorityFlag() (color string) {
+func (i *Todo) PriorityFlag(s string) (color string) {
 	if i.Priority {
-		return "\033[33m"
+		return c.YelFG(s)
 	}
 
-	return
+	return s
 }
 
 // StatusFlag will return a strike-through ANSI escape code,
 // if an item set as a done.
-func (i *Todo) StatusFlag() (strike string) {
+func (i *Todo) StatusFlag(s string) (strike string) {
 	if i.Status {
-		return "\033[9m"
+		return c.Strike(s)
 	}
 
-	return
+	return s
 }
 
 // Label will convert the position integer value of the item to a string.

@@ -24,6 +24,7 @@ import (
 	"text/tabwriter"
 	"unicode"
 
+	c "github.com/rsHalford/go-colour-util"
 	"github.com/rsHalford/godo/config"
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
@@ -140,28 +141,30 @@ func printFindMatches(w *tabwriter.Writer, i todo.Todo, body, title, a string) {
 		// Only print the title and tag for the matching item.
 		case tagOpt && titleOpt:
 			fmt.Fprintln(
-				w, "\033[90m"+i.Label()+"\t\033[0m"+
-					i.TagFlag()+i.Tag+"\033[0m\t"+
-					i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m")
+				w, c.BlaFGB(i.Label())+"\t"+
+					c.Italic(c.MagFG(i.Tag))+"\t"+
+					i.PriorityFlag(i.StatusFlag(i.Title)))
 
 		// Only print the title of the matching item.
 		case titleOpt:
 			fmt.Fprintln(
-				w, "\033[90m"+i.Label()+"\t\033[0m"+
-					i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m")
+				w, c.BlaFGB(i.Label())+"\t"+
+					i.PriorityFlag(i.StatusFlag(i.Title)))
 
 		// Print the title, tag and body content for the matching item.
 		case tagOpt:
 			fmt.Fprintln(
-				w, "\033[90m"+i.Label()+"\t\033[0m"+
-					i.TagFlag()+i.Tag+"\033[0m\t"+
-					i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m\n"+i.Body+"\n")
+				w, c.BlaFGB(i.Label())+"\t"+
+					c.Italic(c.MagFG(i.Tag))+"\t"+
+					i.PriorityFlag(i.StatusFlag(i.Title))+
+					"\n"+i.Body+"\n")
 
 		// Default to printing just the title and body of the mathcing todo item.
 		default:
 			fmt.Fprintln(
-				w, "\033[90m"+i.Label()+"\t\033[0m"+
-					i.PriorityFlag()+i.StatusFlag()+i.Title+"\033[0m\n"+i.Body+"\n")
+				w, c.BlaFGB(i.Label())+"\t"+
+					i.PriorityFlag(i.StatusFlag(i.Title))+
+					"\n"+i.Body+"\n")
 		}
 	}
 }
