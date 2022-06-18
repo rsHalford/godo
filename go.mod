@@ -3,7 +3,9 @@ module github.com/rsHalford/godo
 go 1.16
 
 require (
-	github.com/ilyakaznacheev/cleanenv v1.2.5
-	github.com/spf13/cobra v1.2.1
-	olympos.io/encoding/edn v0.0.0-20201019073823-d3554ca0b0a3 // indirect
+	github.com/ilyakaznacheev/cleanenv v1.3.0
+	github.com/kr/pretty v0.1.0 // indirect
+	github.com/rsHalford/go-colour-util v0.2.3
+	github.com/spf13/cobra v1.4.0
+	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 )
