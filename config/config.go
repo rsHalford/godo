@@ -67,21 +67,26 @@ func createCfgFile(cfgFile string) error {
 		// The file is created with boilerplate for configuration options.
 		configBoilerplate := fmt.Sprintf(`general:
   # change the file path for saving local notes (defaults to "%s" if unset)
+  # $GODO_GENERAL_DATA_FILE
   dataFile: ""
 
 # set preferences for editing notes
 edit:
   # default to either editing the note title or body (defaults to "title" if unset)
+  # $GODO_EDIT_DEFAULT
   default: "body"
   # determine which editor to make edits in (defaults to the environment's $EDITOR if unset)
+  # $GODO_EDIT_EDITOR
   editor: "vim"
   # append an extension to the temporary file's buffer for editing (e.g. "org", "md", "txt")
+  # $GODO_EDIT_FILETYPE
   filetype: "md"
 
 find:
   # choose between "smart", "sensitive" or "insensitive" search patterns (defaults to "smart" if unset)
   # "smart" - if the search argument is all lower-case, all results are shown. Only becoming case-sensitive
   # if upper-case characters are provided.
+  # $GODO_FIND_CASE_SENSITIVITY
   caseSensitivity: "smart"`, dataDir)
 
 		_, err = f.WriteString(configBoilerplate)
