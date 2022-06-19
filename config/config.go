@@ -24,19 +24,25 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
+type General struct {
+	DataFile string `yaml:"dataFile" env:"DATA_FILE"`
+}
+
+type Edit struct {
+	Default  string `yaml:"default" env:"DEFAULT"`
+	Editor   string `yaml:"editor" env:"EDITOR"`
+	Filetype string `yaml:"filetype" env:"FILETYPE"`
+}
+
+type Find struct {
+	CaseSensitivity string `yaml:"caseSensitivity" env:"CASE_SENSITIVITY"`
+}
+
 // Config struct defines the config.yaml and related environment variables.
 type Config struct {
-	GENERAL struct {
-		DATA_FILE string `yaml:"dataFile" env:"GODO_GENERAL_DATA_FILE"`
-	} `yaml:"general"`
-	EDIT struct {
-		DEFAULT  string `yaml:"default" env:"GODO_EDIT_DEFAULT"`
-		EDITOR   string `yaml:"editor" env:"GODO_EDIT_EDITOR"`
-		FILETYPE string `yaml:"filetype" env:"GODO_EDIT_FILETYPE"`
-	} `yaml:"edit"`
-	FIND struct {
-		CASE_SENSITIVITY string `yaml:"caseSensitivity" env:"GODO_FIND_CASE_SENSITIVITY"`
-	} `yaml:"find"`
+	General General `yaml:"general" env-prefix:"GODO_GENERAL_"`
+	Edit    Edit    `yaml:"edit" env-prefix:"GODO_EDIT_"`
+	Find    Find    `yaml:"find" env-prefix:"GODO_FIND_"`
 }
 
 var cfg Config
@@ -149,27 +155,27 @@ func Value(key string) string {
 
 	switch key {
 	case "dataFile":
-		value := cfg.GENERAL.DATA_FILE
+		value := cfg.General.DataFile
 
 		return value
 
 	case "editing_default":
-		value := cfg.EDIT.DEFAULT
+		value := cfg.Edit.Default
 
 		return value
 
 	case "editing_editor":
-		value := cfg.EDIT.EDITOR
+		value := cfg.Edit.Editor
 
 		return value
 
 	case "editing_filetype":
-		value := cfg.EDIT.FILETYPE
+		value := cfg.Edit.Filetype
 
 		return value
 
 	case "caseSensitivity":
-		value := cfg.FIND.CASE_SENSITIVITY
+		value := cfg.Find.CaseSensitivity
 
 		return value
 
