@@ -22,7 +22,6 @@ import (
 	"strconv"
 	"text/tabwriter"
 
-	c "github.com/rsHalford/go-colour-util"
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
 )
@@ -61,16 +60,10 @@ func getRun(cmd *cobra.Command, args []string) error {
 		case bodyOpt:
 			fmt.Fprintln(w, item.Body)
 		case tagOpt:
-			fmt.Fprintln(
-				w, c.BlaFGB(item.Label())+"\t"+
-					c.Italic(c.MagFG(item.Tag))+"\t"+
-					item.PriorityFlag(item.StatusFlag(item.Title))+
-					"\n"+item.Body)
+			fmt.Fprintln(w, item.Label()+item.TagFmt(item.Tag)+
+				item.TitleFmt(item.Title)+"\n"+item.Body)
 		default:
-			fmt.Fprintln(
-				w, c.BlaFGB(item.Label())+"\t"+
-					item.PriorityFlag(item.StatusFlag(item.Title))+
-					"\n"+item.Body)
+			fmt.Fprintln(w, item.Label()+item.TitleFmt(item.Title)+"\n"+item.Body)
 		}
 	} else {
 		return fmt.Errorf("%v: %q %w", command, i, err)

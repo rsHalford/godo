@@ -22,7 +22,6 @@ import (
 	"sort"
 	"text/tabwriter"
 
-	c "github.com/rsHalford/go-colour-util"
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
 )
@@ -67,12 +66,9 @@ func listRun(cmd *cobra.Command, args []string) error {
 	for _, i := range items {
 		if allOpt || i.Status == doneOpt {
 			if tagOpt {
-				fmt.Fprintln(w, c.BlaFGB(i.Label())+"\t"+
-					c.Italic(c.MagFG(i.Tag))+"\t"+
-					i.PriorityFlag(i.StatusFlag(i.Title)))
+				fmt.Fprintln(w, i.Label()+i.TagFmt(i.Tag)+i.TitleFmt(i.Title))
 			} else {
-				fmt.Fprintln(w, c.BlaFGB(i.Label())+"\t"+
-					i.PriorityFlag(i.StatusFlag(i.Title)))
+				fmt.Fprintln(w, i.Label()+i.TitleFmt(i.Title))
 			}
 		}
 	}
