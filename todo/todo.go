@@ -22,7 +22,7 @@ import (
 	"strconv"
 	"time"
 
-	c "github.com/rsHalford/go-colour-util"
+	c "github.com/jwalton/gchalk"
 )
 
 // Todo struct defines the key:value pair types and JSON layout.
@@ -90,30 +90,45 @@ func (i *Todo) Prioritise(priority bool) {
 	}
 }
 
-// PriorityFlag will return a yellow foreground ANSI escape code,
-// if an item set as a priority.
-func (i *Todo) PriorityFlag(s string) (color string) {
-	if i.Priority {
-		return c.YelFG(s)
-	}
+// TitleFmt will return back the given title string with the appropriate color
+// and styling, according to it's priority and status.
+func (i *Todo) TitleFmt(s string) string {
+	switch {
+	case i.Priority && i.Status:
+		s = c.WithYellow().Strikethrough(s) + "\t"
+		return s
 
+	case i.Priority && !i.Status:
+		s = c.Yellow(s) + "\t"
+		return s
+
+	case i.Status && !i.Priority:
+		s = c.Strikethrough(s) + "\t"
+		return s
+
+	default:
+		s = s + "\t"
+		return s
+	}
+}
+
+// TagFmt first determines whether the tag string is empty, and adds a space
+// to fix formatting alignments. Before returning it with color and style
+// formatting.
+func (i *Todo) TagFmt(s string) string {
+	if i.Tag == "" {
+		s = " "
+	}
+	s = c.WithItalic().Magenta(s) + "\t"
 	return s
 }
 
-// StatusFlag will return a strike-through ANSI escape code,
-// if an item set as a done.
-func (i *Todo) StatusFlag(s string) (strike string) {
-	if i.Status {
-		return c.Strike(s)
-	}
-
-	return s
-}
-
-// Label will convert the position integer value of the item to a string.
-// To allow the command-line interface to print it's value.
-func (i *Todo) Label() (position string) {
-	return strconv.Itoa(i.position)
+// Label will convert the position integer value of the item to a string. Then
+// color and style, before returning.
+func (i *Todo) Label() (s string) {
+	s = strconv.Itoa(i.position)
+	s = s + "\t"
+	return c.Grey(s)
 }
 
 // Order helps sort to organise the todo items for printing.

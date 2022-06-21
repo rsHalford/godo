@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"strconv"
 
-	c "github.com/rsHalford/go-colour-util"
+	c "github.com/jwalton/gchalk"
 	"github.com/rsHalford/godo/todo"
 	"github.com/spf13/cobra"
 )
@@ -51,7 +51,7 @@ func tagRun(cmd *cobra.Command, args []string) error {
 		// Add the tag to the todo item Tag field. Then update the changes.
 		items[i-1].Tag = args[1] // Assign the tag arguments for the todo.
 
-		fmt.Printf("%s Adding tag...\n%s %q: %s\n", c.BluFG("::"), c.YelFG("-->"), items[i-1].Title, c.MagFG(items[i-1].Tag))
+		fmt.Printf("%s Adding tag...\n%s %q: %s\n", c.Blue("::"), c.Yellow("-->"), items[i-1].Title, c.Magenta(items[i-1].Tag))
 
 		err = updateTodo(i, command, items)
 		if err != nil {
