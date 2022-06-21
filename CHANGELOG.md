@@ -1,7 +1,25 @@
 # CHANGELOG
 
-<a name="0.13.1"></a>
-## [0.13.1](https://github.com/rsHalford/godo/compare/v0.13.0...0.13.1)
+<a name="0.14.0"></a>
+## [0.14.0](https://github.com/rsHalford/godo/compare/v0.13.1...0.14.0)
+
+> 2022-06-21
+
+### Chores
+
+* **docs:** improved visibility to configure through environment variables
+
+### Code Refactoring
+
+* **config:** structs broken up to ease future additions
+
+### Features
+
+* **color:** support NO_COLOR environment variable
+
+
+<a name="v0.13.1"></a>
+## [v0.13.1](https://github.com/rsHalford/godo/compare/v0.13.0...v0.13.1)
 
 > 2022-06-18
 
@@ -11,6 +29,7 @@
 * **deps:** updated and cleaned dependencies
 * **docs:** updated README to include find configuration and project goals
 * **gitignore:** added vendor files to .gitignore
+* **version:** update for v0.13.1
 
 ### Code Refactoring
 

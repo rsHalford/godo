@@ -102,6 +102,20 @@ find:
   caseSensitivity: "smart"
 ```
 
+## NO_COLOR Support
+
+GoDo accepts the following methods to change no/color output:
+
+To disable color:
+- stdout is not a TTY
+- NO_COLOR=true
+- TERM=dumb
+- FORCE_COLOR=0
+
+To enable:
+- FORCE_COLOR=1, 2, or 3 (16 color, 256 color and 16.7m color respectively)
+- FORCE_COLOR=true or no value
+
 ---
 
 # Contributing

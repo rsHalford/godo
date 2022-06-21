@@ -5,7 +5,7 @@
 
   outputs = { self, nixpkgs }:
     let
-      version = "0.13.1";
+      version = "0.14.0";
       supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
@@ -30,7 +30,7 @@
             inherit version;
             src = ./.;
             # vendorSha256 = pkgs.lib.fakeSha256;
-            vendorSha256 = "sha256-DL2ZxQ85yBNufZzhf5+Nk9api+HyZA+IwQIgBW00g5M=";
+            vendorSha256 = "sha256-EXVS17zcIB/wZeOqjn3KL9Pm1lstbI4AmDVlpTtPedQ=";
           };
         });
       defaultPackage = forAllSystems (system: self.packages.${system}.godo);
