@@ -43,7 +43,10 @@ func Execute() {
 
 const perm fs.FileMode = 0o755
 
+var Theme *config.Theme
+
 func init() {
+	Theme = config.InitTheme() // Load in colour theme.
 	cobra.OnInitialize(initData)
 }
 

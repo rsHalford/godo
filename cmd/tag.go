@@ -51,7 +51,11 @@ func tagRun(cmd *cobra.Command, args []string) error {
 		// Add the tag to the todo item Tag field. Then update the changes.
 		items[i-1].Tag = args[1] // Assign the tag arguments for the todo.
 
-		fmt.Printf("%s Adding tag...\n%s %q: %s\n", c.Blue("::"), c.Yellow("-->"), items[i-1].Title, c.Magenta(items[i-1].Tag))
+		fmt.Printf("%s Adding tag...\n%s %q: %s\n",
+			c.StyleMust(Theme.Primary)("::"),
+			c.StyleMust(Theme.Secondary)("-->"),
+			items[i-1].Title,
+			c.StyleMust(Theme.Tag)(items[i-1].Tag))
 
 		err = updateTodo(i, command, items)
 		if err != nil {

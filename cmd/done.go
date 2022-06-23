@@ -53,7 +53,10 @@ func doneRun(cmd *cobra.Command, args []string) error {
 		if !items[i-1].Status {
 			items[i-1].Status = true
 
-			fmt.Printf("%s Marked done...\n%s %q\n", c.Blue("::"), c.Yellow("-->"), items[i-1].Title)
+			fmt.Printf("%s Marked done...\n%s %q\n",
+				c.StyleMust(Theme.Primary)("::"),
+				c.StyleMust(Theme.Secondary)("-->"),
+				items[i-1].Title)
 
 			err = updateTodo(i, command, items)
 			if err != nil {
@@ -62,7 +65,10 @@ func doneRun(cmd *cobra.Command, args []string) error {
 		} else {
 			items[i-1].Status = false
 
-			fmt.Printf("%s Marked active...\n%s %q\n", c.Blue("::"), c.Yellow("-->"), items[i-1].Title)
+			fmt.Printf("%s Marked active...\n%s %q\n",
+				c.StyleMust(Theme.Primary)("::"),
+				c.StyleMust(Theme.Secondary)("-->"),
+				items[i-1].Title)
 
 			err = updateTodo(i, command, items)
 			if err != nil {

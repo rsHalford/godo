@@ -53,7 +53,10 @@ func priorityRun(cmd *cobra.Command, args []string) error {
 		if !items[i-1].Priority {
 			items[i-1].Priority = true
 
-			fmt.Printf("%s Setting priority...\n%s %q\n", c.Blue("::"), c.Yellow("-->"), items[i-1].Title)
+			fmt.Printf("%s Setting priority...\n%s %q\n",
+				c.StyleMust(Theme.Primary)("::"),
+				c.StyleMust(Theme.Secondary)("-->"),
+				items[i-1].Title)
 
 			err = updateTodo(i, command, items)
 			if err != nil {
@@ -62,7 +65,10 @@ func priorityRun(cmd *cobra.Command, args []string) error {
 		} else {
 			items[i-1].Priority = false
 
-			fmt.Printf("%s Removing priority...\n%s %q\n", c.Blue("::"), c.Yellow("-->"), items[i-1].Title)
+			fmt.Printf("%s Removing priority...\n%s %q\n",
+				c.StyleMust(Theme.Primary)("::"),
+				c.StyleMust(Theme.Secondary)("-->"),
+				items[i-1].Title)
 
 			err = updateTodo(i, command, items)
 			if err != nil {

@@ -23,6 +23,7 @@ import (
 	"time"
 
 	c "github.com/jwalton/gchalk"
+	"github.com/rsHalford/godo/config"
 )
 
 // Todo struct defines the key:value pair types and JSON layout.
@@ -35,6 +36,12 @@ type Todo struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 	position  int
+}
+
+var Theme *config.Theme
+
+func init() {
+	Theme = config.InitTheme() // Load in colour theme.
 }
 
 // Todos determines where to retrieve todo data from locally by using the user
@@ -95,15 +102,15 @@ func (i *Todo) Prioritise(priority bool) {
 func (i *Todo) TitleFmt(s string) string {
 	switch {
 	case i.Priority && i.Status:
-		s = c.WithYellow().Strikethrough(s) + "\t"
+		s = c.WithStyleMust(Theme.Priority).Strikethrough(s) + "\t"
 		return s
 
 	case i.Priority && !i.Status:
-		s = c.Yellow(s) + "\t"
+		s = c.StyleMust(Theme.Priority)(s) + "\t"
 		return s
 
 	case i.Status && !i.Priority:
-		s = c.Strikethrough(s) + "\t"
+		s = c.WithStyleMust(Theme.Title).Strikethrough(s) + "\t"
 		return s
 
 	default:
@@ -119,7 +126,7 @@ func (i *Todo) TagFmt(s string) string {
 	if i.Tag == "" {
 		s = " "
 	}
-	s = c.WithItalic().Magenta(s) + "\t"
+	s = c.WithItalic().StyleMust(Theme.Tag)(s) + "\t"
 	return s
 }
 
@@ -127,8 +134,8 @@ func (i *Todo) TagFmt(s string) string {
 // color and style, before returning.
 func (i *Todo) Label() (s string) {
 	s = strconv.Itoa(i.position)
-	s = s + "\t"
-	return c.Grey(s)
+	s = c.StyleMust(Theme.Position)(s) + "\t"
+	return s
 }
 
 // Order helps sort to organise the todo items for printing.

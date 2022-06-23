@@ -38,11 +38,22 @@ type Find struct {
 	CaseSensitivity string `yaml:"caseSensitivity" env:"CASE_SENSITIVITY"`
 }
 
+type Theme struct {
+	Primary   string `yaml:"primary" env:"PRIMARY" env-default:"Blue"`
+	Secondary string `yaml:"secondary" env:"SECONDARY" env-default:"Yellow"`
+	Position  string `yaml:"position" env:"POSITION" env-default:"Grey"`
+	Tag       string `yaml:"tag" env:"TAG" env-default:"Magenta"`
+	Title     string `yaml:"title" env:"TITLE" env-default:"BrightWhite"`
+	Priority  string `yaml:"priority" env:"PRIORITY" env-default:"Yellow"`
+	Status    string `yaml:"status" env:"STATUS" env-default:"White"`
+}
+
 // Config struct defines the config.yaml and related environment variables.
 type Config struct {
 	General General `yaml:"general" env-prefix:"GODO_GENERAL_"`
 	Edit    Edit    `yaml:"edit" env-prefix:"GODO_EDIT_"`
 	Find    Find    `yaml:"find" env-prefix:"GODO_FIND_"`
+	Theme   Theme   `yaml:"theme" env-prefix:"GODO_THEME_"`
 }
 
 var cfg Config
@@ -93,7 +104,25 @@ find:
   # "smart" - if the search argument is all lower-case, all results are shown. Only becoming case-sensitive
   # if upper-case characters are provided.
   # $GODO_FIND_CASE_SENSITIVITY
-  caseSensitivity: "smart"`, dataDir)
+  caseSensitivity: "smart"
+
+# change the colour of the output
+theme:
+  # use case-insesitive color names or hexadecimals, and prepend with "bg" to change the background instead.
+  # $GODO_THEME_PRIMARY
+  primary: "bg#00385c"
+  # $GODO_THEME_SECONDARY
+  secondary: "#00add8"
+  # $GODO_THEME_POSITION
+  position: "grey"
+  # $GODO_THEME_TAG
+  tag: "magenta"
+  # $GODO_THEME_TITLE
+  title: "brightwhite"
+  # $GODO_THEME_PRIORITY
+  priority: "yellow"
+  # $GODO_THEME_STATUS
+  status: "white"`, dataDir)
 
 		_, err = f.WriteString(configBoilerplate)
 		if err != nil {
@@ -179,9 +208,57 @@ func Value(key string) string {
 
 		return value
 
+	case "theme_primary":
+		value := cfg.Theme.Primary
+
+		return value
+
+	case "theme_secondary":
+		value := cfg.Theme.Secondary
+
+		return value
+
+	case "theme_position":
+		value := cfg.Theme.Position
+
+		return value
+
+	case "theme_tag":
+		value := cfg.Theme.Tag
+
+		return value
+
+	case "theme_title":
+		value := cfg.Theme.Title
+
+		return value
+
+	case "theme_priority":
+		value := cfg.Theme.Priority
+
+		return value
+
+	case "theme_status":
+		value := cfg.Theme.Status
+
+		return value
+
 	default:
 		fmt.Println("No configuration key provided")
 	}
 
 	return ""
+}
+
+// InitTheme retrieves all color values set in the config.yaml file.
+func InitTheme() *Theme {
+	return &Theme{
+		Primary:   Value("theme_primary"),
+		Secondary: Value("theme_secondary"),
+		Position:  Value("theme_position"),
+		Tag:       Value("theme_tag"),
+		Title:     Value("theme_title"),
+		Priority:  Value("theme_priority"),
+		Status:    Value("theme_status"),
+	}
 }

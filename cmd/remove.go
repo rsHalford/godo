@@ -92,7 +92,11 @@ func confirmRemove(title string) (bool, error) {
 	var response string
 
 	// Print which todo is being removed and prompt for confirmation from the user.
-	fmt.Printf("%s Removing todo...\n%s %q\n%s Proceed with removal? (y/n): ", c.Blue("::"), c.Yellow("-->"), title, c.Magenta("::"))
+	fmt.Printf("%s Removing todo...\n%s %q\n%s Proceed with removal? (y/n): ",
+		c.StyleMust(Theme.Primary)("::"),
+		c.StyleMust(Theme.Secondary)("-->"),
+		title,
+		c.StyleMust(Theme.Primary)("::"))
 
 	if _, err := fmt.Scanln(&response); err != nil {
 		return false, fmt.Errorf("reading response: %w", err)
