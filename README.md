@@ -100,6 +100,24 @@ find:
   # if upper-case characters are provided.
   # $GODO_FIND_CASE_SENSITIVITY
   caseSensitivity: "smart"
+
+# change the colour of the output
+theme:
+  # use case-insesitive color names or hexadecimals, and prepend with "bg" to change the background instead.
+  # $GODO_THEME_PRIMARY
+  primary: "bg#00385c"
+  # $GODO_THEME_SECONDARY
+  secondary: "#00add8"
+  # $GODO_THEME_POSITION
+  position: "grey"
+  # $GODO_THEME_TAG
+  tag: "magenta"
+  # $GODO_THEME_TITLE
+  title: "brightwhite"
+  # $GODO_THEME_PRIORITY
+  priority: "yellow"
+  # $GODO_THEME_STATUS
+  status: "white"
 ```
 
 ## NO_COLOR Support
