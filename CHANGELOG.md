@@ -1,13 +1,25 @@
 # CHANGELOG
 
-<a name="0.14.0"></a>
-## [0.14.0](https://github.com/rsHalford/godo/compare/v0.13.1...0.14.0)
+<a name="0.15.0"></a>
+## [0.15.0](https://github.com/rsHalford/godo/compare/v0.14.0...0.15.0)
+
+> 2022-06-23
+
+### Features
+
+* **list:** ability to only list items if they're a priority
+* **theme:** allow users to customise the colour of output
+
+
+<a name="v0.14.0"></a>
+## [v0.14.0](https://github.com/rsHalford/godo/compare/v0.13.1...v0.14.0)
 
 > 2022-06-21
 
 ### Chores
 
 * **docs:** improved visibility to configure through environment variables
+* **version:** update for v0.14.0
 
 ### Code Refactoring
 
