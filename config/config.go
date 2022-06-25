@@ -1,18 +1,51 @@
 /*
-Copyright © 2021 Richard Halford <richard@xhalford.com>
+Package config creates the structure for the configuration of GoDo. This includes
+setting the environment variables that the godo command and subcommands use to
+operate according to the user's specification. These variables can also be set
+using the config.yaml file, that will be created automatically if it does not
+already exist.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+general:
+  # change the file path for saving local notes (defaults to "~/.local/share/godo/godos.json" if unset)
+  # $GODO_GENERAL_DATA_FILE
+  dataFile: ""
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+# set preferences for editing notes
+edit:
+  # default to either editing the note title or body (defaults to "title" if unset)
+  # $GODO_EDIT_DEFAULT
+  default: "body"
+  # determine which editor to make edits in (defaults to the environment's $EDITOR if unset)
+  # $GODO_EDIT_EDITOR
+  editor: "vim"
+  # append an extension to the temporary file's buffer for editing (e.g. "org", "md", "txt")
+  # $GODO_EDIT_FILETYPE
+  filetype: "md"
 
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
+find:
+  # choose between "smart", "sensitive" or "insensitive" search patterns (defaults to "smart" if unset)
+  # "smart" - if the search argument is all lower-case, all results are shown. Only becoming case-sensitive
+  # if upper-case characters are provided.
+  # $GODO_FIND_CASE_SENSITIVITY
+  caseSensitivity: "smart"
+
+# change the colour of the output
+theme:
+  # use case-insesitive color names or hexadecimals, and prepend with "bg" to change the background instead.
+  # $GODO_THEME_PRIMARY
+  primary: "bg#00385c"
+  # $GODO_THEME_SECONDARY
+  secondary: "#00add8"
+  # $GODO_THEME_POSITION
+  position: "grey"
+  # $GODO_THEME_TAG
+  tag: "magenta"
+  # $GODO_THEME_TITLE
+  title: "brightwhite"
+  # $GODO_THEME_PRIORITY
+  priority: "yellow"
+  # $GODO_THEME_STATUS
+  status: "white"
 */
 package config
 
@@ -83,7 +116,7 @@ func createCfgFile(cfgFile string) error {
 
 		// The file is created with boilerplate for configuration options.
 		configBoilerplate := fmt.Sprintf(`general:
-  # change the file path for saving local notes (defaults to "%s" if unset)
+  # change the file path for saving local notes (defaults to "%s/godos.json" if unset)
   # $GODO_GENERAL_DATA_FILE
   dataFile: ""
 

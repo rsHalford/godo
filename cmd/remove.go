@@ -1,18 +1,17 @@
 /*
-Copyright © 2021 Richard Halford <richard@xhalford.com>
+Remove will delete a todo from your list, forever.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Usage:
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+	godo remove [flags]
 
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
+Aliases:
+
+	remove, rm, r
+
+Flags:
+
+	-h, --help   help for remove
 */
 package cmd
 
@@ -31,7 +30,7 @@ import (
 var removeCmd = &cobra.Command{
 	Use:     "remove",
 	Aliases: []string{"rm", "r"},
-	Short:   "remove a todo",
+	Short:   "Remove a todo",
 	Long:    `Remove will delete a todo from your list, forever.`,
 	RunE:    removeRun,
 }

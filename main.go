@@ -1,18 +1,30 @@
 /*
-Copyright © 2021 Richard Halford <richard@xhalford.com>
+Godo is a command line todo list application.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Usage:
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+	godo [command]
 
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
+Available Commands:
+
+	add         Add new todo
+	completion  Generate the autocompletion script for the specified shell
+	done        Toggle todo as done
+	edit        Edit a todo (default: edit title)
+	find        Search for a given string
+	get         Get a specific todo
+	help        Help about any command
+	list        List your todos
+	priority    Label a todo as a priority
+	remove      Remove a todo
+	tag         Add a tag to your todo
+
+Flags:
+
+	-h, --help      help for godo
+	-v, --version   version for godo
+
+Use "godo [command] --help" for more information about a command.
 */
 package main
 

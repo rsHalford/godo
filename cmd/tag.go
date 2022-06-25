@@ -1,18 +1,17 @@
 /*
-Copyright © 2021 Richard Halford <richard@xhalford.com>
+Tag is used to add or replace a tag to a todo.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Usage:
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+	godo tag [flags]
 
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
+Aliases:
+
+	tag, t
+
+Flags:
+
+	-h, --help   help for tag
 */
 package cmd
 
@@ -29,8 +28,8 @@ import (
 var tagCmd = &cobra.Command{
 	Use:     "tag",
 	Aliases: []string{"t"},
-	Short:   "add a tag to your todo",
-	Long:    `You can add a tag to a todo, using the tag command.`,
+	Short:   "Add a tag to your todo",
+	Long:    `Tag is used to add or replace a tag for a todo.`,
 	RunE:    tagRun,
 }
 

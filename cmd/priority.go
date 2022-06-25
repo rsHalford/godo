@@ -1,18 +1,17 @@
 /*
-Copyright © 2021 Richard Halford <richard@xhalford.com>
+Priority will toggle a todo as being labelled a priority or not.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Usage:
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+	godo priority [flags]
 
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
+Aliases:
+
+	priority, pri, p
+
+Flags:
+
+	-h, --help   help for priority
 */
 package cmd
 
@@ -29,8 +28,8 @@ import (
 var priorityCmd = &cobra.Command{
 	Use:     "priority",
 	Aliases: []string{"pri", "p"},
-	Short:   "label a todo as a priority",
-	Long:    `You can toggle a todo as being labelled a priority with the priority command.`,
+	Short:   "Label a todo as a priority",
+	Long:    `Priority will toggle a todo as being labelled a priority or not.`,
 	RunE:    priorityRun,
 }
 

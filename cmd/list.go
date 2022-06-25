@@ -1,18 +1,21 @@
 /*
-Copyright © 2021 Richard Halford <richard@xhalford.com>
+List your todos.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Usage:
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+	godo list [flags]
 
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
+Aliases:
+
+	list, ls, l
+
+Flags:
+
+	-a, --all        show all todos
+	-d, --done       show completed todos
+	-h, --help       help for list
+	-p, --priority   show proritised todos
+	-T, --tag        show the todo's tag
 */
 package cmd
 
@@ -45,8 +48,8 @@ const (
 var listCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls", "l"},
-	Short:   "list your todos",
-	Long:    `Listing all of your todos.`,
+	Short:   "List your todos",
+	Long:    `List your todos.`,
 	RunE:    listRun,
 }
 
