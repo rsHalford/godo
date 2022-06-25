@@ -28,9 +28,10 @@ import (
 // rootCmd represents the base command when called without any subcommands.
 // TODO: remove header to an info/man page instead, or just when help is called.
 var rootCmd = &cobra.Command{
-	Use:   "godo",
-	Short: "GoDo is a todo application.",
-	Long:  "GoDo: A command line todo list application",
+	Use:     "godo",
+	Short:   "GoDo is a todo application.",
+	Long:    "GoDo: A command line todo list application",
+	Version: "0.15.0",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
