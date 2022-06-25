@@ -1,18 +1,9 @@
 /*
-Copyright © 2021 Richard Halford <richard@xhalford.com>
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
+Package todo sets out the layout of the individual todo. Including how they
+are formatted to standard output. Creating a godos.json storage file, where
+multiple todos can be added and retrieved from. Before being printed to
+standard output, todos are sorted and formatted to produce a consistent style
+for the presented data.
 */
 package todo
 

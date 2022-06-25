@@ -1,18 +1,21 @@
 /*
-Copyright © 2021 Richard Halford <richard@xhalford.com>
+Edit a todo by passing the list number of the todo. Defaults to editing the
+todo title, if not set in godo.yaml.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Usage:
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+	godo edit [flags]
 
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
+Aliases:
+
+	edit, ed, e
+
+Flags:
+
+	-b, --body               edit item body
+	-e, --extension string   set filetype extension for editing
+	-h, --help               help for edit
+	-t, --title              edit item title
 */
 package cmd
 
@@ -31,10 +34,11 @@ import (
 // editCmd represents the edit command.
 var editCmd = &cobra.Command{
 	Use:     "edit",
-	Aliases: []string{"e"},
-	Short:   "edit a todo (default: edit title)",
-	Long:    `Edit a todo by passing the list number of the todo. Defaults to editing the todo title, if not set in godo.yaml`,
-	RunE:    editRun,
+	Aliases: []string{"ed", "e"},
+	Short:   "Edit a todo (default: edit title)",
+	Long: `Edit a todo by passing the list number of the todo. Defaults to editing the
+todo title, if not set in godo.yaml.`,
+	RunE: editRun,
 }
 
 var (
@@ -199,5 +203,5 @@ func init() {
 	// The --title/--body flag arguments determine which part of the todo to edit.
 	editCmd.Flags().BoolVarP(&titleOpt, "title", "t", false, "edit item title")
 	editCmd.Flags().BoolVarP(&bodyOpt, "body", "b", false, "edit item body")
-	editCmd.Flags().StringVarP(&extOpt, "extension", "e", "", "set temporary filetype extension")
+	editCmd.Flags().StringVarP(&extOpt, "extension", "e", "", "set filetype extension for editing")
 }

@@ -1,18 +1,20 @@
 /*
-Copyright © 2021 Richard Halford <richard@xhalford.com>
+Find command helps you search for todos containing the provided string.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Usage:
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+	godo find [flags]
 
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
+Aliases:
+
+	find, fd, f
+
+Flags:
+
+	-c, --case string   choose case sensitivity pattern for search (default "smart")
+	-h, --help          help for find
+	-T, --tag           show the todo's tag
+	-t, --title         only show item titles
 */
 package cmd
 
@@ -33,10 +35,9 @@ import (
 var findCmd = &cobra.Command{
 	Use:     "find",
 	Aliases: []string{"fd", "f"},
-	Short:   "search for a given string",
-	Long: `The find command helps you search for todos containing the
-provided string`,
-	RunE: findRun,
+	Short:   "Search for a given string",
+	Long:    `Find command helps you search for todos containing the provided string.`,
+	RunE:    findRun,
 }
 
 var caseOpt string

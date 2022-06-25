@@ -1,18 +1,19 @@
 /*
-Copyright © 2021 Richard Halford <richard@xhalford.com>
+Get lets you select a specific todo by passing it's ID as an argument.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Usage:
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+	godo get [flags]
 
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
+Aliases:
+
+	get, g
+
+Flags:
+
+	-b, --body   get only the item body
+	-h, --help   help for get
+	-T, --tag    show the todo's tag
 */
 package cmd
 
@@ -28,10 +29,11 @@ import (
 
 // getCmd represents the get command.
 var getCmd = &cobra.Command{
-	Use:   "get",
-	Short: "get a specific todo",
-	Long:  `Get lets you select a specific todo by passing it's ID as an argument.`,
-	RunE:  getRun,
+	Use:     "get",
+	Aliases: []string{"g"},
+	Short:   "Get a specific todo",
+	Long:    `Get lets you select a specific todo by passing it's ID as an argument.`,
+	RunE:    getRun,
 }
 
 func getRun(cmd *cobra.Command, args []string) error {
@@ -78,7 +80,7 @@ func init() {
 	rootCmd.AddCommand(getCmd)
 
 	// The --body flag argument determines if only the item body will be printed.
-	getCmd.Flags().BoolVarP(&bodyOpt, "body", "b", false, "get only item body")
+	getCmd.Flags().BoolVarP(&bodyOpt, "body", "b", false, "get only the item body")
 	// The --tag flag determines whether the tag for the todo should be shown.
 	getCmd.Flags().BoolVarP(&tagOpt, "tag", "T", false, "show the todo's tag")
 }

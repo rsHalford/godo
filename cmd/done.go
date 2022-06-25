@@ -1,18 +1,17 @@
 /*
-Copyright © 2021 Richard Halford <richard@xhalford.com>
+Done will label a todo as done or active.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Usage:
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+	godo done [flags]
 
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
+Aliases:
+
+	done, do, d
+
+Flags:
+
+	-h, --help   help for done
 */
 package cmd
 
@@ -28,9 +27,9 @@ import (
 // doneCmd represents the done command.
 var doneCmd = &cobra.Command{
 	Use:     "done",
-	Aliases: []string{"d", "do"},
-	Short:   "toggle todo as done",
-	Long:    `You can label a todo as done or active with the done command.`,
+	Aliases: []string{"do", "d"},
+	Short:   "Toggle todo as done",
+	Long:    `Done will label a todo as done or active.`,
 	RunE:    doneRun,
 }
 
