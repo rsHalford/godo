@@ -36,46 +36,47 @@ var priorityCmd = &cobra.Command{
 func priorityRun(cmd *cobra.Command, args []string) error {
 	var command string = "priority"
 
-	items, err := todo.Todos() // Get todo items from the configured source.
+	todos, err := todo.Todos() // Get todos from the configured source.
 	if err != nil {
 		return fmt.Errorf("%v: %w", command, err)
 	}
 
-	i, err := strconv.Atoi(args[0]) // Convert todo id argument to an integer.
+	// Convert todo position argument to an integer.
+	p, err := strconv.Atoi(args[0])
 	if err != nil {
 		return fmt.Errorf("%v: %q %w", command, args[0], err)
 	}
 
-	if i > 0 && i <= len(items) { // Validate id argument.
-		// Set the priority of the todo item to the opposite of it's current
-		// boolean value. Then update the changes.
-		if !items[i-1].Priority {
-			items[i-1].Priority = true
+	if p > 0 && p <= len(todos) { // Validate position argument.
+		t := todos[p-1]
+
+		// Set the priority of the todo to the opposite of it's current boolean
+		// value. Then update the changes.
+		if !t.Priority {
+			t.Priority = true
 
 			fmt.Printf("%s Setting priority...\n%s %q\n",
 				c.StyleMust(Theme.Primary)("::"),
-				c.StyleMust(Theme.Secondary)("-->"),
-				items[i-1].Title)
+				c.StyleMust(Theme.Secondary)("-->"), t.Title)
 
-			err = updateTodo(i, command, items)
+			err = updateTodo(p, command, todos)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 		} else {
-			items[i-1].Priority = false
+			t.Priority = false
 
 			fmt.Printf("%s Removing priority...\n%s %q\n",
 				c.StyleMust(Theme.Primary)("::"),
-				c.StyleMust(Theme.Secondary)("-->"),
-				items[i-1].Title)
+				c.StyleMust(Theme.Secondary)("-->"), t.Title)
 
-			err = updateTodo(i, command, items)
+			err = updateTodo(p, command, todos)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 		}
 	} else {
-		return fmt.Errorf("%v: %q %w", command, i, err)
+		return fmt.Errorf("%v: %q %w", command, p, err)
 	}
 
 	return nil

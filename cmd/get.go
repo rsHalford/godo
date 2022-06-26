@@ -1,5 +1,6 @@
 /*
-Get lets you select a specific todo by passing it's ID as an argument.
+Get lets you select a specific todo by passing it's list position as an
+argument.
 
 Usage:
 
@@ -11,9 +12,9 @@ Aliases:
 
 Flags:
 
-	-b, --body   get only the item body
+	-b, --body   get only the todo body
 	-h, --help   help for get
-	-T, --tag    show the todo's tag
+	-T, --tag    show the todos tag
 */
 package cmd
 
@@ -32,14 +33,15 @@ var getCmd = &cobra.Command{
 	Use:     "get",
 	Aliases: []string{"g"},
 	Short:   "Get a specific todo",
-	Long:    `Get lets you select a specific todo by passing it's ID as an argument.`,
-	RunE:    getRun,
+	Long: `Get lets you select a specific todo by passing it's list position as an
+argument.`,
+	RunE: getRun,
 }
 
 func getRun(cmd *cobra.Command, args []string) error {
 	var command string = "get"
 
-	items, err := todo.Todos() // Get todo items from the configured source.
+	todos, err := todo.Todos() // Get todos from the configured source.
 	if err != nil {
 		return fmt.Errorf("%v: %w", command, err)
 	}
@@ -47,28 +49,29 @@ func getRun(cmd *cobra.Command, args []string) error {
 	// Create a new writer with defined formatting.
 	w := tabwriter.NewWriter(os.Stdout, minwidth, tabwidth, padding, padchar, flags)
 
-	i, err := strconv.Atoi(args[0]) // Convert todo id argument to an integer.
+	// Convert todo position argument to an integer.
+	p, err := strconv.Atoi(args[0])
 	if err != nil {
 		return fmt.Errorf("%v: %q %w", command, args[0], err)
 	}
 
-	if i > 0 && i <= len(items) { // Validate id argument.
-		item := items[i-1]
+	if p > 0 && p <= len(todos) { // Validate position argument.
+		t := todos[p-1]
 
-		// Print only the body of the item if the --body flag is given.
-		// Otherwise print the position id and title too. And the todo tag,
-		// if the --tag is provided.
+		// Print only the body of the todo if the --body flag is given.
+		// Otherwise print the position and title too. And the todo tag, if the
+		// --tag is provided.
 		switch {
 		case bodyOpt:
-			fmt.Fprintln(w, item.Body)
+			fmt.Fprintln(w, t.Body)
 		case tagOpt:
-			fmt.Fprintln(w, item.Label()+item.TagFmt(item.Tag)+
-				item.TitleFmt(item.Title)+"\n"+item.Body)
+			fmt.Fprintln(w, t.PositionFmt()+t.TagFmt(t.Tag)+t.TitleFmt(t.Title)+
+				"\n"+t.Body)
 		default:
-			fmt.Fprintln(w, item.Label()+item.TitleFmt(item.Title)+"\n"+item.Body)
+			fmt.Fprintln(w, t.PositionFmt()+t.TitleFmt(t.Title)+"\n"+t.Body)
 		}
 	} else {
-		return fmt.Errorf("%v: %q %w", command, i, err)
+		return fmt.Errorf("%v: %q %w", command, p, err)
 	}
 
 	w.Flush()
@@ -79,8 +82,8 @@ func getRun(cmd *cobra.Command, args []string) error {
 func init() {
 	rootCmd.AddCommand(getCmd)
 
-	// The --body flag argument determines if only the item body will be printed.
-	getCmd.Flags().BoolVarP(&bodyOpt, "body", "b", false, "get only the item body")
+	// The --body flag argument determines if only the todo body will be printed.
+	getCmd.Flags().BoolVarP(&bodyOpt, "body", "b", false, "get only the todo body")
 	// The --tag flag determines whether the tag for the todo should be shown.
-	getCmd.Flags().BoolVarP(&tagOpt, "tag", "T", false, "show the todo's tag")
+	getCmd.Flags().BoolVarP(&tagOpt, "tag", "T", false, "show the todos tag")
 }
