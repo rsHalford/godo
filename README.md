@@ -73,52 +73,38 @@ Instructions on how to add GoDo as a flake can vary wildly depending on the syst
 
 ## Configuration
 
-You can edit the `config.yaml` to set your preferred default settings, helping shorten your most used `godo` arguments. For example you might prefer to use Vim as your favourite terminal editor, with all your notes being done with markdown syntax.
+You can edit the `config.toml` to set your preferred default settings, helping shorten your most used `godo` arguments. For example you might prefer to use Vim as your favourite terminal editor, with all your notes being done with markdown syntax.
 
-On Linux this file will be read from `${XDG_CONFIG_HOME:-$HOME/.config}/godo/config.yaml`.
+On Linux this file will be read from `${XDG_CONFIG_HOME:-$HOME/.config}/godo/config.toml`.
 
-```yaml
-general:
-  # change the file path for saving todos (defaults to "~/.local/share/godo/godos.json" if unset)
-  # $GODO_GENERAL_DATA_FILE
-  dataFile: "~/.local/share/godo/godos.json"
+```toml
+[general]
+# change the file path for saving todos (defaults to "~/.local/share/godo/godos.json" if unset)
+data-file = "" # $GODO_GENERAL_DATA_FILE
 
-# set preferences for editing todos
-edit:
-  # default to either editing the todo title or body (defaults to "title" if unset)
-  # $GODO_EDIT_DEFAULT
-  default: "body"
-  # determine which editor to make edits in (defaults to the environment's $EDITOR if unset)
-  # $GODO_EDIT_EDITOR
-  editor: "vim"
-  # append an extension to the temporary file's buffer for editing (e.g. "org", "md", "txt")
-  # $GODO_EDIT_FILETYPE
-  filetype: "md"
+[edit]
+# default to editing the todo title or body (defaults to "title" if unset)
+default = "body" # $GODO_EDIT_DEFAULT
+# which editor to make edits in (defaults to the environment's $EDITOR if unset)
+editor = "vim" # $GODO_EDIT_EDITOR
+# append an extension to the temporary file's buffer for editing (e.g. "org", "md", "txt")
+filetype = "md" # $GODO_EDIT_FILETYPE
 
-find:
-  # choose between "smart", "sensitive" or "insensitive" search patterns (defaults to "smart" if unset)
-  # "smart" - if the search argument is all lower-case, all results are shown. Only becoming case-sensitive
-  # if upper-case characters are provided.
-  # $GODO_FIND_CASE_SENSITIVITY
-  caseSensitivity: "smart"
+[find]
+# "smart", "sensitive" or "insensitive" search patterns (defaults to "smart" if unset)
+# "smart" - if the search argument is all lower-case, all results are shown.
+# Only becoming case-sensitive if upper-case characters are provided.
+case-sensitivity = "smart" # $GODO_FIND_CASE_SENSITIVITY
 
-# change the colour of the output
-theme:
-  # use case-insesitive color names or hexadecimals, and prepend with "bg" to change the background instead.
-  # $GODO_THEME_PRIMARY
-  primary: "bg#00385c"
-  # $GODO_THEME_SECONDARY
-  secondary: "#00add8"
-  # $GODO_THEME_POSITION
-  position: "grey"
-  # $GODO_THEME_TAG
-  tag: "magenta"
-  # $GODO_THEME_TITLE
-  title: "brightwhite"
-  # $GODO_THEME_PRIORITY
-  priority: "yellow"
-  # $GODO_THEME_DONE
-  done: "white"
+[theme]
+# use case-insesitive color names or hexadecimals, and prepend with "bg" to change the background instead.
+primary = "bg#00385c" # $GODO_THEME_PRIMARY
+secondary = "#00add8" # $GODO_THEME_SECONDARY
+position = "grey" # $GODO_THEME_POSITION
+tag = "magenta" # $GODO_THEME_TAG
+title = "brightwhite" # $GODO_THEME_TITLE
+priority = "yellow" # $GODO_THEME_PRIORITY
+done = "white" # $GODO_THEME_DONE
 ```
 
 ## NO_COLOR Support

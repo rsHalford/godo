@@ -2,50 +2,36 @@
 Package config creates the structure for the configuration of GoDo. This includes
 setting the environment variables that the godo command and subcommands use to
 operate according to the user's specification. These variables can also be set
-using the config.yaml file, that will be created automatically if it does not
+using the config.toml file, that will be created automatically if it does not
 already exist.
 
-general:
-  # change the file path for saving todos (defaults to "~/.local/share/godo/godos.json" if unset)
-  # $GODO_GENERAL_DATA_FILE
-  dataFile: ""
+[general]
+# change the file path for saving todos (defaults to "%s/godos.json" if unset)
+data-file = "" # $GODO_GENERAL_DATA_FILE
 
-# set preferences for editing todos
-edit:
-  # default to either editing the todo title or body (defaults to "title" if unset)
-  # $GODO_EDIT_DEFAULT
-  default: "body"
-  # determine which editor to make edits in (defaults to the environment's $EDITOR if unset)
-  # $GODO_EDIT_EDITOR
-  editor: "vim"
-  # append an extension to the temporary file's buffer for editing (e.g. "org", "md", "txt")
-  # $GODO_EDIT_FILETYPE
-  filetype: "md"
+[edit]
+# default to editing the todo title or body (defaults to "title" if unset)
+default = "body" # $GODO_EDIT_DEFAULT
+# which editor to make edits in (defaults to the environment's $EDITOR if unset)
+editor = "vim" # $GODO_EDIT_EDITOR
+# append an extension to the temporary file's buffer for editing (e.g. "org", "md", "txt")
+filetype = "md" # $GODO_EDIT_FILETYPE
 
-find:
-  # choose between "smart", "sensitive" or "insensitive" search patterns (defaults to "smart" if unset)
-  # "smart" - if the search argument is all lower-case, all results are shown. Only becoming case-sensitive
-  # if upper-case characters are provided.
-  # $GODO_FIND_CASE_SENSITIVITY
-  caseSensitivity: "smart"
+[find]
+# "smart", "sensitive" or "insensitive" search patterns (defaults to "smart" if unset)
+# "smart" - if the search argument is all lower-case, all results are shown.
+# Only becoming case-sensitive if upper-case characters are provided.
+case-sensitivity = "smart" # $GODO_FIND_CASE_SENSITIVITY
 
-# change the colour of the output
-theme:
-  # use case-insesitive color names or hexadecimals, and prepend with "bg" to change the background instead.
-  # $GODO_THEME_PRIMARY
-  primary: "bg#00385c"
-  # $GODO_THEME_SECONDARY
-  secondary: "#00add8"
-  # $GODO_THEME_POSITION
-  position: "grey"
-  # $GODO_THEME_TAG
-  tag: "magenta"
-  # $GODO_THEME_TITLE
-  title: "brightwhite"
-  # $GODO_THEME_PRIORITY
-  priority: "yellow"
-  # $GODO_THEME_DONE
-  done: "white"
+[theme]
+# use case-insesitive color names or hexadecimals, and prepend with "bg" to change the background instead.
+primary = "bg#00385c" # $GODO_THEME_PRIMARY
+secondary = "#00add8" # $GODO_THEME_SECONDARY
+position = "grey" # $GODO_THEME_POSITION
+tag = "magenta" # $GODO_THEME_TAG
+title = "brightwhite" # $GODO_THEME_TITLE
+priority = "yellow" # $GODO_THEME_PRIORITY
+done = "white" # $GODO_THEME_DONE
 */
 package config
 
@@ -58,35 +44,35 @@ import (
 )
 
 type General struct {
-	DataFile string `yaml:"dataFile" env:"DATA_FILE"`
+	DataFile string `toml:"data-file" env:"DATA_FILE"`
 }
 
 type Edit struct {
-	Default  string `yaml:"default" env:"DEFAULT"`
-	Editor   string `yaml:"editor" env:"EDITOR"`
-	Filetype string `yaml:"filetype" env:"FILETYPE"`
+	Default  string `toml:"default" env:"DEFAULT"`
+	Editor   string `toml:"editor" env:"EDITOR"`
+	Filetype string `toml:"filetype" env:"FILETYPE"`
 }
 
 type Find struct {
-	CaseSensitivity string `yaml:"caseSensitivity" env:"CASE_SENSITIVITY"`
+	CaseSensitivity string `toml:"case-sensitivity" env:"CASE_SENSITIVITY"`
 }
 
 type Theme struct {
-	Primary   string `yaml:"primary" env:"PRIMARY" env-default:"Blue"`
-	Secondary string `yaml:"secondary" env:"SECONDARY" env-default:"Yellow"`
-	Position  string `yaml:"position" env:"POSITION" env-default:"Grey"`
-	Tag       string `yaml:"tag" env:"TAG" env-default:"Magenta"`
-	Title     string `yaml:"title" env:"TITLE" env-default:"BrightWhite"`
-	Priority  string `yaml:"priority" env:"PRIORITY" env-default:"Yellow"`
-	Done      string `yaml:"done" env:"DONE" env-default:"White"`
+	Primary   string `toml:"primary" env:"PRIMARY" env-default:"Blue"`
+	Secondary string `toml:"secondary" env:"SECONDARY" env-default:"Yellow"`
+	Position  string `toml:"position" env:"POSITION" env-default:"Grey"`
+	Tag       string `toml:"tag" env:"TAG" env-default:"Magenta"`
+	Title     string `toml:"title" env:"TITLE" env-default:"BrightWhite"`
+	Priority  string `toml:"priority" env:"PRIORITY" env-default:"Yellow"`
+	Done      string `toml:"done" env:"DONE" env-default:"White"`
 }
 
-// Config struct defines the config.yaml and related environment variables.
+// Config struct defines the config.toml and related environment variables.
 type Config struct {
-	General General `yaml:"general" env-prefix:"GODO_GENERAL_"`
-	Edit    Edit    `yaml:"edit" env-prefix:"GODO_EDIT_"`
-	Find    Find    `yaml:"find" env-prefix:"GODO_FIND_"`
-	Theme   Theme   `yaml:"theme" env-prefix:"GODO_THEME_"`
+	General General `toml:"general" env-prefix:"GODO_GENERAL_"`
+	Edit    Edit    `toml:"edit" env-prefix:"GODO_EDIT_"`
+	Find    Find    `toml:"find" env-prefix:"GODO_FIND_"`
+	Theme   Theme   `toml:"theme" env-prefix:"GODO_THEME_"`
 }
 
 var cfg Config
@@ -115,47 +101,33 @@ func createCfgFile(cfgFile string) error {
 		defer f.Close()
 
 		// The file is created with boilerplate for configuration options.
-		configBoilerplate := fmt.Sprintf(`general:
-  # change the file path for saving todos (defaults to "%s/godos.json" if unset)
-  # $GODO_GENERAL_DATA_FILE
-  dataFile: ""
+		configBoilerplate := fmt.Sprintf(`[general]
+# change the file path for saving todos (defaults to "%s/godos.json" if unset)
+data-file = "" # $GODO_GENERAL_DATA_FILE
 
-# set preferences for editing todos
-edit:
-  # default to either editing the todo title or body (defaults to "title" if unset)
-  # $GODO_EDIT_DEFAULT
-  default: "body"
-  # determine which editor to make edits in (defaults to the environment's $EDITOR if unset)
-  # $GODO_EDIT_EDITOR
-  editor: "vim"
-  # append an extension to the temporary file's buffer for editing (e.g. "org", "md", "txt")
-  # $GODO_EDIT_FILETYPE
-  filetype: "md"
+[edit]
+# default to editing the todo title or body (defaults to "title" if unset)
+default = "body" # $GODO_EDIT_DEFAULT
+# which editor to make edits in (defaults to the environment's $EDITOR if unset)
+editor = "vim" # $GODO_EDIT_EDITOR
+# append an extension to the temporary file's buffer for editing (e.g. "org", "md", "txt")
+filetype = "md" # $GODO_EDIT_FILETYPE
 
-find:
-  # choose between "smart", "sensitive" or "insensitive" search patterns (defaults to "smart" if unset)
-  # "smart" - if the search argument is all lower-case, all results are shown. Only becoming case-sensitive
-  # if upper-case characters are provided.
-  # $GODO_FIND_CASE_SENSITIVITY
-  caseSensitivity: "smart"
+[find]
+# "smart", "sensitive" or "insensitive" search patterns (defaults to "smart" if unset)
+# "smart" - if the search argument is all lower-case, all results are shown.
+# Only becoming case-sensitive if upper-case characters are provided.
+case-sensitivity = "smart" # $GODO_FIND_CASE_SENSITIVITY
 
-# change the colour of the output
-theme:
-  # use case-insesitive color names or hexadecimals, and prepend with "bg" to change the background instead.
-  # $GODO_THEME_PRIMARY
-  primary: "bg#00385c"
-  # $GODO_THEME_SECONDARY
-  secondary: "#00add8"
-  # $GODO_THEME_POSITION
-  position: "grey"
-  # $GODO_THEME_TAG
-  tag: "magenta"
-  # $GODO_THEME_TITLE
-  title: "brightwhite"
-  # $GODO_THEME_PRIORITY
-  priority: "yellow"
-  # $GODO_THEME_DONE
-  done: "white"`, dataDir)
+[theme]
+# use case-insesitive color names or hexadecimals, and prepend with "bg" to change the background instead.
+primary = "bg#00385c" # $GODO_THEME_PRIMARY
+secondary = "#00add8" # $GODO_THEME_SECONDARY
+position = "grey" # $GODO_THEME_POSITION
+tag = "magenta" # $GODO_THEME_TAG
+title = "brightwhite" # $GODO_THEME_TITLE
+priority = "yellow" # $GODO_THEME_PRIORITY
+done = "white" # $GODO_THEME_DONE`, dataDir)
 
 		_, err = f.WriteString(configBoilerplate)
 		if err != nil {
@@ -174,10 +146,10 @@ func defineConfig() (cfgPath string, err error) {
 		fmt.Printf("determining user configuration location: %v", err)
 	}
 
-	// Assign the config.yaml filepath within the default root directory godo/,
+	// Assign the config.toml filepath within the default root directory godo/,
 	// to use in the user-specific configuration data.
 	godoCfgDir := cfgDir + "/godo"
-	cfgPath = godoCfgDir + "/config.yaml"
+	cfgPath = godoCfgDir + "/config.toml"
 
 	// Create the configuration directory if it doesn't already exist,
 	// including a configuration file with acceptable options defined.
@@ -204,7 +176,7 @@ func defineConfig() (cfgPath string, err error) {
 	return cfgPath, nil
 }
 
-// Value takes a key and returns the matching value from the config.yaml.
+// Value takes a key and returns the matching value from the config.toml.
 func Value(key string) string {
 	cfgPath, err := defineConfig()
 	if err != nil {
@@ -283,7 +255,7 @@ func Value(key string) string {
 	return ""
 }
 
-// InitTheme retrieves all color values set in the config.yaml file.
+// InitTheme retrieves all color values set in the config.toml file.
 func InitTheme() *Theme {
 	return &Theme{
 		Primary:   Value("theme_primary"),

@@ -1,6 +1,6 @@
 /*
 Edit a todo by passing the list position number of the todo. Defaults to
-editing the todo title, if not set in godo.yaml.
+editing the todo title, if not set in config.toml.
 
 Usage:
 
@@ -37,7 +37,7 @@ var editCmd = &cobra.Command{
 	Aliases: []string{"ed", "e"},
 	Short:   "Edit a todo (default: edit title)",
 	Long: `Edit a todo by passing the list position number of the todo. Defaults to
-editing the todo title, if not set in godo.yaml.`,
+editing the todo title, if not set in config.toml.`,
 	RunE: editRun,
 }
 
@@ -180,7 +180,7 @@ func defaultEditor() (string, error) {
 }
 
 // tempFiletype will check if there is a string variable flag set for the
-// tempFiletype before checking the config.yaml. Returning a formatted
+// tempFiletype before checking the config.toml. Returning a formatted
 // extension string. If neither is set an empty string is returned.
 func tempFiletype() (extension string) {
 	switch {

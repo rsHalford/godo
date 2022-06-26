@@ -59,8 +59,8 @@ func findRun(cmd *cobra.Command, args []string) error {
 	flagSet := cmd.Flags().Lookup("case").Changed
 
 	// If the user provides an argument for --case/-c, that will be used.
-	// Otherwise, the config.yaml option for caseSensitivity will determine the
-	// string value for caseOpt. Finally, if the config.yaml value is unset,
+	// Otherwise, the config.toml option for caseSensitivity will determine the
+	// string value for caseOpt. Finally, if the config.toml value is unset,
 	// default to the "smart" pattern.
 	switch {
 	case flagSet:
