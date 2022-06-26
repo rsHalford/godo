@@ -1,10 +1,18 @@
 <p align="center">
-  <img style="max-width: 80%;" src="godo-full.svg" alt="GoDo: A command line todo list application.">
+  <img width="80%" src="godo-full.svg" alt="GoDo: A command line todo list application.">
 </p>
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/rsHalford/godo.svg)](https://pkg.go.dev/github.com/rsHalford/godo)
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
-[![Go Report Card](https://goreportcard.com/badge/github.com/rsHalford/godo)](https://goreportcard.com/report/github.com/rsHalford/godo)
+<p align="center">
+  <a href="https://pkg.go.dev/github.com/rsHalford/godo">
+    <img src="https://pkg.go.dev/badge/github.com/rsHalford/godo.svg" alt="Go Reference">
+  </a>
+  <a href="https://github.com/pre-commit/pre-commit">
+    <img src="https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white" alt="pre-commit">
+  </a>
+  <a href="https://goreportcard.com/report/github.com/rsHalford/godo">
+    <img src="https://goreportcard.com/badge/github.com/rsHalford/godo" alt="Go Report Card">
+  </a>
+</p>
 
 ---
 
