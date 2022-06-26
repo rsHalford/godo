@@ -1,5 +1,5 @@
 /*
-List your todos.
+List todos.
 
 Usage:
 
@@ -15,7 +15,7 @@ Flags:
 	-d, --done       show completed todos
 	-h, --help       help for list
 	-p, --priority   show proritised todos
-	-T, --tag        show the todo's tag
+	-T, --tag        show the todos tag
 */
 package cmd
 
@@ -48,42 +48,44 @@ const (
 var listCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls", "l"},
-	Short:   "List your todos",
-	Long:    `List your todos.`,
+	Short:   "List todos",
+	Long:    `List todos.`,
 	RunE:    listRun,
 }
 
 func listRun(cmd *cobra.Command, args []string) error {
 	var command string = "list"
 
-	items, err := todo.Todos() // Get todo items from the configured source.
+	todos, err := todo.Todos() // Get todos from the configured source.
 	if err != nil {
 		return fmt.Errorf("%v: %w", command, err)
 	}
 
-	sort.Sort(todo.Order(items)) // Sort the items for terminal printing.
+	sort.Sort(todo.Order(todos)) // Sort the todos for terminal printing.
 
 	// Create a new writer with defined formatting.
 	w := tabwriter.NewWriter(os.Stdout, minwidth, tabwidth, padding, padchar, flags)
 
-	// Print as a list each todo item that qualifies via the flag arguments given.
+	// Print as a list each todo that qualifies via the flag arguments given.
 	if priorityOpt {
-		for _, i := range items {
-			if i.Priority && (allOpt || i.Status == doneOpt) {
+		for _, t := range todos {
+			if t.Priority && (allOpt || t.Done == doneOpt) {
 				if tagOpt {
-					fmt.Fprintln(w, i.Label()+i.TagFmt(i.Tag)+i.TitleFmt(i.Title))
+					fmt.Fprintln(w, t.PositionFmt()+t.TagFmt(t.Tag)+
+						t.TitleFmt(t.Title))
 				} else {
-					fmt.Fprintln(w, i.Label()+i.TitleFmt(i.Title))
+					fmt.Fprintln(w, t.PositionFmt()+t.TitleFmt(t.Title))
 				}
 			}
 		}
 	} else {
-		for _, i := range items {
-			if allOpt || i.Status == doneOpt {
+		for _, t := range todos {
+			if allOpt || t.Done == doneOpt {
 				if tagOpt {
-					fmt.Fprintln(w, i.Label()+i.TagFmt(i.Tag)+i.TitleFmt(i.Title))
+					fmt.Fprintln(w, t.PositionFmt()+t.TagFmt(t.Tag)+
+						t.TitleFmt(t.Title))
 				} else {
-					fmt.Fprintln(w, i.Label()+i.TitleFmt(i.Title))
+					fmt.Fprintln(w, t.PositionFmt()+t.TitleFmt(t.Title))
 				}
 			}
 		}
@@ -97,10 +99,10 @@ func listRun(cmd *cobra.Command, args []string) error {
 func init() {
 	rootCmd.AddCommand(listCmd)
 
-	// The --priority/--done/--all flag arguments determine which items to list.
+	// The --priority/--done/--all flag arguments determine which todos to list.
 	listCmd.Flags().BoolVarP(&priorityOpt, "priority", "p", false, "show prioritised todos")
 	listCmd.Flags().BoolVarP(&doneOpt, "done", "d", false, "show completed todos")
 	listCmd.Flags().BoolVarP(&allOpt, "all", "a", false, "show all todos")
 	// The --tag flag determines whether the tag for each todo should be shown.
-	listCmd.Flags().BoolVarP(&tagOpt, "tag", "T", false, "show the todo's tag")
+	listCmd.Flags().BoolVarP(&tagOpt, "tag", "T", false, "show the todos tag")
 }

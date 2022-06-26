@@ -1,5 +1,5 @@
 /*
-Tag is used to add or replace a tag to a todo.
+Tag is used to add or replace a tag for a todo.
 
 Usage:
 
@@ -28,7 +28,7 @@ import (
 var tagCmd = &cobra.Command{
 	Use:     "tag",
 	Aliases: []string{"t"},
-	Short:   "Add a tag to your todo",
+	Short:   "Change a tag for a todo",
 	Long:    `Tag is used to add or replace a tag for a todo.`,
 	RunE:    tagRun,
 }
@@ -36,32 +36,35 @@ var tagCmd = &cobra.Command{
 func tagRun(cmd *cobra.Command, args []string) error {
 	var command string = "tag"
 
-	items, err := todo.Todos() // Get todo items from the configured source.
+	todos, err := todo.Todos() // Get todos from the configured source.
 	if err != nil {
 		return fmt.Errorf("%v: %w", command, err)
 	}
 
-	i, err := strconv.Atoi(args[0]) // Convert todo id argument to an integer.
+	// Convert todo position argument to an integer.
+	p, err := strconv.Atoi(args[0])
 	if err != nil {
 		return fmt.Errorf("%v: %q %w", command, args[0], err)
 	}
 
-	if i > 0 && i <= len(items) { // Validate id argument.
-		// Add the tag to the todo item Tag field. Then update the changes.
-		items[i-1].Tag = args[1] // Assign the tag arguments for the todo.
+	if p > 0 && p <= len(todos) { // Validate position argument.
+		t := todos[p-1]
+
+		// Add the tag to the todo Tag field. Then update the changes.
+		t.Tag = args[1] // Assign the tag arguments for the todo.
 
 		fmt.Printf("%s Adding tag...\n%s %q: %s\n",
 			c.StyleMust(Theme.Primary)("::"),
 			c.StyleMust(Theme.Secondary)("-->"),
-			items[i-1].Title,
-			c.StyleMust(Theme.Tag)(items[i-1].Tag))
+			t.Title,
+			c.StyleMust(Theme.Tag)(t.Tag))
 
-		err = updateTodo(i, command, items)
+		err = updateTodo(p, command, todos)
 		if err != nil {
 			return fmt.Errorf("%v: %w", command, err)
 		}
 	} else {
-		return fmt.Errorf("%v: %q %w", i, command, err)
+		return fmt.Errorf("%v: %q %w", p, command, err)
 	}
 
 	return nil

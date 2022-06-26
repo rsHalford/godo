@@ -8,11 +8,11 @@ import (
 	"github.com/rsHalford/godo/todo"
 )
 
-// updateTodo will send the updated item and it's properties to save locally.
-func updateTodo(i int, command string, items []todo.Todo) error {
-	items[i-1].UpdatedAt = time.Now().UTC()
+// updateTodo will send the updated todo and it's properties to save locally.
+func updateTodo(position int, command string, todos []todo.Todo) error {
+	todos[position-1].UpdatedAt = time.Now().UTC()
 
-	sort.Sort(todo.Order(items)) // Sort the items before saving.
+	sort.Sort(todo.Order(todos)) // Sort the todos before saving.
 
 	// Pass the filename of the local todo store to the filename variable.
 	filename, err := todo.LocalTodos()
@@ -21,7 +21,7 @@ func updateTodo(i int, command string, items []todo.Todo) error {
 	}
 
 	// Using SaveLocal to add the new todo(s) to the local JSON store.
-	err = todo.SaveLocal(filename, items)
+	err = todo.SaveLocal(filename, todos)
 	if err != nil {
 		return fmt.Errorf("%v: %w", command, err)
 	}

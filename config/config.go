@@ -6,13 +6,13 @@ using the config.yaml file, that will be created automatically if it does not
 already exist.
 
 general:
-  # change the file path for saving local notes (defaults to "~/.local/share/godo/godos.json" if unset)
+  # change the file path for saving todos (defaults to "~/.local/share/godo/godos.json" if unset)
   # $GODO_GENERAL_DATA_FILE
   dataFile: ""
 
-# set preferences for editing notes
+# set preferences for editing todos
 edit:
-  # default to either editing the note title or body (defaults to "title" if unset)
+  # default to either editing the todo title or body (defaults to "title" if unset)
   # $GODO_EDIT_DEFAULT
   default: "body"
   # determine which editor to make edits in (defaults to the environment's $EDITOR if unset)
@@ -44,8 +44,8 @@ theme:
   title: "brightwhite"
   # $GODO_THEME_PRIORITY
   priority: "yellow"
-  # $GODO_THEME_STATUS
-  status: "white"
+  # $GODO_THEME_DONE
+  done: "white"
 */
 package config
 
@@ -78,7 +78,7 @@ type Theme struct {
 	Tag       string `yaml:"tag" env:"TAG" env-default:"Magenta"`
 	Title     string `yaml:"title" env:"TITLE" env-default:"BrightWhite"`
 	Priority  string `yaml:"priority" env:"PRIORITY" env-default:"Yellow"`
-	Status    string `yaml:"status" env:"STATUS" env-default:"White"`
+	Done      string `yaml:"done" env:"DONE" env-default:"White"`
 }
 
 // Config struct defines the config.yaml and related environment variables.
@@ -116,13 +116,13 @@ func createCfgFile(cfgFile string) error {
 
 		// The file is created with boilerplate for configuration options.
 		configBoilerplate := fmt.Sprintf(`general:
-  # change the file path for saving local notes (defaults to "%s/godos.json" if unset)
+  # change the file path for saving todos (defaults to "%s/godos.json" if unset)
   # $GODO_GENERAL_DATA_FILE
   dataFile: ""
 
-# set preferences for editing notes
+# set preferences for editing todos
 edit:
-  # default to either editing the note title or body (defaults to "title" if unset)
+  # default to either editing the todo title or body (defaults to "title" if unset)
   # $GODO_EDIT_DEFAULT
   default: "body"
   # determine which editor to make edits in (defaults to the environment's $EDITOR if unset)
@@ -154,8 +154,8 @@ theme:
   title: "brightwhite"
   # $GODO_THEME_PRIORITY
   priority: "yellow"
-  # $GODO_THEME_STATUS
-  status: "white"`, dataDir)
+  # $GODO_THEME_DONE
+  done: "white"`, dataDir)
 
 		_, err = f.WriteString(configBoilerplate)
 		if err != nil {
@@ -166,16 +166,16 @@ theme:
 	return nil
 }
 
-// defineConfig assigns the file path for the configuration file, before checking
-// the existence of the file and creating it if it doesn't exist.
+// defineConfig assigns the file path for the configuration file, before
+// checking the existence of the file and creating it if it doesn't exist.
 func defineConfig() (cfgPath string, err error) {
 	cfgDir, err := os.UserConfigDir()
 	if err != nil {
 		fmt.Printf("determining user configuration location: %v", err)
 	}
 
-	// Assign the config.yaml filepath within the default root
-	// directory godo/, to use in the user-specific configuration data.
+	// Assign the config.yaml filepath within the default root directory godo/,
+	// to use in the user-specific configuration data.
 	godoCfgDir := cfgDir + "/godo"
 	cfgPath = godoCfgDir + "/config.yaml"
 
@@ -271,8 +271,8 @@ func Value(key string) string {
 
 		return value
 
-	case "theme_status":
-		value := cfg.Theme.Status
+	case "theme_done":
+		value := cfg.Theme.Done
 
 		return value
 
@@ -292,6 +292,6 @@ func InitTheme() *Theme {
 		Tag:       Value("theme_tag"),
 		Title:     Value("theme_title"),
 		Priority:  Value("theme_priority"),
-		Status:    Value("theme_status"),
+		Done:      Value("theme_done"),
 	}
 }

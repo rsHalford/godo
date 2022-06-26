@@ -23,7 +23,7 @@ type Todo struct {
 	Body      string    `json:"body"`
 	Tag       string    `json:"tag"`
 	Priority  bool      `json:"priority"`
-	Status    bool      `json:"status"`
+	Done      bool      `json:"done"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 	position  int
@@ -56,51 +56,51 @@ func Todos() ([]Todo, error) {
 
 		defer f.Close()
 
-		// The file is created with empty square-brackets.
-		// To be read successfully as an empty JSON file.
+		// The file is created with empty square-brackets. To be read
+		// successfully as an empty JSON file.
 		_, err = f.Write([]byte("[]"))
 		if err != nil {
 			return nil, fmt.Errorf("write to empty file: %w", err)
 		}
 	}
 
-	// The contents of the local file will have it's items parsed,
-	// and a position value for ordering.
-	items, err := ReadLocal(dataFile)
+	// The contents of the local file will have it's todos parsed, and a
+	// position value for ordering.
+	todos, err := ReadLocal(dataFile)
 	if err != nil {
 		return nil, fmt.Errorf("reading from %v: %w", dataFile, err)
 	}
 
-	return items, nil
+	return todos, nil
 }
 
-// Tag will add the tag string for the Todo item.
-func (i *Todo) Tagging(tag string) {
+// Tag will add the tag string for the todo.
+func (t *Todo) Tagging(tag string) {
 	if tag != "" {
-		i.Tag = tag
+		t.Tag = tag
 	}
 }
 
-// Prioritise will set the priority value of the Todo item as true.
-func (i *Todo) Prioritise(priority bool) {
+// Prioritise will set the priority value of the todo as true.
+func (t *Todo) Prioritise(priority bool) {
 	if priority {
-		i.Priority = true
+		t.Priority = true
 	}
 }
 
 // TitleFmt will return back the given title string with the appropriate color
-// and styling, according to it's priority and status.
-func (i *Todo) TitleFmt(s string) string {
+// and styling, according to it's priority and if it's done.
+func (t *Todo) TitleFmt(s string) string {
 	switch {
-	case i.Priority && i.Status:
+	case t.Priority && t.Done:
 		s = c.WithStyleMust(Theme.Priority).Strikethrough(s) + "\t"
 		return s
 
-	case i.Priority && !i.Status:
+	case t.Priority && !t.Done:
 		s = c.StyleMust(Theme.Priority)(s) + "\t"
 		return s
 
-	case i.Status && !i.Priority:
+	case t.Done && !t.Priority:
 		s = c.WithStyleMust(Theme.Title).Strikethrough(s) + "\t"
 		return s
 
@@ -113,25 +113,24 @@ func (i *Todo) TitleFmt(s string) string {
 // TagFmt first determines whether the tag string is empty, and adds a space
 // to fix formatting alignments. Before returning it with color and style
 // formatting.
-func (i *Todo) TagFmt(s string) string {
-	if i.Tag == "" {
+func (t *Todo) TagFmt(s string) string {
+	if t.Tag == "" {
 		s = " "
 	}
 	s = c.WithItalic().StyleMust(Theme.Tag)(s) + "\t"
 	return s
 }
 
-// Label will convert the position integer value of the item to a string. Then
-// color and style, before returning.
-func (i *Todo) Label() (s string) {
-	s = strconv.Itoa(i.position)
+// Position will convert the position integer value of the todo to a string.
+// Then color and style, before returning.
+func (t *Todo) PositionFmt() (s string) {
+	s = strconv.Itoa(t.position)
 	s = c.StyleMust(Theme.Position)(s) + "\t"
 	return s
 }
 
-// Order helps sort to organise the todo items for printing.
-// Items are separated by their status, then priority,
-// and then finally in ascending position order.
+// Order helps sort to organise the todos for printing. Todos are separated by
+// done, then priority, and then finally in ascending position order.
 type Order []Todo
 
 func (s Order) Len() int {
@@ -143,7 +142,7 @@ func (s Order) Swap(i, j int) {
 }
 
 func (s Order) Less(i, j int) bool {
-	if s[i].Status == s[j].Status {
+	if s[i].Done == s[j].Done {
 		if s[i].Priority == s[j].Priority {
 			return s[i].position < s[j].position
 		}
@@ -151,5 +150,5 @@ func (s Order) Less(i, j int) bool {
 		return s[i].Priority && !s[j].Priority
 	}
 
-	return !s[i].Status
+	return !s[i].Done
 }

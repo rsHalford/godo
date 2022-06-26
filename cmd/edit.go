@@ -1,6 +1,6 @@
 /*
-Edit a todo by passing the list number of the todo. Defaults to editing the
-todo title, if not set in godo.yaml.
+Edit a todo by passing the list position number of the todo. Defaults to
+editing the todo title, if not set in godo.yaml.
 
 Usage:
 
@@ -12,10 +12,10 @@ Aliases:
 
 Flags:
 
-	-b, --body               edit item body
+	-b, --body               edit todo body
 	-e, --extension string   set filetype extension for editing
 	-h, --help               help for edit
-	-t, --title              edit item title
+	-t, --title              edit todo title
 */
 package cmd
 
@@ -36,8 +36,8 @@ var editCmd = &cobra.Command{
 	Use:     "edit",
 	Aliases: []string{"ed", "e"},
 	Short:   "Edit a todo (default: edit title)",
-	Long: `Edit a todo by passing the list number of the todo. Defaults to editing the
-todo title, if not set in godo.yaml.`,
+	Long: `Edit a todo by passing the list position number of the todo. Defaults to
+editing the todo title, if not set in godo.yaml.`,
 	RunE: editRun,
 }
 
@@ -50,53 +50,54 @@ var (
 func editRun(cmd *cobra.Command, args []string) error {
 	var command string = "edit"
 
-	items, err := todo.Todos() // Get todo items from the configured source.
+	todos, err := todo.Todos() // Get todos from the configured source.
 	if err != nil {
 		return fmt.Errorf("%v: %w", command, err)
 	}
 
-	i, err := strconv.Atoi(args[0]) // Convert todo id argument to an integer.
+	// Convert todo position argument to an integer.
+	p, err := strconv.Atoi(args[0])
 	if err != nil {
 		return fmt.Errorf("%v: %q %w", command, args[0], err)
 	}
 
-	if i > 0 && i <= len(items) { // Validate id argument.
-		// Perform the edit on either the title or body. Depending on
-		// which arguments or configuration settings have been set.
+	if p > 0 && p <= len(todos) { // Validate position argument.
+		// Perform the edit on either the title or body. Depending on which
+		// arguments or configuration settings have been set.
 		switch {
 		case titleOpt:
-			items[i-1].Title, err = createTemp([]byte(items[i-1].Title))
+			todos[p-1].Title, err = createTemp([]byte(todos[p-1].Title))
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 
-			err = updateTodo(i, command, items)
+			err = updateTodo(p, command, todos)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 		case config.Value("editing_default") == "body" || bodyOpt:
-			items[i-1].Body, err = createTemp([]byte(items[i-1].Body))
+			todos[p-1].Body, err = createTemp([]byte(todos[p-1].Body))
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 
-			err = updateTodo(i, command, items)
+			err = updateTodo(p, command, todos)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 		default:
-			items[i-1].Title, err = createTemp([]byte(items[i-1].Title))
+			todos[p-1].Title, err = createTemp([]byte(todos[p-1].Title))
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 
-			err = updateTodo(i, command, items)
+			err = updateTodo(p, command, todos)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 		}
 	} else {
-		return fmt.Errorf("%v: %q %w", command, i, err)
+		return fmt.Errorf("%v: %q %w", command, p, err)
 	}
 
 	return nil
@@ -159,8 +160,9 @@ func editTemp(filename string) error {
 	return cmd.Run()
 }
 
-// defaultEditor determines which editor has been chosen within the configuration file.
-// If not specified, the system $EDITOR environment variable will be used.
+// defaultEditor determines which editor has been chosen within the
+// configuration file. If not specified, the system $EDITOR environment
+// variable will be used.
 func defaultEditor() (string, error) {
 	if config.Value("editing_editor") == "" {
 		editor := os.Getenv("EDITOR")
@@ -177,9 +179,9 @@ func defaultEditor() (string, error) {
 	return editor, nil
 }
 
-// tempFiletype will check if there is a string variable flag set for the tempFiletype
-// before checking the config.yaml. Returning a formatted extension string. If neither
-// is set an empty string is returned.
+// tempFiletype will check if there is a string variable flag set for the
+// tempFiletype before checking the config.yaml. Returning a formatted
+// extension string. If neither is set an empty string is returned.
 func tempFiletype() (extension string) {
 	switch {
 	case extOpt != "":
@@ -201,7 +203,7 @@ func init() {
 	rootCmd.AddCommand(editCmd)
 
 	// The --title/--body flag arguments determine which part of the todo to edit.
-	editCmd.Flags().BoolVarP(&titleOpt, "title", "t", false, "edit item title")
-	editCmd.Flags().BoolVarP(&bodyOpt, "body", "b", false, "edit item body")
+	editCmd.Flags().BoolVarP(&titleOpt, "title", "t", false, "edit todo title")
+	editCmd.Flags().BoolVarP(&bodyOpt, "body", "b", false, "edit todo body")
 	editCmd.Flags().StringVarP(&extOpt, "extension", "e", "", "set filetype extension for editing")
 }

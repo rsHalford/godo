@@ -10,28 +10,28 @@
 
 # About
 
-GoDo aims to help you get organised with your tasks. Designed to be simple and accessible.
+GoDo aims to help you get organised with your todos. Designed to be simple and accessible.
 
 ```
 Usage:
   godo [command]
 
 Available Commands:
-  add         add a new todo
-  completion  generate the autocompletion script for the specified shell
-  done        toggle todo as done
-  edit        edit a todo (default: edit title)
-  find        search for a given string
-  get         get a specific todo
+  add         Add a new todo
+  completion  Generate the autocompletion script for the specified shell
+  done        Toggle todo as done
+  edit        Edit a todo (default: edit title)
+  find        Search for a given string
+  get         Get a specific todo
   help        Help about any command
-  list        list your todos
-  priority    label a todo as a priority
-  remove      remove a todo
-  tag         add a tag to your todo
-  version     print godo's version
+  list        List todos
+  priority    Label a todo as a priority
+  remove      Remove a todo
+  tag         Change the tag of a todo
 
 Flags:
-  -h, --help   help for godo
+  -h, --help      help for godo
+  -v, --version   version for godo
 
 Use "godo [command] --help" for more information about a command.
 ```
@@ -79,13 +79,13 @@ On Linux this file will be read from `${XDG_CONFIG_HOME:-$HOME/.config}/godo/con
 
 ```yaml
 general:
-  # change the file path for saving local notes (defaults to "~/.local/share/godo/godos.json" if unset)
+  # change the file path for saving todos (defaults to "~/.local/share/godo/godos.json" if unset)
   # $GODO_GENERAL_DATA_FILE
   dataFile: "~/.local/share/godo/godos.json"
 
-# set preferences for editing notes
+# set preferences for editing todos
 edit:
-  # default to either editing the note title or body (defaults to "title" if unset)
+  # default to either editing the todo title or body (defaults to "title" if unset)
   # $GODO_EDIT_DEFAULT
   default: "body"
   # determine which editor to make edits in (defaults to the environment's $EDITOR if unset)
@@ -117,8 +117,8 @@ theme:
   title: "brightwhite"
   # $GODO_THEME_PRIORITY
   priority: "yellow"
-  # $GODO_THEME_STATUS
-  status: "white"
+  # $GODO_THEME_DONE
+  done: "white"
 ```
 
 ## NO_COLOR Support

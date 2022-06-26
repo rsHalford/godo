@@ -10,7 +10,6 @@ import (
 )
 
 // rootCmd represents the base command when called without any subcommands.
-// TODO: remove header to an info/man page instead, or just when help is called.
 var rootCmd = &cobra.Command{
 	Use:     "godo",
 	Short:   "GoDo is a todo application.",
@@ -18,8 +17,9 @@ var rootCmd = &cobra.Command{
 	Version: "0.15.0",
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
+// Execute adds all child commands to the root command and sets flags
+// appropriately. This is called by main.main(). It only needs to happen once
+// to the rootCmd.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
