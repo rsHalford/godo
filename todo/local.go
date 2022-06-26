@@ -13,7 +13,7 @@ const perm fs.FileMode = 0o600
 
 // LocalTodos will assign dataFile a user defined filename for the local
 // godos.json. Creating one within the godo data directory if not set if
-// config.yaml.
+// config.toml.
 func LocalTodos() (filename string, err error) {
 	// If dataFile configuration key is set, return that value.
 	if config.Value("dataFile") != "" {

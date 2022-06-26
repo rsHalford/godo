@@ -38,7 +38,7 @@ func init() {
 // initData checks the configuration file for a location to save todos.
 // Creating a godo directory in the user's home directory, if not set.
 func initData() {
-	// Check config.yaml for user defined local filepath.
+	// Check config.toml for user defined local filepath.
 	if config.Value("dataFile") == "" {
 		home, err := os.UserHomeDir()
 		if err != nil {
