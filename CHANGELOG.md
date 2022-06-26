@@ -1,9 +1,39 @@
 # CHANGELOG
 
-<a name="0.15.0"></a>
-## [0.15.0](https://github.com/rsHalford/godo/compare/v0.14.0...0.15.0)
+<a name="0.16.0"></a>
+## [0.16.0](https://github.com/rsHalford/godo/compare/v0.15.0...0.16.0)
+
+> 2022-06-26
+
+### Chores
+
+* **docs:** added go report card badge to project README
+* **docs:** improve the package header documentation
+* **version:** update for v0.16.0
+
+### Code Refactoring
+
+* improved nomenclature with consistency throughout
+* **version:** replaces versionCmd with the rootCmd Version flag
+
+### Features
+
+* **config:** changed to more appropriate config filetype TOML
+
+### BREAKING CHANGE
+
+
+Todo Status is now referred to as Done.
+
+
+<a name="v0.15.0"></a>
+## [v0.15.0](https://github.com/rsHalford/godo/compare/v0.14.0...v0.15.0)
 
 > 2022-06-23
+
+### Chores
+
+* **version:** update for v0.15.0
 
 ### Features
 
