@@ -54,27 +54,11 @@ func findRun(cmd *cobra.Command, args []string) error {
 
 	// Create a new writer with defined formatting.
 	w := tabwriter.NewWriter(os.Stdout, minwidth, tabwidth, padding, padchar, flags)
+	flagSet := cmd.Flags().Lookup("case").Changed // True if --case flag provided.
+	caseOpt = searchPattern(flagSet)
 
-	// Assign the bool value if an argument for the --case/-c flag is provided.
-	flagSet := cmd.Flags().Lookup("case").Changed
-
-	// If the user provides an argument for --case/-c, that will be used.
-	// Otherwise, the config.toml option for caseSensitivity will determine the
-	// string value for caseOpt. Finally, if the config.toml value is unset,
-	// default to the "smart" pattern.
-	switch {
-	case flagSet:
-		break
-	case config.Value("caseSensitivity") != "":
-		caseOpt = config.Value("caseSensitivity")
-	default:
-		caseOpt = "smart"
-	}
-
-	// For every argument string, go through every todo and check both the title
-	// and body for the string, depending on case-sensitivity settings. Then
-	// print the todo title - exclusively if the --title/-t flag is used - and
-	// also print the body.
+	// For each argument, check the title and body of every todo according to case
+	// -sensitivity settings. Printing the results depending on the --title flag.
 	for _, a := range args {
 		switch {
 		// For sensitive search results, for each argument return all
@@ -128,10 +112,27 @@ func findRun(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	// TODO: assign error message to tabwriter.Writer.Flush()
+	// TODO: assign error message to tabwriter.Writer.Flush().
 	w.Flush()
 
 	return nil
+}
+
+// searchPattern returns the user provided argument for --case/-c, if one is
+// set. Otherwise, the config.toml option for caseSensitivity will determine
+// the string value for caseOpt. Finally, if the config.toml value is unset,
+// default to the "smart" pattern.
+func searchPattern(set bool) string {
+	switch {
+	case set:
+		break
+	case config.Value("caseSensitivity") != "":
+		caseOpt = config.Value("caseSensitivity")
+	default:
+		caseOpt = "smart"
+	}
+
+	return caseOpt
 }
 
 // printFindMatches searches the given todos, body and title for a matching
