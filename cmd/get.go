@@ -46,7 +46,6 @@ func getRun(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("%v: %w", command, err)
 	}
 
-	// Create a new writer with defined formatting.
 	w := tabwriter.NewWriter(os.Stdout, minwidth, tabwidth, padding, padchar, flags)
 
 	// Convert todo position argument to an integer.

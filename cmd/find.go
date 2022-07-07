@@ -52,7 +52,6 @@ func findRun(cmd *cobra.Command, args []string) error {
 
 	sort.Sort(todo.Order(todos)) // Sort the todos for terminal printing.
 
-	// Create a new writer with defined formatting.
 	w := tabwriter.NewWriter(os.Stdout, minwidth, tabwidth, padding, padchar, flags)
 	flagSet := cmd.Flags().Lookup("case").Changed // True if --case flag provided.
 	caseOpt = searchPattern(flagSet)
@@ -61,17 +60,13 @@ func findRun(cmd *cobra.Command, args []string) error {
 	// -sensitivity settings. Printing the results depending on the --title flag.
 	for _, a := range args {
 		switch {
-		// For sensitive search results, for each argument return all
-		// case-sensitive matches, according to the --title and --tag flag
-		// arguments.
+		// Return all case-sensitive matches, according to --title and --tag flags.
 		case caseOpt == "sensitive":
 			for _, t := range todos {
 				printFindMatches(w, t, t.Body, t.Title, a)
 			}
 
-		// For insensitive search results, change both argument and results
-		// to lower-case. Then for each todo, return all matches in their
-		// original format, according to the --title and --tag flag arguments.
+		// Change the argument and results to lower-case before matching.
 		case caseOpt == "insensitive":
 			for _, t := range todos {
 				a = strings.ToLower(a)
@@ -80,11 +75,8 @@ func findRun(cmd *cobra.Command, args []string) error {
 				printFindMatches(w, t, body, title, a)
 			}
 
-		// Implement a smart search, where case sensitivity is only implemented
-		// if the command argument contains an upper-case character. And only
-		// change results to lower-case if the argument only contains lower-case
-		// characters. Then for each todo return all matches in their original
-		// format, according to the --title and --tag flag arguments.
+		// Sensitivity is only implemented if the argument contains upper-case.
+		// Changing to lower-case if the argument is only lower-case.
 		default:
 			var hasUpper bool
 
