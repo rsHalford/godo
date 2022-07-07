@@ -94,18 +94,22 @@ func (t *Todo) TitleFmt(s string) string {
 	switch {
 	case t.Priority && t.Done:
 		s = c.WithStyleMust(Theme.Priority).Strikethrough(s) + "\t"
+
 		return s
 
 	case t.Priority && !t.Done:
 		s = c.StyleMust(Theme.Priority)(s) + "\t"
+
 		return s
 
 	case t.Done && !t.Priority:
 		s = c.WithStyleMust(Theme.Title).Strikethrough(s) + "\t"
+
 		return s
 
 	default:
-		s = s + "\t"
+		s += "\t"
+
 		return s
 	}
 }
@@ -118,6 +122,7 @@ func (t *Todo) TagFmt(s string) string {
 		s = " "
 	}
 	s = c.WithItalic().StyleMust(Theme.Tag)(s) + "\t"
+
 	return s
 }
 
@@ -126,6 +131,7 @@ func (t *Todo) TagFmt(s string) string {
 func (t *Todo) PositionFmt() (s string) {
 	s = strconv.Itoa(t.position)
 	s = c.StyleMust(Theme.Position)(s) + "\t"
+
 	return s
 }
 

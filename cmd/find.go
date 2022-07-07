@@ -108,6 +108,7 @@ func findRun(cmd *cobra.Command, args []string) error {
 			for _, r := range a {
 				if unicode.IsUpper(r) {
 					hasUpper = true
+
 					break
 				}
 			}
