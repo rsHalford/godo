@@ -213,6 +213,25 @@ func Value(key string) string {
 
 		return value
 
+	default:
+		fmt.Println("No configuration key provided")
+	}
+
+	return ""
+}
+
+// Theme takes a key and returns the matching value from the config.toml.
+func ThemeValue(key string) string {
+	cfgPath, err := defineConfig()
+	if err != nil {
+		fmt.Printf("finding configuration file: %v", err)
+	}
+
+	if err := cleanenv.ReadConfig(cfgPath, &cfg); err != nil {
+		fmt.Printf("parsing configuration: %v", err)
+	}
+
+	switch key {
 	case "theme_primary":
 		value := cfg.Theme.Primary
 
@@ -258,12 +277,12 @@ func Value(key string) string {
 // InitTheme retrieves all color values set in the config.toml file.
 func InitTheme() *Theme {
 	return &Theme{
-		Primary:   Value("theme_primary"),
-		Secondary: Value("theme_secondary"),
-		Position:  Value("theme_position"),
-		Tag:       Value("theme_tag"),
-		Title:     Value("theme_title"),
-		Priority:  Value("theme_priority"),
-		Done:      Value("theme_done"),
+		Primary:   ThemeValue("theme_primary"),
+		Secondary: ThemeValue("theme_secondary"),
+		Position:  ThemeValue("theme_position"),
+		Tag:       ThemeValue("theme_tag"),
+		Title:     ThemeValue("theme_title"),
+		Priority:  ThemeValue("theme_priority"),
+		Done:      ThemeValue("theme_done"),
 	}
 }
