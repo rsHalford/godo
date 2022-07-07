@@ -63,7 +63,6 @@ func listRun(cmd *cobra.Command, args []string) error {
 
 	sort.Sort(todo.Order(todos)) // Sort the todos for terminal printing.
 
-	// Create a new writer with defined formatting.
 	w := tabwriter.NewWriter(os.Stdout, minwidth, tabwidth, padding, padchar, flags)
 
 	// Print as a list each todo that qualifies via the flag arguments given.
