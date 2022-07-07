@@ -82,7 +82,7 @@ func removeRun(cmd *cobra.Command, args []string) error {
 			fmt.Printf("\n%q %v\n", title, "deleted")
 		}
 	} else {
-		return fmt.Errorf("%v: %q %w", command, p, err)
+		return fmt.Errorf("(%v) todo does not exist at position \"%d\"\n", command, p)
 	}
 
 	return nil
