@@ -48,27 +48,26 @@ func doneRun(cmd *cobra.Command, args []string) error {
 	}
 
 	if p > 0 && p <= len(todos) { // Validate position argument.
-		t := todos[p-1]
 
 		// Set the boolean value of done to the opposite of it's current value.
 		// Then update the changes.
-		if !t.Done {
-			t.Done = true
+		if !todos[p-1].Done {
+			todos[p-1].Done = true
 
 			fmt.Printf("%s Marked done...\n%s %q\n",
 				c.StyleMust(Theme.Primary)("::"),
-				c.StyleMust(Theme.Secondary)("-->"), t.Title)
+				c.StyleMust(Theme.Secondary)("-->"), todos[p-1].Title)
 
 			err = updateTodo(p, command, todos)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 		} else {
-			t.Done = false
+			todos[p-1].Done = false
 
 			fmt.Printf("%s Marked active...\n%s %q\n",
 				c.StyleMust(Theme.Primary)("::"),
-				c.StyleMust(Theme.Secondary)("-->"), t.Title)
+				c.StyleMust(Theme.Secondary)("-->"), todos[p-1].Title)
 
 			err = updateTodo(p, command, todos)
 			if err != nil {
