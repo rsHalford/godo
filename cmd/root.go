@@ -14,7 +14,7 @@ var rootCmd = &cobra.Command{
 	Use:     "godo",
 	Short:   "GoDo is a todo application.",
 	Long:    "GoDo: A command line todo list application",
-	Version: "0.16.0",
+	Version: "0.16.1",
 }
 
 // Execute adds all child commands to the root command and sets flags
