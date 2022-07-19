@@ -1,7 +1,34 @@
 # CHANGELOG
 
-<a name="0.16.0"></a>
-## [0.16.0](https://github.com/rsHalford/godo/compare/v0.15.0...0.16.0)
+<a name="0.16.1"></a>
+## [0.16.1](https://github.com/rsHalford/godo/compare/v0.16.0...0.16.1)
+
+> 2022-07-19
+
+### Bug Fixes
+
+* removed variable declarations that passed wrong variable to be updated
+
+### Chores
+
+* **docs:** center align badges
+* **docs:** logo image center alignment
+* **docs:** added logo to README
+
+### Code Refactoring
+
+* **config:** separate theming values from other settings
+* **errors:** improved error messaging for direct godo commands
+* **find:** create searchPattern helper function for the --case flag
+
+### Styling
+
+* reduce verbosity of function documentation
+* add appropriate line spacing for improved legibility
+
+
+<a name="v0.16.0"></a>
+## [v0.16.0](https://github.com/rsHalford/godo/compare/v0.15.0...v0.16.0)
 
 > 2022-06-26
 
