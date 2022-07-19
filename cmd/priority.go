@@ -48,27 +48,26 @@ func priorityRun(cmd *cobra.Command, args []string) error {
 	}
 
 	if p > 0 && p <= len(todos) { // Validate position argument.
-		t := todos[p-1]
 
 		// Set the priority of the todo to the opposite of it's current boolean
 		// value. Then update the changes.
-		if !t.Priority {
-			t.Priority = true
+		if !todos[p-1].Priority {
+			todos[p-1].Priority = true
 
 			fmt.Printf("%s Setting priority...\n%s %q\n",
 				c.StyleMust(Theme.Primary)("::"),
-				c.StyleMust(Theme.Secondary)("-->"), t.Title)
+				c.StyleMust(Theme.Secondary)("-->"), todos[p-1].Title)
 
 			err = updateTodo(p, command, todos)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 		} else {
-			t.Priority = false
+			todos[p-1].Priority = false
 
 			fmt.Printf("%s Removing priority...\n%s %q\n",
 				c.StyleMust(Theme.Primary)("::"),
-				c.StyleMust(Theme.Secondary)("-->"), t.Title)
+				c.StyleMust(Theme.Secondary)("-->"), todos[p-1].Title)
 
 			err = updateTodo(p, command, todos)
 			if err != nil {
