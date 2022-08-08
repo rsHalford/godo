@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -66,7 +67,7 @@ func editRun(cmd *cobra.Command, args []string) error {
 		// arguments or configuration settings have been set.
 		switch {
 		case titleOpt:
-			todos[p-1].Title, err = createTemp([]byte(todos[p-1].Title))
+			todos[p-1].Title, err = createTemp([]byte(todos[p-1].Title), todos[p-1].Title)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
@@ -76,7 +77,7 @@ func editRun(cmd *cobra.Command, args []string) error {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 		case config.Value("editing_default") == "body" || bodyOpt:
-			todos[p-1].Body, err = createTemp([]byte(todos[p-1].Body))
+			todos[p-1].Body, err = createTemp([]byte(todos[p-1].Body), todos[p-1].Title)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
@@ -86,7 +87,7 @@ func editRun(cmd *cobra.Command, args []string) error {
 				return fmt.Errorf("%v: %w", command, err)
 			}
 		default:
-			todos[p-1].Title, err = createTemp([]byte(todos[p-1].Title))
+			todos[p-1].Title, err = createTemp([]byte(todos[p-1].Title), todos[p-1].Title)
 			if err != nil {
 				return fmt.Errorf("%v: %w", command, err)
 			}
@@ -106,10 +107,18 @@ func editRun(cmd *cobra.Command, args []string) error {
 // createTemp creates a temporary file within the system's temporary directory.
 // Writes the current title or body to the file for editing. Then reads the
 // file, converting the edited data to be returned, before deleting it.
-func createTemp(text []byte) (string, error) {
+func createTemp(text []byte, title string) (string, error) {
 	ext := tempFiletype() // Check and return filetype extension if set.
 
-	f, err := os.CreateTemp(os.TempDir(), "godo-"+ext)
+	re, err := regexp.Compile(`[^a-zA-Z0-9]+`)
+	if err != nil {
+		return "", fmt.Errorf("parse and return a regular expression: %w", err)
+	}
+	title = re.ReplaceAllString(title, "_")
+
+	title = strings.Replace(title, " ", "_", -1)
+
+	f, err := os.CreateTemp(os.TempDir(), title+"-"+ext)
 	if err != nil {
 		return "", fmt.Errorf("create temporary file: %w", err)
 	}
