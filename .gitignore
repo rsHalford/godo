@@ -1,4 +1,4 @@
-config.yaml
+config.toml
 # Binaries for programs and plugins
 godo
 *.exe
