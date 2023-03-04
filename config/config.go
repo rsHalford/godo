@@ -6,7 +6,7 @@ using the config.toml file, that will be created automatically if it does not
 already exist.
 
 [general]
-# change the file path for saving todos (defaults to "%s/godos.json" if unset)
+# change the file path for saving todos (defaults to "$HOME/.local/share/godo/godos.json" if unset)
 data-file = "" # $GODO_GENERAL_DATA_FILE
 
 [edit]
