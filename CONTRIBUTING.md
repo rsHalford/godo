@@ -1,6 +1,6 @@
 # Contributing `GoDo`
 
-Thank you for contributing `GoDo` :tada:
+Thank you for considering contributing to `GoDo` :tada:
 
 ## Found a Bug?
 
